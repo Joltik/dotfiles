@@ -89,6 +89,8 @@ else
 endif
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
+autocmd CursorHold,CursorHoldI * CocCommand git.refresh
+autocmd! BufEnter * CocCommand git.refresh
 " lightline,主题gruvbox,darcula
 let g:lightline = {
 			\ 'colorscheme': 'gruvbox',
@@ -97,16 +99,29 @@ let g:lightline = {
 			\ },
 			\ 'active': {
 			\   'left': [ [ 'mode', 'paste' ],
-			\             ['cocstatus', 'gitbranch', 'readonly', 'filename', 'modified' ] ]
+			\             ['cocstatus', 'git', 'readonly', 'filename', 'modified' ] ],
+			\   'right':[
+			\     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
+			\     [ 'blame' ]
+			\   ],
 			\ },
 			\ 'component_function': {
 			\   'cocstatus': 'coc#status',
-			\   'gitbranch': 'fugitive#head',
 			\   'filename': 'LightlineFilename',
+			\   'git': 'LightlineGitStatus',
+			\   'blame': 'LightlineGitBlame',
 			\ },
 			\ }
 function! LightlineFilename()
 	return expand('%')
+endfunction
+function! LightlineGitBlame() abort
+	let blame = get(b:, 'coc_git_blame', '')
+	return winwidth(0) > 120 ? blame : ''
+endfunction
+function! LightlineGitStatus() abort
+	let status = get(g:, 'coc_git_status', '')
+	return winwidth(0) > 120 ? status : ''
 endfunction
 " nerdcommenter
 let g:NERDCreateDefaultMappings = 0 " 禁用默认快捷键
@@ -148,6 +163,9 @@ nmap <Leader>w :Windows<CR>
 nmap <Leader>ba <Plug>(coc-bookmark-toggle)
 nmap <Leader>bn <Plug>(coc-bookmark-next)
 nmap <Leader>bp <Plug>(coc-bookmark-prev)
+nmap <Leader>gp <Plug>(coc-git-prevchunk)
+nmap <Leader>gn <Plug>(coc-git-nextchunk)
+nmap <Leader>gi <Plug>(coc-git-chunkinfo)
 
 " indentLine
 let g:indentLine_char = '|'

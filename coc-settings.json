@@ -7,13 +7,27 @@
 	"coc.preferences.colorSupport": true,
 	"highlight.document.enable": true,
 	"explorer.keyMappingMode":"none",
+	"git.untrackedDecorator": "",
+	"git.changedDecorator": "",
 	"explorer.width":30,
 	"explorer.keyMappings": {
 		"<cr>": [
 			"expandable?",
 			["expanded?", "collapse", "expand"],
 			"open"
-		]
+		],
+		".": "toggleHidden",
+		"<c-v>": "open:vsplit",
+		"<c-a>>": "addFile",
+		"<c-A>": "addDirectory",
+		"<c-r>": "rename",
+		"yp": "copyFilepath",
+		"yn": "copyFilename",
+		"<c-c>": "copyFile",
+		"<c-x>": "cutFile",
+		"<c-p>": "pasteFile",
+		"<c-d>": "delete",
+		"<c-D>": "deleteForever"
 	},
 	"explorer.icon.enableNerdfont":true,
 	"explorer.icon.customIcons": {

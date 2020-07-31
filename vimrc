@@ -45,8 +45,8 @@ endif
 syntax enable " 设置主题
 colorscheme gruvbox
 set background=dark
+set cmdheight=2
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o " 取消注释下换行自动插入注释符号
-autocmd! BufEnter * if &ft ==# 'help' | wincmd L | endif " 从右侧打开help文件
 
 " 解决插入模式下delete/backspce键失效问题
 set backspace=2
@@ -90,7 +90,12 @@ endif
 
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
-autocmd! BufEnter * CocCommand git.refresh
+augroup Binary
+autocmd!
+autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
+autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
+autocmd BufEnter * CocCommand git.refresh
+augroup END
 " lightline,主题gruvbox,darcula
 let g:lightline = {
 			\ 'colorscheme': 'gruvbox',
@@ -134,9 +139,21 @@ let g:NERDCustomDelimiters={
 let g:prettier#quickfix_enabled = 0 " 格式化时，不显示错误警告
 nmap prettier <Plug>(Prettier)
 " fzf
-autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
-let $FZF_DEFAULT_OPTS = '--layout=reverse --color=fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f --color=info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54'
+let fzf_opt = '--layout=reverse'
+let fzf_preview = 'right:60%'
+let $FZF_DEFAULT_OPTS = fzf_opt
+let g:fzf_preview_window = fzf_preview
 let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.6, 'highlight': 'Todo', 'border': 'border' } }
+let s:fzf_color_dark = ['--color', 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f', '--color', 'info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54']
+let g:coc_fzf_opts = [fzf_opt]
+let g:coc_fzf_preview = fzf_preview
+" indentLine
+let g:indentLine_char = '|'
+let g:indentLine_conceallevel = 2
+let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
+:set list lcs=tab:\|\  
+" indentLine引起的json不显示""问题
+let g:vim_json_syntax_conceal = 0
 
 " 快捷键
 let g:mapleader = "\<Space>" " 设置leader键为空号键
@@ -158,19 +175,13 @@ nmap <Leader>sf :Files<CR>
 nmap <Leader>sw :Ag<CR>
 nnoremap <Leader>su :FzfFunky<Cr>
 nnoremap <Leader>sh :History<Cr>
-nmap <Leader>bl :Buffers<CR>
+nmap <Leader>bf :Buffers<CR>
 nmap <Leader>w :Windows<CR>
+nmap <Leader>y :CocFzfList yank<CR>
+nmap <Leader>bl :CocFzfList bookmark<CR>
 nmap <Leader>ba <Plug>(coc-bookmark-toggle)
 nmap <Leader>bn <Plug>(coc-bookmark-next)
 nmap <Leader>bp <Plug>(coc-bookmark-prev)
 nmap <Leader>gp <Plug>(coc-git-prevchunk)
 nmap <Leader>gn <Plug>(coc-git-nextchunk)
 nmap <Leader>gi <Plug>(coc-git-chunkinfo)
-
-" indentLine
-let g:indentLine_char = '|'
-let g:indentLine_conceallevel = 2
-let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
-:set list lcs=tab:\|\  
-" indentLine引起的json不显示""问题
-let g:vim_json_syntax_conceal = 0

@@ -17,9 +17,11 @@
 			"open"
 		],
 		".": "toggleHidden",
+		"R": "refresh",
+		"<c-o>": "gotoParent",
 		"<c-v>": "open:vsplit",
-		"<c-a>>": "addFile",
-		"<c-A>": "addDirectory",
+		"af": "addFile",
+		"ad": "addDirectory",
 		"<c-r>": "rename",
 		"yp": "copyFilepath",
 		"yn": "copyFilename",

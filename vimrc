@@ -17,6 +17,7 @@ Plug 'tracyone/fzf-funky',{'on': 'FzfFunky'}
 Plug 'Yggdroot/indentLine'
 Plug 'elzr/vim-json'
 Plug 'antoinemadec/coc-fzf'
+Plug 'tpope/vim-surround'
 
 call plug#end()
 
@@ -59,42 +60,34 @@ if $TERM_PROGRAM =~ "iTerm"
 endif
 
 " 插件设置
+" 离开插入模式后强制切换为默认输入法
+let g:im_default = 'com.apple.keylayout.ABC'
+autocmd InsertLeave * call IM_SelectDefault()
+function! IM_SelectDefault()
+    let b:saved_im = system("im-select")
+    if v:shell_error
+        unlet b:saved_im
+    else
+        let l:a = system("im-select " . g:im_default)
+    endif
+endfunction
 " coc
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-snippets', 'coc-css', 'coc-html', 'coc-imselect', 'coc-vimlsp', 'coc-pairs', 'coc-highlight', 'coc-explorer', 'coc-bookmark', 'coc-yank', 'coc-git']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-snippets', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-highlight', 'coc-explorer', 'coc-bookmark', 'coc-git']
 let g:coc_user_config = "$HOME/.vim/coc-settings.json"
-" coc回车事件
+
+" Make <CR> auto-select the first completion item and notify coc.nvim to
+" format on enter, <cr> could be remapped by other vim plugin
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-inoremap <silent><expr> <TAB>
-			\ pumvisible() ? "\<C-n>" :
-			\ <SID>check_back_space() ? "\<TAB>" :
-			\ coc#refresh()
-inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
 
-function! s:check_back_space() abort
-	let col = col('.') - 1
-	return !col || getline('.')[col - 1]  =~# '\s'
-endfunction
-
-if has('nvim')
-	inoremap <silent><expr> <c-space> coc#refresh()
-else
-	inoremap <silent><expr> <c-@> coc#refresh()
-endif
-
-if exists('*complete_info')
-	inoremap <expr> <cr> complete_info()["selected"] != "-1" ? "\<C-y>" : "\<C-g>u\<CR>"
-else
-	inoremap <expr> <cr> pumvisible() ? "\<C-y>" : "\<C-g>u\<CR>"
-endif
-
+autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
 augroup Binary
-autocmd!
-autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
-autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
-autocmd BufEnter * CocCommand git.refresh
+	autocmd!
+	autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
+	autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
+	autocmd BufEnter * CocCommand git.refresh
 augroup END
 " lightline,主题gruvbox,darcula
 let g:lightline = {
@@ -136,7 +129,7 @@ let g:NERDCustomDelimiters={
 			\ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
 			\}
 " vim-prettier
-let g:prettier#quickfix_enabled = 0 " 格式化时，不显示错误警告
+let g:prettier#quickfix_auto_focus = 0
 nmap prettier <Plug>(Prettier)
 " fzf
 let fzf_opt = '--layout=reverse'
@@ -177,7 +170,7 @@ nnoremap <Leader>su :FzfFunky<Cr>
 nnoremap <Leader>sh :History<Cr>
 nmap <Leader>bf :Buffers<CR>
 nmap <Leader>w :Windows<CR>
-nmap <Leader>y :CocFzfList yank<CR>
+" nmap <Leader>y :CocFzfList yank<CR>
 nmap <Leader>bl :CocFzfList bookmark<CR>
 nmap <Leader>ba <Plug>(coc-bookmark-toggle)
 nmap <Leader>bn <Plug>(coc-bookmark-next)

@@ -1,11 +1,7 @@
 {
-	"imselect.defaultInput": "com.apple.keylayout.ABC",
-	"imselect.enableStatusItem": true,
-	"imselect.enableFloating": true,
 	"suggest.noselect": false,
 	"coc.preferences.formatOnType": true,
 	"coc.preferences.colorSupport": true,
-	"highlight.document.enable": true,
 	"explorer.keyMappingMode":"none",
 	"explorer.previewAction.onHover":false,
 	"git.untrackedDecorator": "",
@@ -17,20 +13,24 @@
 			["expanded?", "collapse", "expand"],
 			"open"
 		],
+		"h": "gotoParent",
+		"l": ["expandable?", "cd", "open"],
 		".": "toggleHidden",
 		"R": "refresh",
-		"<c-o>": "gotoParent",
 		"<c-v>": "open:vsplit",
+		"<c-t>": "open:tab",
 		"af": "addFile",
 		"ad": "addDirectory",
-		"<c-r>": "rename",
 		"yp": "copyFilepath",
 		"yn": "copyFilename",
+		"<c-r>": "rename",
 		"<c-c>": "copyFile",
 		"<c-x>": "cutFile",
 		"<c-p>": "pasteFile",
 		"<c-d>": "delete",
-		"<c-D>": "deleteForever"
+		"<c-D>": "deleteForever",
+		 "q": "quit",
+		"<esc>": "esc"
 	},
 	"explorer.icon.enableNerdfont":true,
 	"explorer.icon.customIcons": {
@@ -576,3 +576,4 @@
 		"dirPatternMatches": {}
 	}
 }
+

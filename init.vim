@@ -18,6 +18,7 @@ Plug 't9md/vim-choosewin'
 Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
+Plug 'honza/vim-snippets'
 
 call plug#end()
 
@@ -127,7 +128,7 @@ let g:vim_json_syntax_conceal = 0
 
 
 " coc
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-fzf-preview']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-fzf-preview']
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin

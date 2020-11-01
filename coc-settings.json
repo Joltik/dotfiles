@@ -1,5 +1,7 @@
 {
 	"suggest.noselect": false,
+	"snippets.ultisnips.enable": false,
+	"snippets.userSnippetsDirectory": "~/.config/nvim/snips",
 	"coc.preferences.formatOnType": true,
 	"coc.preferences.colorSupport": true,
 	"explorer.keyMappingMode":"none",

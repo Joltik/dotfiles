@@ -3,12 +3,15 @@
 	"snippets.ultisnips.enable": false,
 	"snippets.userSnippetsDirectory": "~/.config/nvim/snips",
 	"coc.preferences.formatOnType": true,
-	"coc.preferences.colorSupport": true,
+	"coc.preferences.colorSupport": false,
+	"floatinput.status.enabled": true,
 	"explorer.keyMappingMode":"none",
+	"explorer.file.showHiddenFiles":false,
+	"explorer.file.autoReveal":false,
 	"explorer.previewAction.onHover":false,
 	"git.untrackedDecorator": "",
 	"git.changedDecorator": "",
-	"explorer.width":30,
+	"explorer.width":40,
 	"explorer.keyMappings": {
 		"<cr>": [
 			"expandable?",

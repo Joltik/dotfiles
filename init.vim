@@ -19,6 +19,7 @@ Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'honza/vim-snippets'
+Plug 'airblade/vim-rooter'
 
 call plug#end()
 
@@ -118,6 +119,20 @@ let g:coc_fzf_preview = fzf_preview
 " fzf_preview_window
 let g:fzf_preview_floating_window_rate = 0.6
 
+" Ag显示文件名设置，不会预览文件
+command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
+
+" RG搜索显示文件名，搜索准确性高于Ag
+function! RipgrepFzf(query, fullscreen)
+	let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+	let initial_command = printf(command_fmt, shellescape(a:query))
+	let reload_command = printf(command_fmt, '{q}')
+	let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+	call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
+
 
 " indentLine
 let g:indentLine_conceallevel = 2
@@ -128,7 +143,7 @@ let g:vim_json_syntax_conceal = 0
 
 
 " coc
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-fzf-preview']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-floatinput']
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
@@ -138,6 +153,11 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
+autocmd InsertLeave * call coc#util#float_hide()
+" 高亮单词颜色
+hi CocHighlightText ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
+hi CoCHoverRange ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
+
 augroup Binary
 	autocmd!
 	autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
@@ -170,7 +190,7 @@ nnoremap <silent> <leader>fc :CocConfig<CR>
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>sf :Files<CR>
-nmap <Leader>sw :Ag<CR>
+nmap <Leader>sw :RG<CR>
 nnoremap <Leader>su :FzfFunky<Cr>
 nnoremap <Leader>sh :History<Cr>
 nmap <Leader>sb :Buffers<CR>

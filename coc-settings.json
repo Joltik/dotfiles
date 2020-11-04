@@ -1,10 +1,13 @@
 {
 	"suggest.noselect": false,
-	"snippets.ultisnips.enable": false,
+	"snippets.ultisnips.usePythonx": false,
 	"snippets.userSnippetsDirectory": "~/.config/nvim/snips",
+	"snippets.extends": {
+		"javascriptreact": ["javascript"],
+		"typescript": ["javascript"]
+	},
 	"coc.preferences.formatOnType": true,
 	"coc.preferences.colorSupport": false,
-	"floatinput.status.enabled": true,
 	"explorer.keyMappingMode":"none",
 	"explorer.file.showHiddenFiles":false,
 	"explorer.file.autoReveal":false,

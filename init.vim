@@ -143,7 +143,7 @@ let g:vim_json_syntax_conceal = 0
 
 
 " coc
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-floatinput']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-dictionary']
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin
@@ -153,7 +153,7 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
-autocmd InsertLeave * call coc#util#float_hide()
+autocmd InsertLeave * call coc#float#close_all()
 " 高亮单词颜色
 hi CocHighlightText ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
 hi CoCHoverRange ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
@@ -164,6 +164,9 @@ augroup Binary
 	autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 	autocmd BufEnter * CocCommand git.refresh
 augroup END
+
+" coc-dictionary
+set dictionary=$HOME/.config/nvim/words
 
 
 " vim-prettier

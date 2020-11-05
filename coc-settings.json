@@ -1,7 +1,7 @@
 {
 	"suggest.noselect": false,
-	"snippets.ultisnips.usePythonx": false,
-	"snippets.userSnippetsDirectory": "~/.config/nvim/snips",
+	"snippets.ultisnips.enable": false,
+	"snippets.textmateSnippetsRoots": ["~/.config/nvim/snips/vscode-snippets"],
 	"snippets.extends": {
 		"javascriptreact": ["javascript"],
 		"typescript": ["javascript"]

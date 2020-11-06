@@ -153,7 +153,7 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
-autocmd InsertLeave * call coc#float#close_all()
+" autocmd InsertLeave * call coc#float#close_all()
 " 高亮单词颜色
 hi CocHighlightText ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
 hi CoCHoverRange ctermfg=black ctermbg=72 guifg=white guibg=#FF4500

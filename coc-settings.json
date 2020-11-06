@@ -1,11 +1,6 @@
 {
 	"suggest.noselect": false,
 	"snippets.ultisnips.enable": false,
-	"snippets.textmateSnippetsRoots": ["~/.config/nvim/snips/vscode-snippets"],
-	"snippets.extends": {
-		"javascriptreact": ["javascript"],
-		"typescript": ["javascript"]
-	},
 	"coc.preferences.formatOnType": true,
 	"coc.preferences.colorSupport": false,
 	"explorer.keyMappingMode":"none",

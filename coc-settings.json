@@ -6,11 +6,13 @@
 	"explorer.keyMappingMode":"none",
 	"explorer.file.showHiddenFiles":false,
 	"explorer.file.autoReveal":false,
-	"explorer.previewAction.onHover":false,
+	"explorer.previewAction.onHover":true,
 	"git.untrackedDecorator": "",
 	"git.changedDecorator": "",
-	"explorer.width":40,
-	"explorer.keyMappings": {
+	"explorer.width":30,
+	"explorer.focus":false,
+	"explorer.enableFloatinput":true,
+	"explorer.keyMappings.global": {
 		"<cr>": [
 			"expandable?",
 			["expanded?", "collapse", "expand"],

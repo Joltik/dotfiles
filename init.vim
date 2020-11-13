@@ -15,7 +15,6 @@ Plug 'mxw/vim-jsx'
 Plug 'prettier/vim-prettier', {'do': 'yarn install','for': ['javascript', 'typescript'] }
 Plug 'chiel92/vim-autoformat'
 Plug 't9md/vim-choosewin'
-Plug 'tmux-plugins/vim-tmux-focus-events'
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'honza/vim-snippets'
@@ -45,16 +44,12 @@ colorscheme gruvbox
 set background=dark
 set cmdheight=2
 
-
-if (empty($TMUX))
-	if (has("nvim"))
-		let $NVIM_TUI_ENABLE_TRUE_COLOR=1
-	endif
-	if (has("termguicolors"))
-		set termguicolors
-	endif
+if (has("nvim"))
+	let $NVIM_TUI_ENABLE_TRUE_COLOR=1
 endif
-
+if (has("termguicolors"))
+	set termguicolors
+endif
 
 " 取消注释下换行自动插入注释符号
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -143,7 +138,7 @@ let g:vim_json_syntax_conceal = 0
 
 
 " coc
-let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-dictionary']
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-dictionary', 'coc-floatinput']
 
 " Make <CR> auto-select the first completion item and notify coc.nvim to
 " format on enter, <cr> could be remapped by other vim plugin

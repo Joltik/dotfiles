@@ -1,6 +1,5 @@
 call plug#begin('~/.vim/plugged')
 
-Plug 'mhinz/vim-startify'
 Plug 'morhetz/gruvbox'
 Plug 'itchyny/lightline.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
@@ -19,6 +18,7 @@ Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'honza/vim-snippets'
 Plug 'airblade/vim-rooter'
+Plug 'glepnir/dashboard-nvim'
 
 call plug#end()
 
@@ -102,17 +102,18 @@ endfunction
 
 
 " fzf
+let fzf_float_rate = 0.6
 let fzf_opt = '--layout=reverse'
 let fzf_preview = 'right:60%'
 let $FZF_DEFAULT_OPTS = fzf_opt
 let g:fzf_preview_window = fzf_preview
-let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.6 } }
+let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_rate } }
 let s:fzf_color_dark = ['--color', 'fg:#ebdbb2,bg:#282828,hl:#fabd2f,fg+:#ebdbb2,bg+:#3c3836,hl+:#fabd2f', '--color', 'info:#83a598,prompt:#bdae93,spinner:#fabd2f,pointer:#83a598,marker:#fe8019,header:#665c54']
 " fzf-funky
 let g:coc_fzf_opts = [fzf_opt]
 let g:coc_fzf_preview = fzf_preview
 " fzf_preview_window
-let g:fzf_preview_floating_window_rate = 0.6
+let g:fzf_preview_floating_window_rate = fzf_float_rate
 
 " Ag显示文件名设置，不会预览文件
 command! -bang -nargs=* Ag call fzf#vim#ag(<q-args>, {'options': '--delimiter : --nth 4..'}, <bang>0)
@@ -131,7 +132,7 @@ command! -nargs=* -bang RG call RipgrepFzf(<q-args>, <bang>0)
 
 " indentLine
 let g:indentLine_conceallevel = 2
-let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
+let g:indentLine_fileTypeExclude = ['coc-explorer', 'dashboard']
 :set list lcs=tab:\|\  " indentLine显示异常问题
 " indentLine引起的json不显示""问题
 let g:vim_json_syntax_conceal = 0
@@ -140,18 +141,14 @@ let g:vim_json_syntax_conceal = 0
 " coc
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-css', 'coc-html', 'coc-vimlsp', 'coc-pairs', 'coc-explorer', 'coc-git', 'coc-snippets', 'coc-highlight', 'coc-fzf-preview', 'coc-dictionary', 'coc-floatinput']
 
-" Make <CR> auto-select the first completion item and notify coc.nvim to
-" format on enter, <cr> could be remapped by other vim plugin
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd CursorHold,CursorHoldI * CocCommand git.refresh
 " autocmd InsertLeave * call coc#float#close_all()
 " 高亮单词颜色
-hi CocHighlightText ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
-hi CoCHoverRange ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
+" hi CocHighlightText ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
+" hi CoCHoverRange ctermfg=black ctermbg=72 guifg=white guibg=#FF4500
 
 augroup Binary
 	autocmd!
@@ -179,6 +176,13 @@ let g:NERDCustomDelimiters={
 
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1
+
+
+" Default value is clap
+let g:dashboard_default_executive = 'fzf'
+let g:dashboard_default_header = 'evil'
+let g:dashboard_fzf_float = fzf_float_rate
+autocmd FileType dashboard set showtabline=0 | autocmd WinLeave <buffer> set showtabline=2
 
 
 " 快捷键
@@ -215,3 +219,13 @@ nmap <Leader>gi <Plug>(coc-git-chunkinfo)
 nmap <Leader>ba <Plug>BookmarkToggle
 nmap <Leader>bc <Plug>BookmarkClearAll
 
+" Symbol renaming.
+nmap <leader>rn <Plug>(coc-rename)
+
+
+nnoremap <silent> <Leader>fh :DashboardFindHistory<CR>
+nnoremap <silent> <Leader>ff :DashboardFindFile<CR>
+nnoremap <silent> <Leader>tc :DashboardChangeColorscheme<CR>
+nnoremap <silent> <Leader>fa :DashboardFindWord<CR>
+nnoremap <silent> <Leader>fb :DashboardJumpMark<CR>
+nnoremap <silent> <Leader>cn :DashboardNewFile<CR>

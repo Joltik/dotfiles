@@ -12,6 +12,7 @@
 	"explorer.width":30,
 	"explorer.focus":false,
 	"explorer.enableFloatinput":true,
+	"explorer.file.root.template":"[icon] [title] [root]",
 	"explorer.keyMappings.global": {
 		"<cr>": [
 			"expandable?",

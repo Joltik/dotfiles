@@ -1,45 +1,42 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'joshdick/onedark.vim'
-"  improved syntax highlighting
 Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
 Plug 'Yggdroot/indentLine'
 Plug 'easymotion/vim-easymotion'
-Plug 'glepnir/dashboard-nvim'
 Plug 't9md/vim-choosewin'
-Plug 'preservim/nerdtree'
-Plug 'Xuyuanp/nerdtree-git-plugin'
-Plug 'ryanoasis/vim-devicons'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'chiel92/vim-autoformat'
+Plug 'scrooloose/nerdcommenter'
+Plug 'MattesGroeger/vim-bookmarks'
 
 call plug#end()
 
-
-" hightlighting
-" not compatible vi
+let g:mapleader = "\<Space>"
 set nocompatible
-" show line number
 set number
 set cursorline
 set scrolloff=10
+set hidden
+set nobackup
+set nowritebackup
+set splitright
+set updatetime=300
+set shortmess+=c
+set list lcs=tab:\|\  " indentLine
+if has("patch-8.1.1564")
+  set signcolumn=number
+else
+  set signcolumn=yes
+endif
 
-
-" Note: All options should be set before the colorscheme onedark line in your ~/.vimrc.
-" Set to 1 if you want to hide end-of-buffer filler lines (~) for a cleaner look; 0 otherwise (the default).
-let g:onedark_hide_endofbuffer=1
-
-" theme
-"Use 24-bit (true-color) mode in Vim/Neovim when outside tmux.
-"If you're using tmux version 2.2 or later, you can remove the outermost $TMUX check and use tmux's 24-bit color support
-"(see < http://sunaku.github.io/tmux-24bit-color.html#usage > for more information.)
 if (empty($TMUX))
   if (has("nvim"))
-    "For Neovim 0.1.3 and 0.1.4 < https://github.com/neovim/neovim/pull/2198 >
     let $NVIM_TUI_ENABLE_TRUE_COLOR=1
   endif
-  "For Neovim > 0.1.5 and Vim > patch 7.4.1799 < https://github.com/vim/vim/commit/61be73bb0f965a895bfb064ea3e55476ac175162 >
-  "Based on Vim patch 7.4.1770 (`guicolors` option) < https://github.com/vim/vim/commit/8a633e3427b47286869aa4b96f2bfc1fe65b25cd >
-  " < https://github.com/neovim/neovim/wiki/Following-HEAD#20160511 >
   if (has("termguicolors"))
     set termguicolors
   endif
@@ -47,77 +44,129 @@ endif
 
 syntax on
 colorscheme onedark
+let g:onedark_hide_endofbuffer=1
 
-" reset chinese input 
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
+
+" reset chinese input
 let g:im_default = 'com.apple.keylayout.ABC'
 autocmd FocusGained,InsertLeave * call IM_SelectDefault()
 function! IM_SelectDefault()
-	let b:saved_im = system("im-select")
-	if v:shell_error
-		unlet b:saved_im
-	else
-		let l:a = system("im-select " . g:im_default)
-	endif
+  let b:saved_im = system("im-select")
+  if v:shell_error
+    unlet b:saved_im
+  else
+    let l:a = system("im-select " . g:im_default)
+  endif
 endfunction
 
-
-autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
-
-
-" lightline
 let g:lightline = {
-  \ 'colorscheme': 'onedark',
-  \ }
+      \ 'colorscheme': 'onedark',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             ['git', 'readonly', 'filename', 'modified' ] ],
+      \   'right':[
+      \     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
+      \   ],
+      \ },
+      \ 'component_function': {
+      \   'git': 'LightlineGitStatus',
+      \ },
+      \ }
 
+function! LightlineGitStatus() abort
+  let status = get(g:, 'coc_git_status', '')
+  return winwidth(0) > 120 ? status : ''
+endfunction
 
-
-set list lcs=tab:\|\  " indentLine 
-let g:indentLine_fileTypeExclude = ['dashboard']
+let g:indentLine_fileTypeExclude = ['coc-explorer']
 
 
 " vim-easymotion
-let g:EasyMotion_do_mapping = 0 " Disable default mappings
+let g:EasyMotion_do_mapping = 0
 " Turn on case-insensitive feature
 let g:EasyMotion_smartcase = 1
 
 
-" dashboard-nvim
-let g:dashboard_default_header='commicgirl9'
-let g:dashboard_custom_section={
-  \ 'buffer_list': {
-      \ 'description': [' Recently lase session                 SPC b b'],
-      \ 'command': 'Some Command' }
-  \ }
+" coc
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
+autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
+autocmd CursorHold * silent call CocActionAsync('highlight')
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
+function! s:show_documentation()
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
+endfunction
 
-" nerdtree
-let NERDTreeMinimalUI=1
-let g:NERDTreeChDirMode = 2
-let g:NERDTreeDirArrowExpandable = ' '
-let g:NERDTreeDirArrowCollapsible = ' '
-highlight NERDTreeDir guifg=#D19A66 ctermfg=red
-" close vim if the only window left open is a NERDTree
-autocmd bufenter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
-" open a NERDTree automatically when vim starts up if no files were specified
-autocmd StdinReadPre * let s:std_in=1
-autocmd VimEnter * if argc() == 0 && !exists("s:std_in") | NERDTree | endif
-" open NERDTree automatically when vim starts up on opening a directory
-autocmd VimEnter * if argc() == 1 && isdirectory(argv()[0]) && !exists("s:std_in") | exe 'NERDTree' argv()[0] | wincmd p | ene | exe 'cd '.argv()[0] | endif
+" https://github.com/weirongxu/coc-explorer/wiki/Highlight
+hi CocExplorerGitUntracked guifg=#61AFEF
 
+" nerdcommenter
+let g:NERDCreateDefaultMappings = 0
+let g:NERDSpaceDelims = 1
+let g:NERDTrimTrailingWhitespace = 1
+let g:NERDCustomDelimiters = {
+      \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
+      \}
 
-" make sure vim does not open files and other buffers on NerdTree window
-" If more than one window and previous buffer was NERDTree, go back to it.
-autocmd BufEnter * if bufname('#') =~# "^NERD_tree_" && winnr('$') > 1 | b# | endif
-" If you are using vim-plug, you'll also need to add these lines to avoid crashes when calling vim-plug functions while the cursor is on the NERDTree window
-let g:plug_window = 'noautocmd vertical topleft new'
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
 
-let g:mapleader = "\<Space>"
+command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
+
+" fzf
+let fzf_float_rate = 0.6
+let fzf_opt = '--layout=reverse'
+let $FZF_DEFAULT_OPTS = fzf_opt
+let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_rate } }
+let g:fzf_preview_floating_window_rate = fzf_float_rate
+
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
+nnoremap <silent> <leader>fc :CocConfig<CR>
 
 " Jump to anywhere you want with minimal keystrokes, with just one key binding.
 nmap <Leader>s <Plug>(easymotion-overwin-f2)
 nmap <Leader>w <Plug>(choosewin)
-map <Leader>e :NERDTreeToggle<CR>
+nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
+nmap <Leader>cf :Autoformat<CR>
 
+nmap <Leader>gn <Plug>(coc-git-nextchunk)
+nmap <Leader>gp <Plug>(coc-git-prevchunk)
+nmap <Leader>gi <Plug>(coc-git-chunkinfo)
+nmap <Leader>gc <Plug>(coc-git-nextconflict)
+nmap <Leader>gs :GFiles?<CR>
+
+map <Leader>cc <plug>NERDCommenterToggle
+map <Leader>cm <plug>NERDCommenterMinimal
+
+map <Leader>sf :Files<CR>
+map <Leader>sb :Buffers<CR>
+map <Leader>sw :Rg<CR>
+map <Leader>sh :History<CR>
+map <Leader>sc :History:<CR>
+
+nmap <silent> <Leader>jd <Plug>(coc-definition)
+nmap <silent> <Leader>jy <Plug>(coc-type-definition)
+nmap <silent> <Leader>ji <Plug>(coc-implementation)
+nmap <silent> <Leader>jr <Plug>(coc-references)
+nmap <silent> <leader>rn <Plug>(coc-rename)
+nnoremap <silent> <Leader>sd :call <SID>show_documentation()<CR>
+
+nmap <Leader>ba <Plug>BookmarkToggle
+nmap <Leader>bc <Plug>BookmarkClearAll
+nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>

@@ -1,5 +1,6 @@
 call plug#begin('~/.vim/plugged')
 
+Plug 'morhetz/gruvbox'
 Plug 'joshdick/onedark.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
@@ -9,9 +10,14 @@ Plug 't9md/vim-choosewin'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
+Plug 'prettier/vim-prettier', {'do': 'yarn install','for': ['javascript', 'typescript'] }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
+Plug 'mhinz/vim-startify'
 
 call plug#end()
 
@@ -43,8 +49,9 @@ if (empty($TMUX))
 endif
 
 syntax on
-colorscheme onedark
-let g:onedark_hide_endofbuffer=1
+colorscheme gruvbox
+set background=dark
+" let g:onedark_hide_endofbuffer=1
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
@@ -62,7 +69,7 @@ function! IM_SelectDefault()
 endfunction
 
 let g:lightline = {
-      \ 'colorscheme': 'onedark',
+      \ 'colorscheme': 'gruvbox',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             ['git', 'readonly', 'filename', 'modified' ] ],
@@ -71,14 +78,9 @@ let g:lightline = {
       \   ],
       \ },
       \ 'component_function': {
-      \   'git': 'LightlineGitStatus',
+      \   'git': 'fugitive#head',
       \ },
       \ }
-
-function! LightlineGitStatus() abort
-  let status = get(g:, 'coc_git_status', '')
-  return winwidth(0) > 120 ? status : ''
-endfunction
 
 let g:indentLine_fileTypeExclude = ['coc-explorer']
 
@@ -90,7 +92,7 @@ let g:EasyMotion_smartcase = 1
 
 
 " coc
-let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-git', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 autocmd CursorHold * silent call CocActionAsync('highlight')
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
@@ -105,9 +107,6 @@ function! s:show_documentation()
     execute '!' . &keywordprg . " " . expand('<cword>')
   endif
 endfunction
-
-" https://github.com/weirongxu/coc-explorer/wiki/Highlight
-hi CocExplorerGitUntracked guifg=#61AFEF
 
 " nerdcommenter
 let g:NERDCreateDefaultMappings = 0
@@ -133,23 +132,35 @@ let fzf_opt = '--layout=reverse'
 let $FZF_DEFAULT_OPTS = fzf_opt
 let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_rate } }
 let g:fzf_preview_floating_window_rate = fzf_float_rate
+let g:coc_fzf_preview = 'right'
+
+
+" vim-bookmarks
+let g:bookmark_no_default_key_mappings = 1
+
+" vim-prettier
+let g:prettier#quickfix_enabled = 0
+" au BufWrite * :Autoformat
 
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
 
 " Jump to anywhere you want with minimal keystrokes, with just one key binding.
-nmap <Leader>s <Plug>(easymotion-overwin-f2)
+nmap <Leader>ss <Plug>(easymotion-overwin-f2)
 nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
 nmap <Leader>cf :Autoformat<CR>
+autocmd FileType javascript nmap <buffer> <Leader>cf <Plug>(PrettierAsync)
 
-nmap <Leader>gn <Plug>(coc-git-nextchunk)
-nmap <Leader>gp <Plug>(coc-git-prevchunk)
-nmap <Leader>gi <Plug>(coc-git-chunkinfo)
-nmap <Leader>gc <Plug>(coc-git-nextconflict)
+nmap <Leader>gn <Plug>(GitGutterNextHunk)
+nmap <Leader>gp <Plug>(GitGutterPrevHunk)
+nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gs :GFiles?<CR>
+nmap <Leader>gd :vert Git diff<CR>
+nmap <Leader>gf :Gvdiffsplit<CR>
+nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal

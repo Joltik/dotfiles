@@ -1,9 +1,11 @@
 {
-	"javascript.validate.enable": false,
 	"suggest.noselect": false,
+	"coc.preferences.jumpCommand": "vsplit",
 	"explorer.keyMappingMode":"none",
+	"explorer.file.autoReveal":false,
 	"explorer.width":35,
 	"explorer.file.root.template":"[icon] [title] [root]",
+	"explorer.filename.colored.enable":false,
 	"explorer.icon.enableNerdfont":true,
 	"explorer.keyMappings.global": {
 		"<cr>": [
@@ -29,16 +31,5 @@
 		"<c-D>": "deleteForever",
 		"q": "quit",
 		"<esc>": "esc"
-	},
-	"explorer.icon.customIcons": {
-		"icons": {
-			"nodejs": {
-				"code": "",
-				"color": "#000000"
-			}
-		},
-		"dirnames": {
-			"node_modules": "nodejs"
-		}
 	}
 }

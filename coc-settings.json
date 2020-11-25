@@ -31,5 +31,16 @@
 		"<c-D>": "deleteForever",
 		"q": "quit",
 		"<esc>": "esc"
+	},
+	"explorer.icon.customIcons": {
+		"icons": {
+			"nodejs": {
+				"code": "",
+				"color": "#000000"
+			}
+		},
+		"dirnames": {
+			"node_modules": "nodejs"
+		}
 	}
 }

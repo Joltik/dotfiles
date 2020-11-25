@@ -8,6 +8,7 @@ Plug 'easymotion/vim-easymotion'
 Plug 't9md/vim-choosewin'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'Joltik/fzf-funky',{'on': 'FzfFunky'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
@@ -20,6 +21,9 @@ Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 
 call plug#end()
+
+" tail -f vim.log
+" set verbosefile=vim.log
 
 let g:mapleader = "\<Space>"
 set nocompatible
@@ -134,6 +138,7 @@ let $FZF_DEFAULT_OPTS = fzf_opt
 let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_rate } }
 let g:fzf_preview_floating_window_rate = fzf_float_rate
 let g:coc_fzf_preview = 'right'
+let g:fzf_funky_opts = [fzf_opt]
 
 
 " vim-bookmarks
@@ -170,6 +175,7 @@ map <Leader>sb :Buffers<CR>
 map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
+nnoremap <Leader>su :FzfFunky<Cr>
 
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)

@@ -1,7 +1,6 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'morhetz/gruvbox'
-Plug 'joshdick/onedark.vim'
 Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
 Plug 'Yggdroot/indentLine'
@@ -18,6 +17,7 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
+Plug 'airblade/vim-rooter'
 
 call plug#end()
 
@@ -51,7 +51,8 @@ endif
 syntax on
 colorscheme gruvbox
 set background=dark
-" let g:onedark_hide_endofbuffer=1
+
+hi Normal guibg=NONE ctermbg=NONE
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
@@ -82,17 +83,17 @@ let g:lightline = {
       \ },
       \ }
 
-let g:indentLine_fileTypeExclude = ['coc-explorer']
+let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
 
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0
-" Turn on case-insensitive feature
 let g:EasyMotion_smartcase = 1
 
 
 " coc
 let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
+autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 autocmd CursorHold * silent call CocActionAsync('highlight')
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
@@ -140,7 +141,6 @@ let g:bookmark_no_default_key_mappings = 1
 
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
-" au BufWrite * :Autoformat
 
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
@@ -181,3 +181,6 @@ nnoremap <silent> <Leader>sd :call <SID>show_documentation()<CR>
 nmap <Leader>ba <Plug>BookmarkToggle
 nmap <Leader>bc <Plug>BookmarkClearAll
 nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>
+
+nmap <silent> <C-y> :.w !pbcopy<CR><CR>
+vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>

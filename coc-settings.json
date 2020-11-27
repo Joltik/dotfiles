@@ -1,0 +1,46 @@
+{
+	"suggest.noselect": false,
+	"coc.preferences.jumpCommand": "drop",
+	"explorer.keyMappingMode":"none",
+	"explorer.file.autoReveal":false,
+	"explorer.width":35,
+	"explorer.file.root.template":"[icon] [title] [root]",
+	"explorer.filename.colored.enable":false,
+	"explorer.icon.enableNerdfont":true,
+	"explorer.keyMappings.global": {
+		"<cr>": [
+			"expandable?",
+			["expanded?", "collapse", "expand"],
+			"open"
+		],
+		"h": "gotoParent",
+		"l": ["expandable?", "cd", "open"],
+		".": "toggleHidden",
+		"R": "refresh",
+		"<c-v>": "open:vsplit",
+		"<c-t>": "open:tab",
+		"af": "addFile",
+		"ad": "addDirectory",
+		"yp": "copyFilepath",
+		"yn": "copyFilename",
+		"<c-r>": "rename",
+		"<c-c>": "copyFile",
+		"<c-x>": "cutFile",
+		"<c-p>": "pasteFile",
+		"<c-d>": "delete",
+		"<c-D>": "deleteForever",
+		"q": "quit",
+		"<esc>": "esc"
+	},
+	"explorer.icon.customIcons": {
+		"icons": {
+			"nodejs": {
+				"code": "",
+				"color": "#000000"
+			}
+		},
+		"dirnames": {
+			"node_modules": "nodejs"
+		}
+	}
+}

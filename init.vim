@@ -12,13 +12,13 @@ Plug 'Joltik/fzf-funky',{'on': 'FzfFunky'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
-Plug 'prettier/vim-prettier', {'do': 'yarn install','for': ['javascript', 'typescript'] }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
+Plug 'voldikss/vim-floaterm'
 
 call plug#end()
 
@@ -144,9 +144,9 @@ let g:fzf_funky_opts = [fzf_opt]
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1
 
-" vim-prettier
-let g:prettier#quickfix_enabled = 0
 
+" floaterm
+let g:floaterm_autoclose = 1
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
@@ -157,7 +157,6 @@ nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
 nmap <Leader>cf :Autoformat<CR>
-autocmd FileType javascript nmap <buffer> <Leader>cf <Plug>(PrettierAsync)
 
 nmap <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <Leader>gp <Plug>(GitGutterPrevHunk)
@@ -190,3 +189,6 @@ nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>
 
 nmap <silent> <C-y> :.w !pbcopy<CR><CR>
 vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>
+
+
+map <silent> <Leader>tt :FloatermToggle<CR>

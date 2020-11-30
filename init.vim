@@ -38,6 +38,7 @@ set splitright
 set updatetime=300
 set shortmess+=c
 set list lcs=tab:\|\  " indentLine
+set laststatus=2
 if has("patch-8.1.1564")
   set signcolumn=number
 else
@@ -64,7 +65,7 @@ autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 
 " reset chinese input
 let g:im_default = 'com.apple.keylayout.ABC'
-autocmd FocusGained,InsertLeave * call IM_SelectDefault()
+autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
 function! IM_SelectDefault()
   let b:saved_im = system("im-select")
   if v:shell_error
@@ -148,11 +149,19 @@ let g:bookmark_no_default_key_mappings = 1
 
 " floaterm
 let g:floaterm_autoclose = 1
+let g:floaterm_width = 0.3
+let g:floaterm_height = 0.5
+let g:floaterm_position = 'topright'
 let g:floaterm_keymap_new = '<Leader>ta'
 let g:floaterm_keymap_toggle = '<Leader>tt'
 let g:floaterm_keymap_prev   = '<Leader>tp'
 let g:floaterm_keymap_next   = '<Leader>tn'
 let g:floaterm_keymap_kill = '<Leader>tk'
+
+" vista
+let g:vista_no_mappings = 1
+let g:vista_default_executive = 'coc'
+
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
@@ -180,7 +189,7 @@ map <Leader>sb :Buffers<CR>
 map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
-nnoremap <Leader>su :FzfFunky<Cr>
+nnoremap <Leader>su :Vista finder<CR>
 
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)

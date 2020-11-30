@@ -19,6 +19,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
+Plug 'liuchengxu/vista.vim'
 
 call plug#end()
 
@@ -147,6 +148,11 @@ let g:bookmark_no_default_key_mappings = 1
 
 " floaterm
 let g:floaterm_autoclose = 1
+let g:floaterm_keymap_new = '<Leader>ta'
+let g:floaterm_keymap_toggle = '<Leader>tt'
+let g:floaterm_keymap_prev   = '<Leader>tp'
+let g:floaterm_keymap_next   = '<Leader>tn'
+let g:floaterm_keymap_kill = '<Leader>tk'
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
@@ -189,6 +195,3 @@ nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>
 
 nmap <silent> <C-y> :.w !pbcopy<CR><CR>
 vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>
-
-
-map <silent> <Leader>tt :FloatermToggle<CR>

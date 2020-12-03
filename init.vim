@@ -12,6 +12,7 @@ Plug 'Joltik/fzf-funky',{'on': 'FzfFunky'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
+Plug 'prettier/vim-prettier', {'do': 'yarn install','for': ['javascript', 'typescript'] }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
@@ -163,6 +164,10 @@ let g:vista_no_mappings = 1
 let g:vista_default_executive = 'coc'
 
 
+" vim-prettier
+let g:prettier#quickfix_enabled = 0
+
+
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
 
@@ -172,6 +177,7 @@ nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
 nmap <Leader>cf :Autoformat<CR>
+autocmd FileType javascript,typescript nmap <buffer> <Leader>cf <Plug>(Prettier)
 
 nmap <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <Leader>gp <Plug>(GitGutterPrevHunk)

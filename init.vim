@@ -21,6 +21,8 @@ Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'liuchengxu/vista.vim'
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
@@ -54,6 +56,15 @@ if (empty($TMUX))
     set termguicolors
   endif
 endif
+
+lua require'colorizer'.setup(
+      \ {'*';},
+      \ {
+      \   RGB      = true;
+      \   RRGGBB   = true;
+      \   names    = true;
+      \   RRGGBBAA = true;
+      \ })
 
 syntax on
 colorscheme gruvbox
@@ -195,7 +206,7 @@ map <Leader>sb :Buffers<CR>
 map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
-nnoremap <Leader>su :Vista finder<CR>
+nnoremap <Leader>su :FzfFunky<CR>
 
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)

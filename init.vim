@@ -20,9 +20,7 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
-Plug 'liuchengxu/vista.vim'
 Plug 'norcalli/nvim-colorizer.lua'
-Plug 'ryanoasis/vim-devicons'
 
 call plug#end()
 
@@ -169,11 +167,6 @@ let g:floaterm_keymap_toggle = '<Leader>tt'
 let g:floaterm_keymap_prev   = '<Leader>tp'
 let g:floaterm_keymap_next   = '<Leader>tn'
 let g:floaterm_keymap_kill = '<Leader>tk'
-
-" vista
-let g:vista_no_mappings = 1
-let g:vista_default_executive = 'coc'
-
 
 " vim-prettier
 let g:prettier#quickfix_enabled = 0

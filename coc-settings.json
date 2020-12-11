@@ -6,8 +6,9 @@
     "explorer.width": 30,
     "explorer.file.root.template": "[icon] [title] [root]",
     "explorer.filename.colored.enable": false,
-    "explorer.icon.enableVimDevicons":true,
-    "explorer.git.icon.status.ignored":" ",
+    "explorer.icon.enableNerdfont": true,
+    "explorer.git.icon.status.ignored": " ",
+    "explorer.file.column.indent.indentLine": false,
     "explorer.keyMappings.global": {
         "<cr>": [
             "expandable?",
@@ -32,5 +33,16 @@
         "<c-D>": "deleteForever",
         "q": "quit",
         "<esc>": "esc"
+    },
+    "explorer.icon.customIcons": {
+        "icons": {
+            "nodejs": {
+                "code": "",
+                "color": "#000000"
+            }
+        },
+        "dirnames": {
+            "node_modules": "nodejs"
+        }
     }
 }

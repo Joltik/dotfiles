@@ -28,7 +28,6 @@ call plug#end()
 " set verbosefile=vim.log
 
 let g:mapleader = "\<Space>"
-set nocompatible
 set number
 set cursorline
 set scrolloff=10
@@ -40,11 +39,7 @@ set updatetime=300
 set shortmess+=c
 set list lcs=tab:\|\  " indentLine
 set laststatus=2
-if has("patch-8.1.1564")
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set signcolumn=auto
 
 if (empty($TMUX))
   if (has("nvim"))
@@ -175,8 +170,7 @@ let g:prettier#quickfix_enabled = 0
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
 
-" Jump to anywhere you want with minimal keystrokes, with just one key binding.
-nmap <Leader>ss <Plug>(easymotion-overwin-f2)
+nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 

@@ -19,6 +19,8 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
+Plug 'voldikss/vim-floaterm'
+Plug 'norcalli/nvim-colorizer.lua'
 
 call plug#end()
 
@@ -26,7 +28,6 @@ call plug#end()
 " set verbosefile=vim.log
 
 let g:mapleader = "\<Space>"
-set nocompatible
 set number
 set cursorline
 set scrolloff=10
@@ -37,11 +38,8 @@ set splitright
 set updatetime=300
 set shortmess+=c
 set list lcs=tab:\|\  " indentLine
-if has("patch-8.1.1564")
-  set signcolumn=number
-else
-  set signcolumn=yes
-endif
+set laststatus=2
+set signcolumn=auto
 
 if (empty($TMUX))
   if (has("nvim"))
@@ -51,6 +49,15 @@ if (empty($TMUX))
     set termguicolors
   endif
 endif
+
+lua require'colorizer'.setup(
+      \ {'*';},
+      \ {
+      \   RGB      = true;
+      \   RRGGBB   = true;
+      \   names    = true;
+      \   RRGGBBAA = true;
+      \ })
 
 syntax on
 colorscheme gruvbox
@@ -63,7 +70,7 @@ autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 
 " reset chinese input
 let g:im_default = 'com.apple.keylayout.ABC'
-autocmd FocusGained,InsertLeave * call IM_SelectDefault()
+autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
 function! IM_SelectDefault()
   let b:saved_im = system("im-select")
   if v:shell_error
@@ -144,6 +151,18 @@ let g:fzf_funky_opts = [fzf_opt]
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1
 
+
+" floaterm
+let g:floaterm_autoclose = 1
+let g:floaterm_width = 0.3
+let g:floaterm_height = 0.5
+let g:floaterm_position = 'topright'
+let g:floaterm_keymap_new = '<Leader>ta'
+let g:floaterm_keymap_toggle = '<Leader>tt'
+let g:floaterm_keymap_prev   = '<Leader>tp'
+let g:floaterm_keymap_next   = '<Leader>tn'
+let g:floaterm_keymap_kill = '<Leader>tk'
+
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
 
@@ -151,13 +170,12 @@ let g:prettier#quickfix_enabled = 0
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
 
-" Jump to anywhere you want with minimal keystrokes, with just one key binding.
-nmap <Leader>ss <Plug>(easymotion-overwin-f2)
+nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
 nmap <Leader>cf :Autoformat<CR>
-autocmd FileType javascript nmap <buffer> <Leader>cf <Plug>(PrettierAsync)
+autocmd FileType javascript,typescript nmap <buffer> <Leader>cf <Plug>(Prettier)
 
 nmap <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <Leader>gp <Plug>(GitGutterPrevHunk)
@@ -175,7 +193,7 @@ map <Leader>sb :Buffers<CR>
 map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
-nnoremap <Leader>su :FzfFunky<Cr>
+nnoremap <Leader>su :FzfFunky<CR>
 
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)

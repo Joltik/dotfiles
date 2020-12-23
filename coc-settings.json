@@ -6,7 +6,7 @@
     "explorer.file.autoReveal": false,
     "explorer.width": 30,
     "explorer.contentWidthType": "win-width",
-    "explorer.file.root.template": "[icon] [root]",
+    "explorer.file.root.template": "[icon] [title] [root]",
     "explorer.file.child.template": " [indent][icon | 1] [filename omitCenter 1][modified][readonly] [link growRight 1][git]",
     "explorer.filename.colored.enable": false,
     "explorer.icon.enableNerdfont": true,
@@ -49,9 +49,12 @@
     "explorer.icon.customIcons": {
         "icons": {
             "nodejs": {
-                "code": "",
+                "code": "",
                 "color": "#000000"
             }
+        },
+        "extensions": {
+            "m":"c"
         },
         "dirnames": {
             "node_modules": "nodejs"

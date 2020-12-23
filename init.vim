@@ -21,6 +21,7 @@ Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'flazz/vim-colorschemes'
 
 call plug#end()
 

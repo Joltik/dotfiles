@@ -61,10 +61,12 @@ lua require'colorizer'.setup(
       \ })
 
 syntax on
-colorscheme gruvbox
+colorscheme colorsbox-material
 set background=dark
 
 hi Normal guibg=NONE ctermbg=NONE
+hi SignColumn guibg=NONE ctermbg=NONE
+highlight VertSplit guibg=NONE ctermbg=NONE
 
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
@@ -82,7 +84,7 @@ function! IM_SelectDefault()
 endfunction
 
 let g:lightline = {
-      \ 'colorscheme': 'gruvbox',
+      \ 'colorscheme': 'wombat',
       \ 'active': {
       \   'left': [ [ 'mode', 'paste' ],
       \             ['git', 'readonly', 'filename', 'modified' ] ],
@@ -166,6 +168,14 @@ let g:floaterm_keymap_kill = '<Leader>tk'
 
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
+
+
+" gitgutter
+let g:gitgutter_map_keys = 0
+let g:gitgutter_override_sign_column_highlight = 0
+highlight GitGutterAdd    guifg=#009900 ctermfg=2
+highlight GitGutterChange guifg=#bbbb00 ctermfg=3
+highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>

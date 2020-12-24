@@ -58,7 +58,7 @@ set background=dark
 
 hi Normal guibg=NONE
 hi SignColumn guibg=NONE
-hi VertSplit  guifg=#3e3e3e guibg=NONE
+hi VertSplit guifg=#3e3e3e guibg=NONE
 
 hi GitGutterAdd    guifg=#59C369
 hi GitGutterChange guifg=#FFF24A
@@ -116,7 +116,6 @@ let g:EasyMotion_smartcase = 1
 let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
-autocmd CursorHold * silent call CocActionAsync('highlight')
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 

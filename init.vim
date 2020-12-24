@@ -21,6 +21,7 @@ Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'flazz/vim-colorschemes'
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'kizza/actionmenu.nvim'
 
 call plug#end()
 
@@ -177,6 +178,31 @@ let g:prettier#quickfix_enabled = 0
 " gitgutter
 let g:gitgutter_map_keys = 0
 let g:gitgutter_override_sign_column_highlight = 0
+
+" vim-plug
+let g:plug_window = 'vertical rightbelow new'
+
+" actionmenu
+func! Demo()
+  let l:items = [
+        \ { 'word': 'First', 'abbr': '1st', 'user_data': 'Custom data 1' },
+        \ { 'word': 'Second', 'abbr': '2nd', 'user_data': 'Custom data 2' },
+        \ { 'word': 'Third', 'abbr': '3rd', 'user_data': 'Custom data 3' }
+        \ ]
+
+  call actionmenu#open(
+        \ l:items,
+        \ { index, item -> Callback(index, item) }
+        \ )
+endfunc
+
+func! Callback(index, item)
+  if a:index >= 0
+    echo "Custom data is ". a:item['user_data']
+  endif
+endfunc
+
+nnoremap <silent> <Leader>a :call Demo()<CR>
 
 " map
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>

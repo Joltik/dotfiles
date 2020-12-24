@@ -1,6 +1,5 @@
 call plug#begin('~/.vim/plugged')
 
-Plug 'morhetz/gruvbox'
 Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
 Plug 'Yggdroot/indentLine'
@@ -20,8 +19,8 @@ Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
-Plug 'norcalli/nvim-colorizer.lua'
 Plug 'flazz/vim-colorschemes'
+Plug 'norcalli/nvim-colorizer.lua'
 
 call plug#end()
 
@@ -41,6 +40,8 @@ set shortmess+=c
 set list lcs=tab:\|\  " indentLine
 set laststatus=2
 set signcolumn=auto
+set fillchars=vert:¦
+" set fillchars=vert:\  " vsplit line char
 
 if (empty($TMUX))
   if (has("nvim"))
@@ -51,6 +52,23 @@ if (empty($TMUX))
   endif
 endif
 
+syntax on
+colorscheme colorsbox-material
+set background=dark
+
+hi Normal guibg=NONE
+hi SignColumn guibg=NONE
+hi VertSplit  guifg=#3e3e3e guibg=NONE
+
+hi GitGutterAdd    guifg=#59C369
+hi GitGutterChange guifg=#FFF24A
+hi GitGutterDelete guifg=#E24F59
+
+let g:indentLine_color_gui = '#3e3e3e'
+
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
+
 lua require'colorizer'.setup(
       \ {'*';},
       \ {
@@ -59,17 +77,6 @@ lua require'colorizer'.setup(
       \   names    = true;
       \   RRGGBBAA = true;
       \ })
-
-syntax on
-colorscheme colorsbox-material
-set background=dark
-
-hi Normal guibg=NONE ctermbg=NONE
-hi SignColumn guibg=NONE ctermbg=NONE
-highlight VertSplit guibg=NONE ctermbg=NONE
-
-autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
-autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 
 " reset chinese input
 let g:im_default = 'com.apple.keylayout.ABC'
@@ -83,6 +90,7 @@ function! IM_SelectDefault()
   endif
 endfunction
 
+" lightline
 let g:lightline = {
       \ 'colorscheme': 'wombat',
       \ 'active': {
@@ -97,13 +105,12 @@ let g:lightline = {
       \ },
       \ }
 
+" indentLine
 let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
-
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
-
 
 " coc
 let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
@@ -131,6 +138,7 @@ let g:NERDCustomDelimiters = {
       \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
       \}
 
+" rg
 function! RipgrepFzf(query, fullscreen)
   let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
   let initial_command = printf(command_fmt, shellescape(a:query))
@@ -150,10 +158,8 @@ let g:fzf_preview_floating_window_rate = fzf_float_rate
 let g:coc_fzf_preview = 'right'
 let g:fzf_funky_opts = [fzf_opt]
 
-
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1
-
 
 " floaterm
 let g:floaterm_autoclose = 1
@@ -169,15 +175,11 @@ let g:floaterm_keymap_kill = '<Leader>tk'
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
 
-
 " gitgutter
 let g:gitgutter_map_keys = 0
 let g:gitgutter_override_sign_column_highlight = 0
-highlight GitGutterAdd    guifg=#009900 ctermfg=2
-highlight GitGutterChange guifg=#bbbb00 ctermfg=3
-highlight GitGutterDelete guifg=#ff2222 ctermfg=1
 
-
+" map
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
 

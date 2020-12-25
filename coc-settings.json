@@ -51,10 +51,19 @@
             "nodejs": {
                 "code": "",
                 "color": "#000000"
+            },
+            "apk": {
+                "code": "",
+                "color": "#59C369"
+            },
+            "ipa": {
+                "code": "",
+                "color": "#D1D5D6"
             }
         },
         "extensions": {
-            "m":"c"
+            "apk": "apk",
+            "ipa": "ipa"
         },
         "dirnames": {
             "node_modules": "nodejs"

@@ -21,7 +21,6 @@ Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'flazz/vim-colorschemes'
 Plug 'norcalli/nvim-colorizer.lua'
-Plug 'kizza/actionmenu.nvim'
 
 call plug#end()
 
@@ -29,6 +28,9 @@ call plug#end()
 " set verbosefile=vim.log
 
 let g:mapleader = "\<Space>"
+if &compatible
+  set nocompatible
+endif
 set number
 set cursorline
 set scrolloff=10
@@ -54,6 +56,7 @@ if (empty($TMUX))
 endif
 
 syntax on
+filetype plugin indent on
 colorscheme colorsbox-material
 set background=dark
 
@@ -64,6 +67,7 @@ hi VertSplit guifg=#3e3e3e guibg=NONE
 hi GitGutterAdd    guifg=#59C369
 hi GitGutterChange guifg=#FFF24A
 hi GitGutterDelete guifg=#E24F59
+hi CocExplorerOmitSymbol guifg=#D1D5D6
 
 let g:indentLine_color_gui = '#3e3e3e'
 
@@ -181,28 +185,6 @@ let g:gitgutter_override_sign_column_highlight = 0
 
 " vim-plug
 let g:plug_window = 'vertical rightbelow new'
-
-" actionmenu
-func! Demo()
-  let l:items = [
-        \ { 'word': 'First', 'abbr': '1st', 'user_data': 'Custom data 1' },
-        \ { 'word': 'Second', 'abbr': '2nd', 'user_data': 'Custom data 2' },
-        \ { 'word': 'Third', 'abbr': '3rd', 'user_data': 'Custom data 3' }
-        \ ]
-
-  call actionmenu#open(
-        \ l:items,
-        \ { index, item -> Callback(index, item) }
-        \ )
-endfunc
-
-func! Callback(index, item)
-  if a:index >= 0
-    echo "Custom data is ". a:item['user_data']
-  endif
-endfunc
-
-nnoremap <silent> <Leader>a :call Demo()<CR>
 
 " map
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>

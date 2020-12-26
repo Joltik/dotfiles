@@ -20,6 +20,11 @@ set noundofile
 " 打开自动换行
 set wrap
 
+" startify
+if (!has("nvim"))
+  set viminfo='100,n$HOME/.vim/viminfo
+endif
+
 " 打开文件时恢复上一次光标所在位置
 autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$") |

@@ -36,25 +36,25 @@ endif
 colorscheme colorsbox-material
 set background=dark
 
-hi Normal guibg=NONE
-hi SignColumn guibg=NONE
-hi VertSplit guifg=#3e3e3e guibg=NONE
+hi Normal guibg=NONE ctermbg=NONE
+hi SignColumn guibg=NONE ctermbg=NONE
+hi VertSplit guifg=#3e3e3e guibg=NONE ctermfg=239 ctermbg=NONE
 
 hi GitGutterAdd    guifg=#59C369
 hi GitGutterChange guifg=#FFF24A
 hi GitGutterDelete guifg=#E24F59
 hi CocExplorerOmitSymbol guifg=#D1D5D6
 
+let g:indentLine_color_term = 239
 let g:indentLine_color_gui = '#3e3e3e'
 
-" colorizer
-lua require'colorizer'.setup(
-      \ {'*';},
-      \ {
-      \   RGB      = true;
-      \   RRGGBB   = true;
-      \   names    = true;
-      \   RRGGBBAA = true;
-      \ })
-
-
+if (has("nvim"))
+  lua require'colorizer'.setup(
+        \ {'*';},
+        \ {
+        \   RGB      = true;
+        \   RRGGBB   = true;
+        \   names    = true;
+        \   RRGGBBAA = true;
+        \ })
+endif

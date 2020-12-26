@@ -47,6 +47,7 @@ let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
 
 " coc
+let g:coc_config_home = '$HOME/.config/nvim'
 let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
@@ -103,5 +104,3 @@ let g:gitgutter_override_sign_column_highlight = 0
 
 " vim-plug
 let g:plug_window = 'vertical rightbelow new'
-
-

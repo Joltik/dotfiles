@@ -21,6 +21,10 @@ Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'flazz/vim-colorschemes'
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'tpope/vim-surround'
+Plug 'mg979/vim-visual-multi', {'branch': 'master'}
+Plug 'jceb/vim-orgmode'
+Plug 'dylanngo95/react-native-snippet'
 
 call plug#end()
 
@@ -48,11 +52,24 @@ let g:EasyMotion_smartcase = 1
 
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
-let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview']
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                   \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" Use tab for trigger completion with characters ahead and navigate.
+" NOTE: Use command ':verbose imap <tab>' to make sure tab is not mapped by
+" other plugin before putting this into your config.
+inoremap <silent><expr> <TAB>
+                  \ pumvisible() ? "\<C-n>" :
+                  \ <SID>check_back_space() ? "\<TAB>" :
+                  \ coc#refresh()
+inoremap <expr><S-TAB> pumvisible() ? "\<C-p>" : "\<C-h>"
+
+function! s:check_back_space() abort
+      let col = col('.') - 1
+      return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
 
 function! s:show_documentation()
       if (index(['vim','help'], &filetype) >= 0)

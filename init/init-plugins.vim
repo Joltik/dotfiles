@@ -25,6 +25,7 @@ Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'jceb/vim-orgmode'
 Plug 'dylanngo95/react-native-snippet'
+Plug 'eugen0329/vim-esearch'
 
 call plug#end()
 
@@ -114,3 +115,18 @@ let g:gitgutter_override_sign_column_highlight = 0
 
 " vim-plug
 let g:plug_window = 'vertical rightbelow new'
+
+" esearch
+let g:esearch = {
+                  \ 'regex': 1,
+                  \ 'textobj': 0,
+                  \ 'case': 'smart',
+                  \ 'prefill': ['hlsearch', 'last', 'clipboard'],
+                  \ 'root_markers': ['.git', 'node_modules'],
+                  \ 'default_mappings': 0,
+                  \ 'name': '[esearch]',
+                  \ 'win_new': {esearch -> esearch#buf#goto_or_open(esearch.name, 'vnew')},
+                  \ 'win_map': [
+                  \     ['n', '<c-v>',   ':call b:esearch.open("vnew")<cr>'                              ],
+                  \  ]
+                  \ }

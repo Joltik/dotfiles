@@ -43,6 +43,7 @@ hi VertSplit guifg=#3e3e3e guibg=NONE ctermfg=239 ctermbg=NONE
 hi GitGutterAdd    guifg=#59C369
 hi GitGutterChange guifg=#FFF24A
 hi GitGutterDelete guifg=#E24F59
+hi GitGutterChangeDelete guifg=#00BFFF
 hi CocExplorerOmitSymbol guifg=#D1D5D6
 
 let g:indentLine_color_term = 239

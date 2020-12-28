@@ -3,6 +3,7 @@ let g:mapleader = "\<Space>"
 " map
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
+nmap <leader>ff <Plug>(esearch)
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)

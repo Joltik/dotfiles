@@ -58,12 +58,19 @@ autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
                   \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
-let g:coc_snippet_next = '<tab>'
+
+inoremap <silent><expr> <TAB>
+                  \ pumvisible() ? coc#_select_confirm() :
+                  \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+                  \ <SID>check_back_space() ? "\<TAB>" :
+                  \ coc#refresh()
 
 function! s:check_back_space() abort
       let col = col('.') - 1
       return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
+
+let g:coc_snippet_next = '<tab>'
 
 function! s:show_documentation()
       if (index(['vim','help'], &filetype) >= 0)
@@ -91,6 +98,17 @@ let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_ra
 let g:fzf_preview_floating_window_rate = fzf_float_rate
 let g:coc_fzf_preview = 'right'
 let g:fzf_funky_opts = [fzf_opt]
+
+" rg
+function! RipgrepFzf(query, fullscreen)
+      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+      let initial_command = printf(command_fmt, shellescape(a:query))
+      let reload_command = printf(command_fmt, '{q}')
+      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+
+command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1

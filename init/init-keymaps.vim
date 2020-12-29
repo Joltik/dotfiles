@@ -9,6 +9,7 @@ nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
+nmap <Leader>cr :CocRestart<CR>
 nmap <Leader>cf :Autoformat<CR>
 autocmd FileType javascript,typescript nmap <buffer> <Leader>cf <Plug>(Prettier)
 

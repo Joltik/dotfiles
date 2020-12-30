@@ -9,8 +9,8 @@ nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
 nmap <Leader>cr :CocRestart<CR>
-nmap <Leader>cf :Autoformat<CR>
-autocmd FileType javascript,typescript nmap <buffer> <Leader>cf <Plug>(Prettier)
+nmap <Leader>cf <Plug>(Prettier)
+autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
 
 nmap <Leader>gn <Plug>(GitGutterNextHunk)
 nmap <Leader>gp <Plug>(GitGutterPrevHunk)

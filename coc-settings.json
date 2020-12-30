@@ -23,11 +23,7 @@
     "explorer.git.icon.status.mixed": "*",
     "explorer.file.column.indent.indentLine": false,
     "explorer.keyMappings.global": {
-        "<cr>": [
-            "expandable?",
-            ["expanded?", "collapse", "expand"],
-            "open"
-        ],
+        "<cr>": ["expandable?", ["expanded?", "collapse", "expand"], "open"],
         "h": "gotoParent",
         "l": ["expandable?", "cd", "open"],
         ".": "toggleHidden",

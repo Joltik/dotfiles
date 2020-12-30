@@ -16,7 +16,7 @@ Plug 'Joltik/fzf-funky',{'on': 'FzfFunky'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
-Plug 'prettier/vim-prettier', {'do': 'yarn install','for': ['javascript', 'typescript'] }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
@@ -42,7 +42,8 @@ Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
 Plug 'tweekmonster/startuptime.vim'
 " Plug 'dense-analysis/ale'
-" Plug 'tyru/caw.vim'
+Plug 'tyru/caw.vim'
+Plug 'Shougo/context_filetype.vim'
 
 call plug#end()
 

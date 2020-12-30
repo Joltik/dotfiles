@@ -35,11 +35,14 @@ Plug 'simnalamburt/vim-mundo'
 Plug 'rhysd/committia.vim'
 Plug 'junegunn/gv.vim'
 Plug 'itchyny/vim-cursorword'
-" Plug 'pechorin/any-jump.vim'
+Plug 'pechorin/any-jump.vim'
 Plug 'justinmk/vim-gtfo'
 Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
+Plug 'tweekmonster/startuptime.vim'
+" Plug 'dense-analysis/ale'
+" Plug 'tyru/caw.vim'
 
 call plug#end()
 
@@ -169,3 +172,10 @@ let g:ctrlsf_default_root = 'cmd'
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_position = 'right'
 let g:ctrlsf_winsize = '30%'
+
+" any-jump
+let g:any_jump_disable_default_keybindings = 1
+let g:any_jump_search_prefered_engine = 'rg'
+let g:any_jump_window_width_ratio  = fzf_float_rate
+let g:any_jump_window_height_ratio = fzf_float_rate
+let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2

@@ -32,9 +32,15 @@ map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
 nnoremap <Leader>su :FzfFunky<CR>
 
+map <Leader>st :StartupTime<CR>
+
 nmap <Leader>cs <Plug>CtrlSFCwordExec
 vmap <Leader>cs <Plug>CtrlSFVwordExec
 
+nnoremap <leader>ja :AnyJump<CR>
+xnoremap <leader>ja :AnyJumpVisual<CR>
+nnoremap <leader>jb :AnyJumpBack<CR>
+nnoremap <leader>jl :AnyJumpLastResults<CR>
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)
 nmap <silent> <Leader>ji <Plug>(coc-implementation)

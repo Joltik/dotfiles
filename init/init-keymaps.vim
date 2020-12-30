@@ -20,6 +20,7 @@ nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
 nmap <Leader>gu <Plug>(GitGutterUndoHunk)
+nmap <Leader>gv :GV<CR>
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
@@ -41,6 +42,9 @@ nnoremap <silent> <Leader>sd :call <SID>show_documentation()<CR>
 nmap <Leader>ba <Plug>BookmarkToggle
 nmap <Leader>bc <Plug>BookmarkClearAll
 nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>
+
+map <Leader>rf :source %<CR>
+map <Leader>mt :MundoToggle<CR>
 
 nmap <silent> <C-y> :.w !pbcopy<CR><CR>
 vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>

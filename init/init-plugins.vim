@@ -26,6 +26,11 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'jceb/vim-orgmode'
 Plug 'dylanngo95/react-native-snippet'
 Plug 'eugen0329/vim-esearch'
+Plug 'matze/vim-move'
+Plug 'yianwillis/vimcdoc'
+Plug 'simnalamburt/vim-mundo'
+Plug 'rhysd/committia.vim'
+Plug 'junegunn/gv.vim'
 
 call plug#end()
 
@@ -148,3 +153,11 @@ let g:esearch = {
                   \     ['n', '<c-v>',   ':call b:esearch.open("vnew")<cr>'                              ],
                   \  ]
                   \ }
+
+" move
+let g:move_key_modiferi = 'C'
+
+" mundo
+let g:mundo_width = 40
+let g:mundo_preview_height = 30
+let g:mundo_right = 1

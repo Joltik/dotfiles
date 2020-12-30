@@ -1,3 +1,8 @@
+if empty(glob('~/.vim/autoload/plug.vim'))
+      silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+      autocmd VimEnter * PlugInstall | source $MYVIMRC
+endif
+
 call plug#begin('~/.vim/plugged')
 
 Plug 'sheerun/vim-polyglot'
@@ -31,6 +36,7 @@ Plug 'yianwillis/vimcdoc'
 Plug 'simnalamburt/vim-mundo'
 Plug 'rhysd/committia.vim'
 Plug 'junegunn/gv.vim'
+Plug 'itchyny/vim-cursorword'
 
 call plug#end()
 
@@ -155,7 +161,7 @@ let g:esearch = {
                   \ }
 
 " move
-let g:move_key_modiferi = 'C'
+let g:move_key_modifier = 'C'
 
 " mundo
 let g:mundo_width = 40

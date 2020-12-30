@@ -3,7 +3,6 @@ let g:mapleader = "\<Space>"
 " map
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :CocConfig<CR>
-nmap <leader>ff <Plug>(esearch)
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)
@@ -21,6 +20,7 @@ nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
 nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 nmap <Leader>gv :GV<CR>
+nmap <Leader>gm <Plug>(git-messenger)
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
@@ -31,6 +31,9 @@ map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
 nnoremap <Leader>su :FzfFunky<CR>
+
+nmap <Leader>cs <Plug>CtrlSFCwordExec
+vmap <Leader>cs <Plug>CtrlSFVwordExec
 
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)

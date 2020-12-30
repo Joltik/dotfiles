@@ -25,18 +25,21 @@ Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'voldikss/vim-floaterm'
 Plug 'flazz/vim-colorschemes'
-Plug 'norcalli/nvim-colorizer.lua'
 Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'jceb/vim-orgmode'
 Plug 'dylanngo95/react-native-snippet'
-Plug 'eugen0329/vim-esearch'
 Plug 'matze/vim-move'
 Plug 'yianwillis/vimcdoc'
 Plug 'simnalamburt/vim-mundo'
 Plug 'rhysd/committia.vim'
 Plug 'junegunn/gv.vim'
 Plug 'itchyny/vim-cursorword'
+" Plug 'pechorin/any-jump.vim'
+Plug 'justinmk/vim-gtfo'
+Plug 'rhysd/git-messenger.vim'
+Plug 'lilydjwg/colorizer'
+Plug 'dyng/ctrlsf.vim'
 
 call plug#end()
 
@@ -145,21 +148,6 @@ let g:gitgutter_override_sign_column_highlight = 0
 " vim-plug
 let g:plug_window = 'vertical rightbelow new'
 
-" esearch
-let g:esearch = {
-                  \ 'regex': 1,
-                  \ 'textobj': 0,
-                  \ 'case': 'smart',
-                  \ 'prefill': ['hlsearch', 'last', 'clipboard'],
-                  \ 'root_markers': ['.git', 'node_modules'],
-                  \ 'default_mappings': 0,
-                  \ 'name': '[esearch]',
-                  \ 'win_new': {esearch -> esearch#buf#goto_or_open(esearch.name, 'vnew')},
-                  \ 'win_map': [
-                  \     ['n', '<c-v>',   ':call b:esearch.open("vnew")<cr>'                              ],
-                  \  ]
-                  \ }
-
 " move
 let g:move_key_modifier = 'C'
 
@@ -167,3 +155,17 @@ let g:move_key_modifier = 'C'
 let g:mundo_width = 40
 let g:mundo_preview_height = 30
 let g:mundo_right = 1
+
+" git-messenger
+let g:git_messenger_no_default_mappings = 1
+let g:git_messenger_include_diff = 'current'
+let g:git_messenger_into_popup_after_show = 0
+
+" ctrlsf
+let g:ctrlsf_auto_focus = {
+                  \ "at": "start"
+                  \ }
+let g:ctrlsf_default_root = 'cmd'
+let g:ctrlsf_search_mode = 'async'
+let g:ctrlsf_position = 'right'
+let g:ctrlsf_winsize = '30%'

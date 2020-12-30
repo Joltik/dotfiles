@@ -41,7 +41,7 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
 Plug 'tweekmonster/startuptime.vim'
-" Plug 'dense-analysis/ale'
+Plug 'dense-analysis/ale'
 Plug 'tyru/caw.vim'
 Plug 'Shougo/context_filetype.vim'
 
@@ -180,3 +180,6 @@ let g:any_jump_search_prefered_engine = 'rg'
 let g:any_jump_window_width_ratio  = fzf_float_rate
 let g:any_jump_window_height_ratio = fzf_float_rate
 let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2
+
+" ale
+let g:ale_disable_lsp = 1

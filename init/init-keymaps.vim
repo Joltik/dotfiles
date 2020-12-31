@@ -12,8 +12,8 @@ nmap <Leader>cr :CocRestart<CR>
 nmap <Leader>cf <Plug>(Prettier)
 autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
 
-nmap <Leader>gn <Plug>(GitGutterNextHunk)
-nmap <Leader>gp <Plug>(GitGutterPrevHunk)
+nmap <Leader>gn <Plug>(coc-git-nextchunk)
+nmap <Leader>gp <Plug>(coc-git-prevchunk)
 nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>

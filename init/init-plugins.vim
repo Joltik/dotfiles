@@ -21,7 +21,7 @@ Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
+" Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'flazz/vim-colorschemes'
@@ -52,9 +52,14 @@ let g:lightline = {
 			\   ],
 			\ },
 			\ 'component_function': {
-			\   'git': 'fugitive#head',
+			\   'git': 'LightlineGitStatus',
 			\ },
 			\ }
+
+function! LightlineGitStatus() abort
+	let status = get(g:, 'coc_git_status', '')
+	return winwidth(0) > 120 ? status : ''
+endfunction
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0
@@ -62,7 +67,7 @@ let g:EasyMotion_smartcase = 1
 
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
-let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets']
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets', 'coc-git']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif

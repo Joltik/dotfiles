@@ -34,14 +34,12 @@ Plug 'yianwillis/vimcdoc'
 Plug 'simnalamburt/vim-mundo'
 Plug 'rhysd/committia.vim'
 Plug 'junegunn/gv.vim'
-Plug 'itchyny/vim-cursorword'
 Plug 'pechorin/any-jump.vim'
 Plug 'justinmk/vim-gtfo'
 Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
 Plug 'tweekmonster/startuptime.vim'
-" Plug 'dense-analysis/ale'
 Plug 'tyru/caw.vim'
 Plug 'Shougo/context_filetype.vim'
 
@@ -73,6 +71,7 @@ let g:EasyMotion_smartcase = 1
 let g:coc_config_home = '$HOME/.config/nvim'
 let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
+autocmd CursorHold * silent call CocActionAsync('highlight')
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
       \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"

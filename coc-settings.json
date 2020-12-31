@@ -1,7 +1,6 @@
 {
     "suggest.noselect": false,
     "suggest.minTriggerInputLength": 2,
-    "diagnostic.displayByAle":true,
     "coc.preferences.jumpCommand": "drop",
     "tsserver.implicitProjectConfig.experimentalDecorators": true,
     "explorer.keyMappingMode": "none",

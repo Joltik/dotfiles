@@ -48,6 +48,9 @@ nmap <silent> <Leader>jr <Plug>(coc-references)
 nmap <silent> <leader>rn <Plug>(coc-rename)
 nnoremap <silent> <Leader>sd :call <SID>show_documentation()<CR>
 
+nmap <silent> [g <Plug>(coc-diagnostic-prev)
+nmap <silent> ]g <Plug>(coc-diagnostic-next)
+
 nmap <Leader>ba <Plug>BookmarkToggle
 nmap <Leader>bc <Plug>BookmarkClearAll
 nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>

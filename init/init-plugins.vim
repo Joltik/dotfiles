@@ -114,6 +114,7 @@ let $FZF_DEFAULT_OPTS = fzf_opt
 let g:fzf_layout = { 'window': { 'width': fzf_float_rate, 'height': fzf_float_rate } }
 let g:fzf_preview_floating_window_rate = fzf_float_rate
 let g:coc_fzf_preview = 'right'
+let g:coc_fzf_opts = [fzf_opt]
 let g:fzf_funky_opts = [fzf_opt]
 
 " rg
@@ -179,6 +180,3 @@ let g:any_jump_search_prefered_engine = 'rg'
 let g:any_jump_window_width_ratio  = fzf_float_rate
 let g:any_jump_window_height_ratio = fzf_float_rate
 let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2
-
-" ale
-" let g:ale_disable_lsp = 1

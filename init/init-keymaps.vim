@@ -48,12 +48,13 @@ nmap <silent> <Leader>jr <Plug>(coc-references)
 nmap <silent> <leader>rn <Plug>(coc-rename)
 nnoremap <silent> <Leader>sd :call <SID>show_documentation()<CR>
 
-nmap <silent> [g <Plug>(coc-diagnostic-prev)
-nmap <silent> ]g <Plug>(coc-diagnostic-next)
-
 nmap <Leader>ba <Plug>BookmarkToggle
 nmap <Leader>bc <Plug>BookmarkClearAll
 nmap <Leader>bl :CocCommand fzf-preview.Bookmarks<CR>
+
+nnoremap <silent> <Leader>dl :<C-u>CocFzfList diagnostics --current-buf<CR>
+nmap <silent> <Leader>dp <Plug>(coc-diagnostic-prev)
+nmap <silent> <Leader>dn <Plug>(coc-diagnostic-next)
 
 map <Leader>rf :source %<CR>
 map <Leader>mt :MundoToggle<CR>

@@ -39,7 +39,7 @@ set background=dark
 
 hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
-hi VertSplit guifg=#3e3e3e guibg=NONE ctermfg=239 ctermbg=NONE
+hi VertSplit guifg=#455a64 guibg=NONE ctermfg=239 ctermbg=NONE
 hi CocHighlightText guibg=#e57373 guifg=#eceff1 ctermbg=167 ctermfg=229
 
 hi link GitGutterAdd colorsboxGreen
@@ -51,4 +51,4 @@ hi link CocHighlightRead CocHighlightText
 hi link CocHighlightWrite CocHighlightText
 
 let g:indentLine_color_term = 239
-let g:indentLine_color_gui = '#3e3e3e'
+let g:indentLine_color_gui = '#455a64'

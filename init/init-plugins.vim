@@ -1,6 +1,6 @@
 if empty(glob('~/.vim/autoload/plug.vim'))
-      silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-      autocmd VimEnter * PlugInstall | source $MYVIMRC
+  silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
+  autocmd VimEnter * PlugInstall | source $MYVIMRC
 endif
 
 call plug#begin('~/.vim/plugged')
@@ -41,7 +41,7 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
 Plug 'tweekmonster/startuptime.vim'
-Plug 'dense-analysis/ale'
+" Plug 'dense-analysis/ale'
 Plug 'tyru/caw.vim'
 Plug 'Shougo/context_filetype.vim'
 
@@ -49,18 +49,18 @@ call plug#end()
 
 " lightline
 let g:lightline = {
-                  \ 'colorscheme': 'wombat',
-                  \ 'active': {
-                  \   'left': [ [ 'mode', 'paste' ],
-                  \             ['git', 'readonly', 'filename', 'modified' ] ],
-                  \   'right':[
-                  \     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
-                  \   ],
-                  \ },
-                  \ 'component_function': {
-                  \   'git': 'fugitive#head',
-                  \ },
-                  \ }
+      \ 'colorscheme': 'wombat',
+      \ 'active': {
+      \   'left': [ [ 'mode', 'paste' ],
+      \             ['git', 'readonly', 'filename', 'modified' ] ],
+      \   'right':[
+      \     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
+      \   ],
+      \ },
+      \ 'component_function': {
+      \   'git': 'fugitive#head',
+      \ },
+      \ }
 
 " indentLine
 let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
@@ -75,29 +75,29 @@ let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-                  \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 inoremap <silent><expr> <TAB>
-                  \ pumvisible() ? coc#_select_confirm() :
-                  \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-                  \ <SID>check_back_space() ? "\<TAB>" :
-                  \ coc#refresh()
+      \ pumvisible() ? coc#_select_confirm() :
+      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+      \ <SID>check_back_space() ? "\<TAB>" :
+      \ coc#refresh()
 
 function! s:check_back_space() abort
-      let col = col('.') - 1
-      return !col || getline('.')[col - 1]  =~# '\s'
+  let col = col('.') - 1
+  return !col || getline('.')[col - 1]  =~# '\s'
 endfunction
 
 let g:coc_snippet_next = '<tab>'
 
 function! s:show_documentation()
-      if (index(['vim','help'], &filetype) >= 0)
-            execute 'h '.expand('<cword>')
-      elseif (coc#rpc#ready())
-            call CocActionAsync('doHover')
-      else
-            execute '!' . &keywordprg . " " . expand('<cword>')
-      endif
+  if (index(['vim','help'], &filetype) >= 0)
+    execute 'h '.expand('<cword>')
+  elseif (coc#rpc#ready())
+    call CocActionAsync('doHover')
+  else
+    execute '!' . &keywordprg . " " . expand('<cword>')
+  endif
 endfunction
 
 " nerdcommenter
@@ -105,8 +105,8 @@ let g:NERDCreateDefaultMappings = 0
 let g:NERDSpaceDelims = 1
 let g:NERDTrimTrailingWhitespace = 1
 let g:NERDCustomDelimiters = {
-                  \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
-                  \}
+      \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
+      \}
 
 " fzf
 let fzf_float_rate = 0.6
@@ -119,11 +119,11 @@ let g:fzf_funky_opts = [fzf_opt]
 
 " rg
 function! RipgrepFzf(query, fullscreen)
-      let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
-      let initial_command = printf(command_fmt, shellescape(a:query))
-      let reload_command = printf(command_fmt, '{q}')
-      let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
-      call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
 endfunction
 
 command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
@@ -167,8 +167,8 @@ let g:git_messenger_into_popup_after_show = 0
 
 " ctrlsf
 let g:ctrlsf_auto_focus = {
-                  \ "at": "start"
-                  \ }
+      \ "at": "start"
+      \ }
 let g:ctrlsf_default_root = 'cmd'
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_position = 'right'
@@ -182,4 +182,4 @@ let g:any_jump_window_height_ratio = fzf_float_rate
 let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2
 
 " ale
-let g:ale_disable_lsp = 1
+" let g:ale_disable_lsp = 1

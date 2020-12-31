@@ -61,3 +61,14 @@ map <Leader>mt :MundoToggle<CR>
 
 nmap <silent> <C-y> :.w !pbcopy<CR><CR>
 vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>
+
+
+
+
+" 检测函数（检测光标位置处文字的样式名）
+function! <SID>SynStack()
+	echo map(synstack(line('.'),col('.')),'synIDattr(v:val, "name")')
+endfunc
+
+" 绑定检测键位（按键后样式名信息会输出在指令栏的位置）
+nnoremap <leader>yi :call <SID>SynStack()<CR>

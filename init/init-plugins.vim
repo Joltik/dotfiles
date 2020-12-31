@@ -62,6 +62,7 @@ let g:lightline = {
 
 " indentLine
 let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
+let g:indentLine_showFirstIndentLevel = 1
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0

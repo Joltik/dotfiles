@@ -23,25 +23,23 @@ Plug 'tpope/vim-fugitive'
 Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
-Plug 'voldikss/vim-floaterm'
 Plug 'flazz/vim-colorschemes'
 Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
-Plug 'jceb/vim-orgmode'
 Plug 'dylanngo95/react-native-snippet'
 Plug 'matze/vim-move'
-Plug 'yianwillis/vimcdoc'
 Plug 'simnalamburt/vim-mundo'
-Plug 'rhysd/committia.vim'
 Plug 'junegunn/gv.vim'
 Plug 'pechorin/any-jump.vim'
 Plug 'justinmk/vim-gtfo'
 Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
 Plug 'dyng/ctrlsf.vim'
-Plug 'tweekmonster/startuptime.vim'
-Plug 'tyru/caw.vim'
-Plug 'Shougo/context_filetype.vim'
+Plug 'voldikss/vim-floaterm'
+" Plug 'yianwillis/vimcdoc'
+" Plug 'vimwiki/vimwiki'
+" Plug 'tweekmonster/startuptime.vim'
+" Plug 'Shougo/context_filetype.vim'
 
 call plug#end()
 
@@ -62,7 +60,7 @@ let g:lightline = {
 
 " indentLine
 let g:indentLine_fileTypeExclude = ['coc-explorer', 'startify']
-let g:indentLine_showFirstIndentLevel = 1
+" let g:indentLine_showFirstIndentLevel = 1
 
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0
@@ -181,3 +179,6 @@ let g:any_jump_search_prefered_engine = 'rg'
 let g:any_jump_window_width_ratio  = fzf_float_rate
 let g:any_jump_window_height_ratio = fzf_float_rate
 let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2
+
+" vim-rooter
+autocmd VimEnter * RooterToggle

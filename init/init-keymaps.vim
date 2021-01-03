@@ -14,11 +14,11 @@ autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
 
 nmap <Leader>gn <Plug>(coc-git-nextchunk)
 nmap <Leader>gp <Plug>(coc-git-prevchunk)
-nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
+nmap <Leader>gi <Plug>(coc-git-chunkinfo)
 nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
-nmap <Leader>gu <Plug>(GitGutterUndoHunk)
+nmap <Leader>gu :CocCommand git.chunkUndo<CR>
 nmap <Leader>gv :GV<CR>
 nmap <Leader>gm <Plug>(git-messenger)
 

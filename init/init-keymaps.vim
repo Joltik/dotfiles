@@ -19,7 +19,6 @@ nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
 nmap <Leader>gu :CocCommand git.chunkUndo<CR>
-nmap <Leader>gv :GV<CR>
 nmap <Leader>gm <Plug>(git-messenger)
 
 map <Leader>cc <plug>NERDCommenterToggle
@@ -27,20 +26,17 @@ map <Leader>cm <plug>NERDCommenterMinimal
 
 map <Leader>sf :Files<CR>
 map <Leader>sb :Buffers<CR>
-map <Leader>sw :Rg<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
 nnoremap <Leader>su :FzfFunky<CR>
+nnoremap <silent> <Leader>sw :Rg <C-R><C-W><CR>
+xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>
 
 map <Leader>st :StartupTime<CR>
 
 nmap <Leader>cs <Plug>CtrlSFCwordExec
 vmap <Leader>cs <Plug>CtrlSFVwordExec
 
-nnoremap <leader>ja :AnyJump<CR>
-xnoremap <leader>ja :AnyJumpVisual<CR>
-nnoremap <leader>jb :AnyJumpBack<CR>
-nnoremap <leader>jl :AnyJumpLastResults<CR>
 nmap <silent> <Leader>jd <Plug>(coc-definition)
 nmap <silent> <Leader>jy <Plug>(coc-type-definition)
 nmap <silent> <Leader>ji <Plug>(coc-implementation)

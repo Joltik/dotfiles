@@ -21,7 +21,6 @@ Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
-" Plug 'airblade/vim-gitgutter'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
 Plug 'flazz/vim-colorschemes'
@@ -30,8 +29,6 @@ Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'dylanngo95/react-native-snippet'
 Plug 'matze/vim-move'
 Plug 'simnalamburt/vim-mundo'
-Plug 'junegunn/gv.vim'
-Plug 'pechorin/any-jump.vim'
 Plug 'justinmk/vim-gtfo'
 Plug 'rhysd/git-messenger.vim'
 Plug 'lilydjwg/colorizer'
@@ -172,13 +169,6 @@ let g:ctrlsf_default_root = 'cmd'
 let g:ctrlsf_search_mode = 'async'
 let g:ctrlsf_position = 'right'
 let g:ctrlsf_winsize = '30%'
-
-" any-jump
-let g:any_jump_disable_default_keybindings = 1
-let g:any_jump_search_prefered_engine = 'rg'
-let g:any_jump_window_width_ratio  = fzf_float_rate
-let g:any_jump_window_height_ratio = fzf_float_rate
-let g:any_jump_window_top_offset   = winheight('%')*(1-fzf_float_rate)/2
 
 " vim-rooter
 autocmd VimEnter * RooterToggle

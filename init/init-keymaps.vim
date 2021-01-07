@@ -23,6 +23,7 @@ nmap <Leader>gm <Plug>(git-messenger)
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
+map <Leader>cd :RooterToggle<CR>
 
 map <Leader>sf :Files<CR>
 map <Leader>sb :Buffers<CR>

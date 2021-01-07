@@ -34,6 +34,7 @@ Plug 'rhysd/git-messenger.vim'
 Plug 'dyng/ctrlsf.vim'
 Plug 'voldikss/vim-floaterm'
 Plug 'tweekmonster/startuptime.vim'
+Plug 'bronson/vim-visual-star-search'
 
 call plug#end()
 

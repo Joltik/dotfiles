@@ -28,12 +28,8 @@ Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'dylanngo95/react-native-snippet'
 Plug 'matze/vim-move'
-Plug 'simnalamburt/vim-mundo'
 Plug 'justinmk/vim-gtfo'
-Plug 'rhysd/git-messenger.vim'
 Plug 'dyng/ctrlsf.vim'
-Plug 'voldikss/vim-floaterm'
-Plug 'tweekmonster/startuptime.vim'
 Plug 'bronson/vim-visual-star-search'
 
 call plug#end()
@@ -127,17 +123,6 @@ command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 " vim-bookmarks
 let g:bookmark_no_default_key_mappings = 1
 
-" floaterm
-let g:floaterm_autoclose = 1
-let g:floaterm_width = 0.3
-let g:floaterm_height = 0.5
-let g:floaterm_position = 'topright'
-let g:floaterm_keymap_new = '<Leader>ta'
-let g:floaterm_keymap_toggle = '<Leader>tt'
-let g:floaterm_keymap_prev   = '<Leader>tp'
-let g:floaterm_keymap_next   = '<Leader>tn'
-let g:floaterm_keymap_kill = '<Leader>tk'
-
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
 
@@ -150,16 +135,6 @@ let g:plug_window = 'vertical rightbelow new'
 
 " move
 let g:move_key_modifier = 'C'
-
-" mundo
-let g:mundo_width = 40
-let g:mundo_preview_height = 30
-let g:mundo_right = 1
-
-" git-messenger
-let g:git_messenger_no_default_mappings = 1
-let g:git_messenger_include_diff = 'current'
-let g:git_messenger_into_popup_after_show = 0
 
 " ctrlsf
 let g:ctrlsf_auto_focus = {

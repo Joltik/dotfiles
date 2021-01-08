@@ -8,7 +8,8 @@ nmap <Leader>ss <Plug>(easymotion-s2)
 nmap <Leader>w <Plug>(choosewin)
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 
-nmap <Leader>cr :CocRestart<CR>
+nmap <Leader>sr :CocRestart<CR>
+
 nmap <Leader>cf <Plug>(Prettier)
 autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
 
@@ -19,7 +20,6 @@ nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
 nmap <Leader>gu :CocCommand git.chunkUndo<CR>
-nmap <Leader>gm <Plug>(git-messenger)
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
@@ -30,10 +30,9 @@ map <Leader>sb :Buffers<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
 nnoremap <Leader>su :FzfFunky<CR>
-nnoremap <silent> <Leader>sw :Rg <C-R><C-W><CR>
+nnoremap <silent> <Leader>sw :Rg<CR>
+" nnoremap <silent> <Leader>sw :Rg <C-R><C-W><CR>
 xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>
-
-map <Leader>st :StartupTime<CR>
 
 nmap <Leader>cs <Plug>CtrlSFCwordExec
 vmap <Leader>cs <Plug>CtrlSFVwordExec
@@ -53,19 +52,5 @@ nnoremap <silent> <Leader>dl :<C-u>CocFzfList diagnostics --current-buf<CR>
 nmap <silent> <Leader>dp <Plug>(coc-diagnostic-prev)
 nmap <silent> <Leader>dn <Plug>(coc-diagnostic-next)
 
-map <Leader>rf :source %<CR>
-map <Leader>mt :MundoToggle<CR>
-
 nmap <silent> <C-y> :.w !pbcopy<CR><CR>
 vnoremap <silent> <C-y> :<CR>:let @a=@" \| execute "normal! vgvy" \| let res=system("pbcopy", @") \| let @"=@a<CR>
-
-
-
-
-" 检测函数（检测光标位置处文字的样式名）
-function! <SID>SynStack()
-	echo map(synstack(line('.'),col('.')),'synIDattr(v:val, "name")')
-endfunc
-
-" 绑定检测键位（按键后样式名信息会输出在指令栏的位置）
-nnoremap <leader>yi :call <SID>SynStack()<CR>

@@ -13,7 +13,6 @@ Plug 'easymotion/vim-easymotion'
 Plug 't9md/vim-choosewin'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
-Plug 'Joltik/fzf-funky',{'on': 'FzfFunky'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'antoinemadec/coc-fzf'
 Plug 'chiel92/vim-autoformat'
@@ -23,7 +22,6 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
-Plug 'flazz/vim-colorschemes'
 Plug 'tpope/vim-surround'
 Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'dylanngo95/react-native-snippet'
@@ -31,6 +29,8 @@ Plug 'matze/vim-move'
 Plug 'justinmk/vim-gtfo'
 Plug 'dyng/ctrlsf.vim'
 Plug 'bronson/vim-visual-star-search'
+Plug 'liuchengxu/vista.vim'
+Plug 'mkarmona/colorsbox'
 
 call plug#end()
 
@@ -108,6 +108,7 @@ let g:fzf_preview_floating_window_rate = fzf_float_rate
 let g:coc_fzf_preview = 'right'
 let g:coc_fzf_opts = [fzf_opt]
 let g:fzf_funky_opts = [fzf_opt]
+let g:vista_fzf_preview = ['right:50%']
 
 " rg
 function! RipgrepFzf(query, fullscreen)
@@ -147,3 +148,6 @@ let g:ctrlsf_winsize = '30%'
 
 " vim-rooter
 autocmd VimEnter * RooterToggle
+
+" vista
+let g:vista_default_executive = 'coc'

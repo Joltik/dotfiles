@@ -29,7 +29,7 @@ map <Leader>sf :Files<CR>
 map <Leader>sb :Buffers<CR>
 map <Leader>sh :History<CR>
 map <Leader>sc :History:<CR>
-nnoremap <Leader>su :FzfFunky<CR>
+nnoremap <Leader>su :Vista finder<CR>
 nnoremap <silent> <Leader>sw :Rg<CR>
 " nnoremap <silent> <Leader>sw :Rg <C-R><C-W><CR>
 xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>

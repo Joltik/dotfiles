@@ -1,8 +1,3 @@
-if empty(glob('~/.vim/autoload/plug.vim'))
-	silent execute "!curl -fLo ~/.vim/autoload/plug.vim --create-dirs https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim"
-	autocmd VimEnter * PlugInstall | source $MYVIMRC
-endif
-
 call plug#begin('~/.vim/plugged')
 
 Plug 'yuezk/vim-js'
@@ -31,6 +26,7 @@ Plug 'dyng/ctrlsf.vim'
 Plug 'bronson/vim-visual-star-search'
 Plug 'liuchengxu/vista.vim'
 Plug 'mkarmona/colorsbox'
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
@@ -39,13 +35,13 @@ let g:lightline = {
 			\ 'colorscheme': 'wombat',
 			\ 'active': {
 			\   'left': [ [ 'mode', 'paste' ],
-			\             ['git', 'readonly', 'filename', 'modified' ] ],
+			\             ['gitbranch', 'readonly', 'filename', 'modified' ] ],
 			\   'right':[
 			\     [ 'filetype', 'fileencoding', 'lineinfo', 'percent' ],
 			\   ],
 			\ },
 			\ 'component_function': {
-			\   'git': 'LightlineGitStatus',
+			\   'gitbranch': 'FugitiveHead'
 			\ },
 			\ }
 
@@ -60,10 +56,9 @@ let g:EasyMotion_smartcase = 1
 
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
-let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets', 'coc-git']
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-fzf-preview', 'coc-snippets']
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 autocmd CursorHold * silent call CocActionAsync('highlight')
-autocmd CursorHold * :CocCommand git.refresh
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"

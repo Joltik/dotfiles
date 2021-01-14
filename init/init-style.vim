@@ -33,7 +33,7 @@ if (empty($TMUX))
   endif
 endif
 
-colorscheme colorsbox-material
+colorscheme vim-monokai-tasty
 set background=dark
 
 

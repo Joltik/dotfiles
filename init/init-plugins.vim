@@ -1,8 +1,6 @@
 call plug#begin('~/.vim/plugged')
 
-Plug 'yuezk/vim-js'
-Plug 'HerringtonDarkholme/yats.vim'
-Plug 'maxmellon/vim-jsx-pretty'
+Plug 'sheerun/vim-polyglot'
 Plug 'itchyny/lightline.vim'
 Plug 'easymotion/vim-easymotion'
 Plug 't9md/vim-choosewin'
@@ -17,16 +15,15 @@ Plug 'MattesGroeger/vim-bookmarks'
 Plug 'tpope/vim-fugitive'
 Plug 'mhinz/vim-startify'
 Plug 'airblade/vim-rooter'
-Plug 'tpope/vim-surround'
-Plug 'mg979/vim-visual-multi', {'branch': 'master'}
 Plug 'dylanngo95/react-native-snippet'
-Plug 'matze/vim-move'
 Plug 'justinmk/vim-gtfo'
 Plug 'dyng/ctrlsf.vim'
 Plug 'bronson/vim-visual-star-search'
 Plug 'liuchengxu/vista.vim'
 Plug 'mkarmona/colorsbox'
 Plug 'airblade/vim-gitgutter'
+Plug 'patstockwell/vim-monokai-tasty'
+Plug 'yianwillis/vimcdoc'
 
 call plug#end()
 

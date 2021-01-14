@@ -1,28 +1,60 @@
-" copy from https://github.com/skywind3000/vim-init/blob/master/init.vim
+call plug#begin('~/.vim/plugged')
 
-" 防止重复加载
-if get(s:, 'loaded', 0) != 0
-  finish
-else
-  let s:loaded = 1
-endif
+Plug 'patstockwell/vim-monokai-tasty'
+Plug 'yianwillis/vimcdoc'
+Plug 't9md/vim-choosewin'
 
-" 取得本文件所在的目录
-let s:home = fnamemodify(resolve(expand('<sfile>:p')), ':h')
+call plug#end()
 
-" 定义一个命令用来加载文件
-command! -nargs=1 LoadScript exec 'so '.s:home.'/'.'<args>'
+set hlsearch
+set scrolloff=5
 
-" 将 vim-init 目录加入 runtimepath
-exec 'set rtp+='.s:home
+set expandtab
+set shiftwidth=2
+set tabstop=2
+set shortmess+=c
 
-" 将 ~/.vim 目录加入 runtimepath (有时候 vim 不会自动帮你加入）
-set rtp+=~/.vim
+" style
+set laststatus=2
+set number
+set cursorline
+set signcolumn=number
+set splitright
+set fillchars=vert:¦
+
+colorscheme vim-monokai-tasty
+
+hi Normal guibg=NONE ctermbg=NONE
+hi SignColumn guibg=NONE ctermbg=NONE
+hi VertSplit guibg=NONE ctermbg=NONE
+
+" autocmd
+autocmd InsertLeave,WinEnter * set cursorline
+autocmd InsertEnter,WinLeave * set nocursorline
+autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
+autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
+autocmd BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \  exe "normal! g`\"" |
+      \ endif
+autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
+
+" function
+let g:im_default = 'com.apple.keylayout.ABC'
+function! IM_SelectDefault()
+  let b:saved_im = system("im-select")
+  if v:shell_error
+    unlet b:saved_im
+  else
+    let l:a = system("im-select " . g:im_default)
+  endif
+endfunction
 
 
-LoadScript init/init-basic.vim
-LoadScript init/init-config.vim
-LoadScript init/init-tabsize.vim
-LoadScript init/init-plugins.vim
-LoadScript init/init-style.vim
-LoadScript init/init-keymaps.vim
+" keymaps
+let g:mapleader = "\<Space>"
+
+nmap <Leader>w <Plug>(choosewin)
+
+nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
+nnoremap <silent> <leader>fc :vne<CR>:CocConfig<CR>

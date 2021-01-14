@@ -13,13 +13,13 @@ nmap <Leader>sr :CocRestart<CR>
 nmap <Leader>cf <Plug>(Prettier)
 autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
 
-nmap <Leader>gn <Plug>(coc-git-nextchunk)
-nmap <Leader>gp <Plug>(coc-git-prevchunk)
-nmap <Leader>gi <Plug>(coc-git-chunkinfo)
+nmap <Leader>gn <Plug>(GitGutterNextHunk)
+nmap <Leader>gp <Plug>(GitGutterPrevHunk)
+nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gs :GFiles?<CR>
 nmap <Leader>gd :vert Git diff<CR>
 nmap <Leader>gf :Gvdiffsplit<CR>
-nmap <Leader>gu :CocCommand git.chunkUndo<CR>
+nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal

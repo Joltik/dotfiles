@@ -1,6 +1,5 @@
 {
 	"suggest.noselect": false,
-	"suggest.minTriggerInputLength": 2,
 	"coc.preferences.jumpCommand": "drop",
 	"tsserver.implicitProjectConfig.experimentalDecorators": true,
 	"explorer.keyMappingMode": "none",
@@ -8,7 +7,7 @@
 	"explorer.width": 30,
 	"explorer.contentWidthType": "win-width",
 	"explorer.file.root.template": "[icon] [title] [root]",
-	"explorer.file.child.template": " [indent][icon | 1] [filename omitCenter 1][modified][readonly] [link growRight 1][git]",
+	"explorer.file.child.template": " [indent][icon | 1] [filename omitCenter 1][modified][readonly] [link growRight 1][git] ",
 	"explorer.filename.colored.enable": false,
 	"explorer.icon.enableNerdfont": true,
 	"explorer.git.icon.status.ignored": " ",
@@ -39,7 +38,6 @@
 		"<c-x>": "cutFile",
 		"<c-p>": "pasteFile",
 		"<c-d>": "delete",
-		"<c-D>": "deleteForever",
 		"q": "quit",
 		"<esc>": "esc"
 	},

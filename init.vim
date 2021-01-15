@@ -23,7 +23,7 @@ call plug#end()
 set hlsearch
 set incsearch
 set scrolloff=5
-set updatetime=200
+set updatetime=300
 set shortmess+=c
 set nobackup
 set nowritebackup

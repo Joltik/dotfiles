@@ -2,31 +2,35 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'yianwillis/vimcdoc'
 Plug 'patstockwell/vim-monokai-tasty'
-Plug 'sheerun/vim-polyglot'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
-Plug 'chiel92/vim-autoformat'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'scrooloose/nerdcommenter'
+Plug 'sheerun/vim-polyglot', { 'on': [] }
+Plug 'neoclide/coc.nvim', {'branch': 'release', 'on': []}
+Plug 'chiel92/vim-autoformat', { 'on': [] }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'on': [] }
+Plug 'scrooloose/nerdcommenter', { 'on': [] }
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim'
-Plug 'easymotion/vim-easymotion'
-Plug 'tpope/vim-fugitive'
-Plug 'airblade/vim-gitgutter'
-Plug 'itchyny/lightline.vim'
+Plug 'junegunn/fzf.vim', { 'on': [] }
+Plug 'easymotion/vim-easymotion', { 'on': [] }
+Plug 'tpope/vim-fugitive', { 'on': [] }
+Plug 'airblade/vim-gitgutter', { 'on': [] }
+Plug 'itchyny/lightline.vim', { 'on': [] }
 Plug 't9md/vim-choosewin'
 Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
+Plug 'tweekmonster/startuptime.vim'
 
 call plug#end()
 
 set hlsearch
 set incsearch
 set scrolloff=5
+set updatetime=200
+set shortmess+=c
+set nobackup
+set nowritebackup
 
 set expandtab
 set shiftwidth=2
 set tabstop=2
-set shortmess+=c
 
 " style
 set laststatus=2
@@ -45,6 +49,7 @@ hi VertSplit guibg=NONE ctermbg=NONE
 
 " plug setting
 let g:plug_window = 'vertical rightbelow new'
+" lightline
 let g:lightline = {
 			\ 'colorscheme': 'wombat',
 			\ 'active': {
@@ -72,18 +77,30 @@ let g:NERDCustomDelimiters = {
 let g:prettier#quickfix_enabled = 0
 " gitgutter
 let g:gitgutter_map_keys = 0
-let g:gitgutter_override_sign_column_highlight = 0
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
-let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-snippets']
+let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-snippets', 'coc-tabnine']
 let g:coc_snippet_next = '<tab>'
 " fzf
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
 let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.6} }
 
 " autocmd
-autocmd InsertLeave,WinEnter * set cursorline
-autocmd InsertEnter,WinLeave * set nocursorline
+augroup lazy_load
+	autocmd!
+	autocmd VimEnter *
+				\ call plug#load('vim-fugitive') |
+				\ call plug#load('lightline.vim') |
+				\ call plug#load('vim-easymotion') |
+				\ call plug#load('vim-autoformat') |
+				\ call plug#load('vim-prettier') |
+				\ call plug#load('vim-gitgutter') |
+				\ call plug#load('vim-polyglot') |
+				\ call plug#load('nerdcommenter') |
+				\ call plug#load('fzf.vim') |
+				\ call plug#load('coc.nvim') |
+				\ autocmd! lazy_load
+augroup END
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufReadPost *
@@ -93,6 +110,7 @@ autocmd BufReadPost *
 autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
 autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'coc-explorer') | q | endif
 autocmd FileType * let b:coc_pairs_disabled = ['<']
+autocmd CursorMoved * call DisExpHorCursorMove()
 
 " function
 let g:im_default = 'com.apple.keylayout.ABC'
@@ -121,6 +139,12 @@ endfunction
 function! s:check_back_space() abort
 	let col = col('.') - 1
 	return !col || getline('.')[col - 1]  =~# '\s'
+endfunction
+
+function! DisExpHorCursorMove()
+	if &filetype == 'coc-explorer'
+		call cursor(line('.'), 1)
+	endif
 endfunction
 
 " rg
@@ -176,7 +200,12 @@ nmap <Leader>gp <Plug>(GitGutterPrevHunk)
 nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
+nmap <silent> jd <Plug>(coc-definition)
+
+nmap <leader>rn <Plug>(coc-rename)
+
 nmap <Leader>ss <Plug>(easymotion-s2)
+nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
 
 map <silent> <Leader>sf :Files<CR>
 map <silent> <Leader>sb :Buffers<CR>

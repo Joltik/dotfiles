@@ -54,17 +54,7 @@ hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
 hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#272822 ctermfg=249
 
-lua <<EOF
-require'nvim-treesitter.configs'.setup {
-  ensure_installed = "all",
-  highlight = {
-    enable = true
-  },
-  indent = {
-    enable = true
-  }
-}
-EOF
+lua require('setting')
 
 " plug setting
 let g:plug_window = 'vertical rightbelow new'
@@ -208,7 +198,7 @@ nmap <Leader>w <Plug>(choosewin)
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
 nmap <Leader>cf <Plug>(Prettier)
-autocmd FileType vim nmap <buffer> <Leader>cf :Autoformat<CR>
+autocmd FileType vim,lua nmap <buffer> <Leader>cf :Autoformat<CR>
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 nnoremap <silent> <leader>fc :vne<CR>:CocConfig<CR>

@@ -1,22 +1,26 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'yianwillis/vimcdoc'
-Plug 'neoclide/coc.nvim', {'branch': 'release', 'on': []}
-Plug 'chiel92/vim-autoformat', { 'on': [] }
-Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'on': [] }
-Plug 'scrooloose/nerdcommenter', { 'on': [] }
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'chiel92/vim-autoformat'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
-Plug 'junegunn/fzf.vim', { 'on': [] }
-Plug 'easymotion/vim-easymotion', { 'on': [] }
-Plug 'tpope/vim-fugitive', { 'on': [] }
-Plug 'airblade/vim-gitgutter', { 'on': [] }
-Plug 'itchyny/lightline.vim', { 'on': [] }
+Plug 'junegunn/fzf.vim'
+Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-fugitive'
+Plug 'airblade/vim-gitgutter'
 Plug 't9md/vim-choosewin'
 Plug 'airblade/vim-rooter'
 Plug 'mhinz/vim-startify'
 Plug 'tweekmonster/startuptime.vim'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'glepnir/galaxyline.nvim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
+Plug 'akinsho/nvim-bufferline.lua'
 
 call plug#end()
 
@@ -52,26 +56,12 @@ endif
 hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
-hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#272822 ctermfg=249
+hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
 
-lua require('setting')
+lua require('plug_setting')
 
 " plug setting
 let g:plug_window = 'vertical rightbelow new'
-" lightline
-let g:lightline = {
-      \ 'colorscheme': 'wombat',
-      \ 'active': {
-      \   'left': [ [ 'mode', 'paste' ],
-      \             ['gitbranch', 'readonly', 'filename', 'modified' ] ],
-      \   'right':[
-      \     [ 'filetype', 'fileencoding', 'percent' ]
-      \   ],
-      \ },
-      \ 'component_function': {
-      \   'gitbranch': 'FugitiveHead'
-      \ },
-      \ }
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0
 let g:EasyMotion_smartcase = 1
@@ -92,23 +82,15 @@ let g:coc_global_extensions = ['coc-explorer', 'coc-tsserver', 'coc-json', 'coc-
 let g:coc_snippet_next = '<tab>'
 " fzf
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
-let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.6} }
+let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.6} }
 
 " autocmd
-augroup lazy_load
-  autocmd!
-  autocmd VimEnter *
-        \ call plug#load('vim-fugitive') |
-        \ call plug#load('lightline.vim') |
-        \ call plug#load('vim-easymotion') |
-        \ call plug#load('vim-autoformat') |
-        \ call plug#load('vim-prettier') |
-        \ call plug#load('vim-gitgutter') |
-        \ call plug#load('nerdcommenter') |
-        \ call plug#load('fzf.vim') |
-        \ call plug#load('coc.nvim') |
-        \ autocmd! lazy_load
-augroup END
+" augroup lazy_load
+" autocmd!
+" autocmd VimEnter *
+" \ call plug#load('coc.nvim') |
+" \ autocmd! lazy_load
+" augroup END
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
 autocmd BufReadPost *

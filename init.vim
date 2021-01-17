@@ -1,7 +1,7 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'yianwillis/vimcdoc'
-Plug 'neoclide/coc.nvim', {'branch': 'release'}
+" Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'chiel92/vim-autoformat'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'scrooloose/nerdcommenter'
@@ -21,6 +21,13 @@ Plug 'glepnir/galaxyline.nvim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'kyazdani42/nvim-tree.lua'
 Plug 'akinsho/nvim-bufferline.lua'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-lua/plenary.nvim'
+Plug 'nvim-telescope/telescope.nvim'
+Plug 'neovim/nvim-lspconfig'
+Plug 'nvim-lua/completion-nvim'
+Plug 'hrsh7th/vim-vsnip'
+Plug 'hrsh7th/vim-vsnip-integ'
 
 call plug#end()
 
@@ -57,6 +64,10 @@ hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
 hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
+
+set completeopt=menuone,noinsert
+inoremap <expr> <Tab>   pumvisible() ? "\<C-n>" : "\<Tab>"
+inoremap <expr> <S-Tab> pumvisible() ? "\<C-p>" : "\<S-Tab>"
 
 lua require('plug_setting')
 
@@ -148,14 +159,14 @@ endfunction
 command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
 
 " keymaps
-inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+" \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
-inoremap <silent><expr> <TAB>
-      \ pumvisible() ? coc#_select_confirm() :
-      \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
-      \ <SID>check_back_space() ? "\<TAB>" :
-      \ coc#refresh()
+" inoremap <silent><expr> <TAB>
+" \ pumvisible() ? coc#_select_confirm() :
+" \ coc#expandableOrJumpable() ? "\<C-r>=coc#rpc#request('doKeymap', ['snippets-expand-jump',''])\<CR>" :
+" \ <SID>check_back_space() ? "\<TAB>" :
+" \ coc#refresh()
 
 xnoremap * :<C-u>call VisualStarSearchSet('/')<CR>/<C-R>=@/<CR><CR>
 xnoremap # :<C-u>call VisualStarSearchSet('?')<CR>?<C-R>=@/<CR><CR>
@@ -177,6 +188,12 @@ let g:mapleader = "\<Space>"
 nmap <silent> <Leader>e :CocCommand explorer --sources=file+<CR>
 nmap <Leader>w <Plug>(choosewin)
 
+nnoremap <silent> <Leader>bn :BufferLineCycleNext<CR>
+nnoremap <silent> <Leader>bp :BufferLineCyclePrev<CR>
+nnoremap <silent> <Leader>bc :BufferLinePick<CR>
+nnoremap <silent> <Leader>bm :BufferLineMovePrev<CR>
+nnoremap <silent> <Leader>bd :bd<CR>
+
 map <Leader>cc <plug>NERDCommenterToggle
 map <Leader>cm <plug>NERDCommenterMinimal
 nmap <Leader>cf <Plug>(Prettier)
@@ -190,17 +207,23 @@ nmap <Leader>gp <Plug>(GitGutterPrevHunk)
 nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
-nmap <silent> jd <Plug>(coc-definition)
+" nmap <silent> jd <Plug>(coc-definition)
+nmap <silent> <Leader>jd <Cmd>lua vim.lsp.buf.definition()<CR>
 
 nmap <leader>rn <Plug>(coc-rename)
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
 
-map <silent> <Leader>sf :Files<CR>
-map <silent> <Leader>sb :Buffers<CR>
-map <silent> <Leader>sh :History<CR>
-map <silent> <Leader>sc :History:<CR>
-map <silent> <Leader>sg :GFiles?<CR>
-nnoremap <silent> <Leader>sw :Rg<CR>
-xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>
+" map <silent> <Leader>sf :Files<CR>
+" map <silent> <Leader>sb :Buffers<CR>
+" map <silent> <Leader>sh :History<CR>
+" map <silent> <Leader>sc :History:<CR>
+" map <silent> <Leader>sg :GFiles?<CR>
+" nnoremap <silent> <Leader>sw :Rg<CR>
+" xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>
+nnoremap <leader>sf <cmd>Telescope find_files<cr>
+nnoremap <leader>sb <cmd>Telescope buffers<cr>
+nnoremap <leader>sw <cmd>Telescope live_grep<cr>
+nnoremap <Leader>sg :lua require'telescope.builtin'.git_files{}<CR>
+

@@ -9,131 +9,81 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require'colorizer'.setup(
-  {'*';},
-  {
-    RGB      = true;
-    RRGGBB   = true;
-    names    = true;
-    RRGGBBAA = true;
-  }
+{'*';},
+{
+  RGB      = true;
+  RRGGBB   = true;
+  names    = true;
+  RRGGBBAA = true;
+}
 )
 
-local galaxyline = require('galaxyline')
-local utils = require('utils')
-local galaxylineSection = galaxyline.section
-
-local colors = {
-  bg = '#282a36',
-  fg = '#f8f8f2',
-  section_bg = '#38393f',
-  yellow = '#f1fa8c',
-  cyan = '#8be9fd',
-  green = '#50fa7b',
-  orange = '#ffb86c',
-  magenta = '#ff79c6',
-  blue = '#8be9fd',
-  red = '#ff5555'
-}
-
-local mode_color = function()
-  local mode_colors = {
-    n = colors.cyan,
-    i = colors.green,
-    c = colors.orange,
-    V = colors.magenta,
-    [' '] = colors.magenta,
-    v = colors.magenta,
-    R = colors.red,
-  }
-  return mode_colors[vim.fn.mode()]
-end
-
-local buffer_not_empty = function()
-  return not utils.is_buffer_empty()
-end
-
-local checkwidth = function()
-  return utils.has_width_gt(40) and buffer_not_empty()
-end
-
-galaxylineSection.left[1] = {
-  FirstElement = {
-    provider = function() return '▋ ' end,
-    condition = checkwidth,
-    highlight = { colors.cyan, colors.section_bg }
+vim.g.completion_timer_cycle = 5
+vim.g.chain_complete_list = {
+  default = {
+    {complete_items = {'lsp', 'snippet'}},
+    {complete_items = {'path'}, triggered_only = {'/'}},
+    {complete_items = {'buffers'}},
   },
-}
-galaxylineSection.left[2] = {
-  ViMode = {
-    provider = function()
-      local alias = {
-        n = 'NORMAL',
-        i = 'INSERT',
-        c = 'COMMAND',
-        V = 'VISUAL',
-        [' '] = 'VISUAL',
-        v = 'VISUAL',
-        R = 'REPLACE',
-      }
-      vim.api.nvim_command('hi GalaxyViMode guifg='..mode_color())
-      return alias[vim.fn.mode()]..' '
-    end,
-    condition = checkwidth,
-    highlight = { colors.bg, colors.section_bg },
+  string = {
+    {complete_items = {'path'}, triggered_only = {'/'}},
   },
+  comment = {},
 }
-galaxylineSection.left[3] ={
-  FileIcon = {
-    provider = 'FileIcon',
-    condition = checkwidth,
-    highlight = { require('galaxyline.provider_fileinfo').get_file_icon_color, colors.section_bg },
-  },
-}
-galaxylineSection.left[4] = {
-  FileName = {
-    provider = { 'FileName' },
-    condition = buffer_not_empty,
-    highlight = { colors.fg, colors.section_bg },
-  }
-}
-galaxylineSection.left[5] = {
-  GitIcon = {
-    provider = function() return '  ' end,
-    condition = checkwidth,
-    highlight = {colors.red,colors.section_bg},
-  }
-}
-galaxylineSection.left[6] = {
-  GitBranch = {
-    provider = 'GitBranch',
-    condition = checkwidth,
-    highlight = {colors.fg,colors.section_bg},
-  }
-}
-galaxylineSection.right[1]= {
-  FileFormat = {
-    provider = function() return vim.bo.filetype end,
-    condition = checkwidth,
-    highlight = { colors.fg,colors.section_bg },
-    separator = ' ',
-    separator_highlight = { colors.section_bg,colors.section_bg},
-  }
-}
-galaxylineSection.right[2] = {
-  LineInfo = {
-    provider = 'LineColumn',
-    condition = checkwidth,
-    highlight = { colors.fg, colors.section_bg },
-    separator = ' | ',
-    separator_highlight = { colors.bg, colors.section_bg },
-  },
-}
-galaxylineSection.right[3] = {
-  Heart = {
-    provider = function() return ' ' end,
-    condition = checkwidth,
-    highlight = { colors.red, colors.section_bg },
-    separator = ' | ',
-    separator_highlight = { colors.bg, colors.section_bg },
+
+require'lspconfig'.tsserver.setup{on_attach=require'completion'.on_attach}
+require'lspconfig'.vimls.setup{on_attach=require'completion'.on_attach}
+
+require('statusline')
+
+-- require'bufferline'.setup{
+-- options = {
+-- mappings = false,
+-- close_icon = '',
+-- show_buffer_close_icons = false,
+-- enforce_regular_tabs = true,
+-- always_show_bufferline = false,
+-- }
+-- }
+
+require('telescope').setup{
+  defaults = {
+    vimgrep_arguments = {
+      'rg',
+      '--color=never',
+      '--no-heading',
+      '--with-filename',
+      '--line-number',
+      '--column',
+      '--smart-case'
+    },
+    prompt_position = "top",
+    prompt_prefix = ">",
+    selection_strategy = "reset",
+    sorting_strategy = "ascending",
+    layout_strategy = "horizontal",
+    layout_defaults = {
+      -- TODO add builtin options.
+    },
+    file_sorter =  require'telescope.sorters'.get_fuzzy_file,
+    file_ignore_patterns = {},
+    generic_sorter =  require'telescope.sorters'.get_generic_fuzzy_sorter,
+    shorten_path = true,
+    winblend = 0,
+    width = 0.75,
+    preview_cutoff = 120,
+    results_height = 1,
+    results_width = 0.8,
+    border = {},
+    borderchars = { '─', '│', '─', '│', '╭', '╮', '╯', '╰'},
+    color_devicons = true,
+    use_less = true,
+    set_env = { ['COLORTERM'] = 'truecolor' }, -- default { }, currently unsupported for shells like cmd.exe / powershell.exe
+    file_previewer = require'telescope.previewers'.cat.new, -- For buffer previewer use `require'telescope.previewers'.vim_buffer_cat.new`
+    grep_previewer = require'telescope.previewers'.vimgrep.new, -- For buffer previewer use `require'telescope.previewers'.vim_buffer_vimgrep.new`
+    qflist_previewer = require'telescope.previewers'.qflist.new, -- For buffer previewer use `require'telescope.previewers'.vim_buffer_qflist.new`
+
+    -- Developer configurations: Not meant for general override
+    buffer_previewer_maker = require'telescope.previewers'.buffer_previewer_maker
   }
 }

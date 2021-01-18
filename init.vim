@@ -11,7 +11,11 @@ Plug 'windwp/nvim-autopairs'
 " beautify
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'kyazdani42/nvim-tree.lua'
+Plug 'Joltik/nvim-tree.lua'
+Plug 'norcalli/nvim-colorizer.lua'
+" function
+Plug 'easymotion/vim-easymotion'
+Plug 't9md/vim-choosewin'
 
 call plug#end()
 
@@ -39,6 +43,7 @@ set fillchars=vert:¦
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
 
+" theme
 let g:nvcode_termcolors=256
 
 syntax on
@@ -51,8 +56,25 @@ endif
 
 hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
-hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
-hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
+hi VertSplit guibg=NONE guifg=#455a64 ctermbg=NONE ctermfg=239
+hi EndOfBuffer guibg=NONE guifg=#282c34 ctermbg=NONE ctermfg=249
+" plug
+hi link NvimTreeRootFolder Directory
+hi link NvimTreeFolderIcon Directory
+hi link NvimTreeGitDeleted diffRemoved
+hi link NvimTreeGitDirty diffRemoved
+hi link NvimTreeGitRenamed diffNewFile
+
+" autocmd
+autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'NvimTree') | q | endif
+autocmd CursorMoved * call DisExpHorCursorMove()
+
+" function
+function! DisExpHorCursorMove()
+  if &filetype == 'NvimTree'
+    call cursor(line('.'), 1)
+  endif
+endfunction
 
 lua require('lsp')
 lua require('plug')
@@ -87,6 +109,11 @@ let g:completion_chain_complete_list = {
 			\	],
 			\}
 
+let g:nvim_tree_show_icons = {
+    \ 'git': 0,
+    \ 'folders': 1,
+    \ 'files': 1,
+    \ }
 
 let g:mapleader = "\<Space>"
 
@@ -96,3 +123,6 @@ nnoremap <silent> <Leader>jd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <Leader>cf <cmd>lua vim.lsp.buf.formatting_sync()<CR>
 
 nnoremap <Leader>e :NvimTreeToggle<CR>
+
+nmap <Leader>ss <Plug>(easymotion-s2)
+nmap <Leader>w <Plug>(choosewin)

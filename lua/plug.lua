@@ -8,6 +8,16 @@ require'nvim-treesitter.configs'.setup {
   }
 }
 
+require'colorizer'.setup(
+{'*';},
+{
+  RGB      = true;
+  RRGGBB   = true;
+  names    = true;
+  RRGGBBAA = true;
+}
+)
+
 require('nvim-autopairs').setup({
   disable_filetype = { "vim" },
 })
@@ -33,4 +43,5 @@ completion_confirm=function()
 end
 
 remap('i' , '<CR>','v:lua.completion_confirm()', {expr = true , noremap = true})
+
 

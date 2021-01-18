@@ -2,12 +2,16 @@ call plug#begin('~/.vim/plugged')
 
 Plug 'yianwillis/vimcdoc'
 Plug 'tweekmonster/startuptime.vim'
-Plug 'christianchiarulli/nvcode-color-schemes.vim'
+" lsp
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'nvim-treesitter/completion-treesitter'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 Plug 'windwp/nvim-autopairs'
+" beautify
+Plug 'christianchiarulli/nvcode-color-schemes.vim'
+Plug 'kyazdani42/nvim-web-devicons'
+Plug 'kyazdani42/nvim-tree.lua'
 
 call plug#end()
 
@@ -83,9 +87,12 @@ let g:completion_chain_complete_list = {
 			\	],
 			\}
 
+
 let g:mapleader = "\<Space>"
 
 nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
 
 nnoremap <silent> <Leader>jd <cmd>lua vim.lsp.buf.definition()<CR>
 nnoremap <silent> <Leader>cf <cmd>lua vim.lsp.buf.formatting_sync()<CR>
+
+nnoremap <Leader>e :NvimTreeToggle<CR>

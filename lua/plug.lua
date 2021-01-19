@@ -1,3 +1,7 @@
+require('lsp')
+require('statusline')
+require('git')
+
 require'nvim-treesitter.configs'.setup {
   ensure_installed = "all",
   highlight = {
@@ -9,13 +13,13 @@ require'nvim-treesitter.configs'.setup {
 }
 
 require'colorizer'.setup(
-{'*';},
-{
-  RGB      = true;
-  RRGGBB   = true;
-  names    = true;
-  RRGGBBAA = true;
-}
+  {'*';},
+  {
+    RGB      = true;
+    RRGGBB   = true;
+    names    = true;
+    RRGGBBAA = true;
+  }
 )
 
 require('nvim-autopairs').setup({

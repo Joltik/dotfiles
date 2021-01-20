@@ -8,25 +8,24 @@ Plug 'nvim-treesitter/completion-treesitter'
 Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 " code
-Plug 'windwp/nvim-autopairs'
+Plug 'cohama/lexima.vim'
 Plug 'chiel92/vim-autoformat', { 'on': [] }
 Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'on': [] }
 Plug 'scrooloose/nerdcommenter', { 'on': [] }
-" beautify
+" style
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
 Plug 'kyazdani42/nvim-web-devicons'
-Plug 'Joltik/nvim-tree.lua'
+Plug 'Joltik/nerdtree'
 Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'norcalli/nvim-colorizer.lua'
-Plug 'mhinz/vim-startify'
+" Plug 'mhinz/vim-startify'
 " function
 Plug 'easymotion/vim-easymotion', { 'on': [] }
 Plug 'airblade/vim-rooter'
 Plug 't9md/vim-choosewin'
-Plug 'nvim-lua/plenary.nvim'
-Plug 'lewis6991/gitsigns.nvim'
-Plug 'nvim-lua/popup.nvim'
-Plug 'nvim-telescope/telescope.nvim'
+Plug 'airblade/vim-gitgutter'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -65,6 +64,7 @@ set hidden
 " fold
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
+set nofoldenable
 
 " theme
 let g:nvcode_termcolors=256
@@ -103,7 +103,7 @@ autocmd BufReadPost *
       \  exe "normal! g`\"" |
       \ endif
 autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
-autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'NvimTree') | q | endif
+autocmd BufEnter * if (winnr("$") == 1 && &filetype == 'nerdtree') | q | endif
 autocmd CursorMoved * call DisExpHorCursorMove()
 
 " function
@@ -136,6 +136,16 @@ function! DisExpHorCursorMove()
   endif
 endfunction
 
+" rg
+function! RipgrepFzf(query, fullscreen)
+  let command_fmt = 'rg --column --line-number --no-heading --color=always --smart-case -- %s || true'
+  let initial_command = printf(command_fmt, shellescape(a:query))
+  let reload_command = printf(command_fmt, '{q}')
+  let spec = {'options': ['--phony', '--query', a:query, '--bind', 'change:reload:'.reload_command]}
+  call fzf#vim#grep(initial_command, 1, fzf#vim#with_preview(spec), a:fullscreen)
+endfunction
+command! -nargs=* -bang Rg call RipgrepFzf(<q-args>, <bang>0)
+
 " plug setting
 let g:plug_window = 'vertical rightbelow new'
 " vim-easymotion
@@ -150,13 +160,23 @@ let g:NERDCustomDelimiters = {
       \}
 " vim-prettier
 let g:prettier#quickfix_enabled = 0
-" nvim-tree
-let g:nvim_tree_show_icons = {
-      \ 'git': 0,
-      \ 'folders': 1,
-      \ 'files': 1,
-      \ }
+" gitgutter
+let g:gitgutter_sign_added = '▌'
+let g:gitgutter_sign_modified = '▌'
+let g:gitgutter_sign_removed = '▌'
+let g:gitgutter_sign_removed_first_line = '▌'
+let g:gitgutter_sign_removed_above_and_below = '▌'
+let g:gitgutter_sign_modified_removed = '▌'
+" lexima
+imap <expr> <cr>  pumvisible() ? complete_info()["selected"] != "-1" ?
+      \ "\<Plug>(completion_confirm_completion)"  : "\<c-e>" . lexima#expand('<CR>', 'i') :  lexima#expand('<CR>', 'i')
+" nerdtree
+let NERDTreeMinimalUI=1
+" fzf
+let $FZF_DEFAULT_OPTS = '--layout=reverse'
+let g:fzf_layout = { 'window': { 'width': 0.7, 'height': 0.6} }
 " completed
+let g:completion_confirm_key = ""
 let g:completion_matching_ignore_case = 0
 let g:completion_matching_smart_case = 0
 let g:completion_timer_cycle = 5
@@ -182,7 +202,7 @@ xmap <C-y> "*y
 
 let g:mapleader = "\<Space>"
 
-nnoremap <silent> <Leader>e :NvimTreeToggle<CR>
+nnoremap <silent> <Leader>e :NERDTreeToggle<CR>
 nmap <Leader>w <Plug>(choosewin)
 
 map <Leader>cc <plug>NERDCommenterToggle
@@ -192,16 +212,21 @@ autocmd FileType vim,lua nmap <buffer> <Leader>cf :Autoformat<CR>
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 
-nmap <Leader>gn <cmd>lua require"gitsigns".next_hunk()<CR>
-nmap <Leader>gp <cmd>lua require"gitsigns".prev_hunk()<CR>
-nmap <Leader>gi <cmd>lua require"gitsigns".preview_hunk()<CR>
-nmap <Leader>gu <cmd>lua require"gitsigns".reset_hunk()<CR>
+nmap <Leader>gn <Plug>(GitGutterNextHunk)
+nmap <Leader>gp <Plug>(GitGutterPrevHunk)
+nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
+nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
 nnoremap <silent> <Leader>jd <cmd>lua vim.lsp.buf.definition()<CR>
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
 
-nnoremap <leader>sf <cmd>Telescope find_files<cr>
-nnoremap <leader>sw <cmd>Telescope live_grep<cr>
+map <silent> <Leader>sf :Files<CR>
+map <silent> <Leader>sb :Buffers<CR>
+map <silent> <Leader>sh :History<CR>
+map <silent> <Leader>sc :History:<CR>
+map <silent> <Leader>sg :GFiles?<CR>
+nnoremap <silent> <Leader>sw :Rg<CR>
+xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>
 

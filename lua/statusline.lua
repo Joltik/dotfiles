@@ -4,7 +4,8 @@ local utils = require('utils')
 local gls = gl.section
 
 local colors = {
-  bg = '#282c34',
+  bg = NONE,
+  bg2 = '#282c34',
   fg = '#aab2bf',
   section_bg = '#38393f',
   blue = '#61afef',
@@ -83,7 +84,7 @@ gls.left[1] = {
       end
     end,
     condition = checkwidth,
-    highlight = {colors.bg, colors.bg, 'bold'}
+    highlight = {colors.bg2, colors.bg, 'bold'}
   }
 }
 gls.left[2] = {

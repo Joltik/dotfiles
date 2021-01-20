@@ -9,23 +9,36 @@ Plug 'neovim/nvim-lspconfig'
 Plug 'nvim-lua/completion-nvim'
 " code
 Plug 'windwp/nvim-autopairs'
-Plug 'chiel92/vim-autoformat'
-Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
-Plug 'scrooloose/nerdcommenter'
+Plug 'chiel92/vim-autoformat', { 'on': [] }
+Plug 'prettier/vim-prettier', { 'do': 'yarn install', 'on': [] }
+Plug 'scrooloose/nerdcommenter', { 'on': [] }
 " beautify
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
 Plug 'kyazdani42/nvim-web-devicons'
 Plug 'Joltik/nvim-tree.lua'
 Plug 'glepnir/galaxyline.nvim' , {'branch': 'main'}
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'mhinz/vim-startify'
 " function
-Plug 'easymotion/vim-easymotion'
+Plug 'easymotion/vim-easymotion', { 'on': [] }
 Plug 'airblade/vim-rooter'
 Plug 't9md/vim-choosewin'
 Plug 'nvim-lua/plenary.nvim'
 Plug 'lewis6991/gitsigns.nvim'
+Plug 'nvim-lua/popup.nvim'
+Plug 'nvim-telescope/telescope.nvim'
 
 call plug#end()
+
+augroup lazy_load
+  autocmd!
+  autocmd VimEnter *
+        \ call plug#load('vim-easymotion') |
+        \ call plug#load('vim-autoformat') |
+        \ call plug#load('vim-prettier') |
+        \ call plug#load('nerdcommenter') |
+        \ autocmd! lazy_load
+augroup END
 
 set hlsearch
 set incsearch
@@ -40,13 +53,15 @@ set expandtab
 set shiftwidth=2
 set tabstop=2
 " style
+set noshowmode
 set laststatus=2
 set number
 set cursorline
 set signcolumn=auto
 set splitright
 set fillchars=vert:¦
-
+set wildmenu
+set hidden
 " fold
 set foldmethod=expr
 set foldexpr=nvim_treesitter#foldexpr()
@@ -186,3 +201,7 @@ nnoremap <silent> <Leader>jd <cmd>lua vim.lsp.buf.definition()<CR>
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
+
+nnoremap <leader>sf <cmd>Telescope find_files<cr>
+nnoremap <leader>sw <cmd>Telescope live_grep<cr>
+

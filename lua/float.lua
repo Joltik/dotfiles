@@ -1,24 +1,29 @@
+require('tools')
+
 local api = vim.api
 local buf, win
 
-local function open_window()
-  buf = api.nvim_create_buf(false, true) -- create new emtpy buffer
+local function set_mappings()
+  local mappings = {
+    ['<cr>'] = '',
+    q = 'close_action()',
+  }
+  for k,v in pairs(mappings) do
+    api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"float".'..v..'<cr>', {
+        nowait = true, noremap = true, silent = true
+      })
+  end
+end
 
+local function show_action(position,menu)
+  buf = api.nvim_create_buf(false, true)
   api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-
-  -- get dimensions
-  local width = api.nvim_get_option("columns")
-  local height = api.nvim_get_option("lines")
-
-  -- calculate our floating window size
-  local win_height = math.ceil(height * 0.8 - 4)
-  local win_width = math.ceil(width * 0.8)
-
-  -- and its starting position
-  local row = math.ceil((height - win_height) / 2 - 1)
-  local col = math.ceil((width - win_width) / 2)
-
-  -- set some options
+  local maxHeight = api.nvim_get_option("lines")
+  local win_width = position.width
+  local win_height = table.getn(menu)
+  local row = math.min(position.y,maxHeight-win_height-1)
+  dump(row)
+  local col = position.x
   local opts = {
     style = "minimal",
     relative = "editor",
@@ -27,41 +32,25 @@ local function open_window()
     row = row,
     col = col
   }
-
-  -- and finally create it with buffer attached
   win = api.nvim_open_win(buf, true, opts)
-end
-
-local function close_window()
-  api.nvim_win_close(win, true)
-end
-
-local function set_mappings()
-  local mappings = {
-    q = 'close_window()',
+  api.nvim_buf_set_option(buf, 'modifiable', true)
+  api.nvim_buf_set_lines(buf, 0, -1, false, menu)
+  api.nvim_buf_set_option(buf, 'modifiable', false)
+  api.nvim_win_set_option(win, 'wrap', false)
+  options = {
+    'cursorline'
   }
-
-  for k,v in pairs(mappings) do
-    api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"float".'..v..'<cr>', {
-        nowait = true, noremap = true, silent = true
-      })
+  for _, opt in pairs(options) do
+    api.nvim_command('setlocal '..opt)
   end
-  local other_chars = {
-    'a', 'b', 'c', 'd', 'e', 'f', 'g', 'i', 'n', 'o', 'p', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z'
-  }
-  for k,v in ipairs(other_chars) do
-    api.nvim_buf_set_keymap(buf, 'n', v, '', { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'n', v:upper(), '', { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'n',  '<c-'..v..'>', '', { nowait = true, noremap = true, silent = true })
-  end
-end
-
-local function whid()
-  open_window()
   set_mappings()
 end
 
+local function close_action()
+  api.nvim_win_close(win, true)
+end
+
 return {
-  whid = whid,
-  close_window = close_window
+  show_action = show_action,
+  close_action = close_action
 }

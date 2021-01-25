@@ -237,16 +237,19 @@ local function set_mappings()
   end
 end
 
+local function select_menu(index)
+  local menu = {" add"," delete"," rename"}
+  dump(menu[index])
+end
+
 local function show_menu()
   local win = get_explorer_win()
   local width = api.nvim_win_get_width(win)
-  local line = api.nvim_win_get_cursor(win)[1]-1
   local position = {}
   position["x"] = (width-15)/2
-  position["y"] = line+1
   position["width"] = 15
   local menu = {" add"," delete"," rename"}
-  require('float').show_action(position,menu)
+  require('float').show_action(position,menu,select_menu)
 end
 
 local function open_file(open_type)

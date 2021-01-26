@@ -7,7 +7,7 @@ local M = {}
 
 M.icon = {
   root = "",
-  default = "﬒",
+  default = "",
   symlink = "",
   git_icons = {
     unstaged = "✗",
@@ -117,30 +117,6 @@ local function search_dir(cwd,level)
   end
 end
 
-function split(str,delimiter)
-  local dLen = string.len(delimiter)
-  local newDeli = ''
-  for i=1,dLen,1 do
-    newDeli = newDeli .. "["..string.sub(delimiter,i,i).."]"
-  end
-  local locaStart,locaEnd = string.find(str,newDeli)
-  local arr = {}
-  local n = 1
-  while locaStart ~= nil
-    do
-      if locaStart>0 then
-        arr[n] = string.sub(str,1,locaStart-1)
-        n = n + 1
-    end
-    str = string.sub(str,locaEnd+1,string.len(str))
-    locaStart,locaEnd = string.find(str,newDeli)
-  end
-  if str ~= nil then
-    arr[n] = str
-  end
-  return arr
-end
-
 local function handle_tree_list(root,cwd)
   if M.explorer.tree[cwd] == nil then return end
   for _,v in pairs(M.explorer.tree[cwd]) do
@@ -189,7 +165,21 @@ local function handler_show_tree(cwd)
       show_icon = dir_icon..' '
       line_color["group"] = "ExplorerFolder"
     elseif v.fileType == 'file' then
-      show_icon = M.icon.default..' '
+      local extension = ''
+      local first_char = string.sub(v.fileName,1,1)
+      if(first_char ~= '.') then
+        local arr = split(v.fileName,'.')
+	local len = table.getn(arr)
+	if len > 1 then
+	  extension = arr[len]
+	end
+      end
+      local web_devicons = require'nvim-web-devicons'
+      local icon, hl_group = web_devicons.get_icon(v.fileName, extension)
+      if icon == nil then icon = M.icon.default end
+      show_icon = icon..' '
+    elseif v.fileType == 'link' then
+      show_icon = M.icon.symlink..' '
     end
     table.insert(show_tree,string.rep(' ', v.level)..show_icon..v.fileName)
     line_color["line"] = line
@@ -214,7 +204,8 @@ local function reload_tree()
   end
   api.nvim_buf_set_option(M.explorer.buf, 'modifiable', false)
   api.nvim_win_set_option(win, 'wrap', false)
-  api.nvim_win_set_cursor(win, {cursor[1], 0})
+  local row = math.min(cursor[1],table.getn(show_tree))
+  api.nvim_win_set_cursor(win, {row, 0})
 end
 
 local function draw_tree()
@@ -227,6 +218,8 @@ local function set_mappings()
   local mappings = {
     ['<cr>'] = 'open_file()',
     ['m'] = 'show_menu()',
+    ['h'] = 'upper_stage()',
+    ['l'] = 'lower_stage()',
     ['<C-v>'] = 'open_file("vsplit")',
     q = 'close_explorer()',
   }
@@ -237,9 +230,15 @@ local function set_mappings()
   end
 end
 
+local function select_action(index)
+  dump(index)
+end
+
 local function select_menu(index)
   local menu = {" add"," delete"," rename"}
-  dump(menu[index])
+  if index == 2 then
+    require"action".show_action('Are you sure delete ?')
+  end
 end
 
 local function show_menu()
@@ -278,6 +277,29 @@ local function open_file(open_type)
         api.nvim_command('vsplit'..item.filePath)
       end
     end
+  end
+end
+
+local function upper_stage()
+  local cwd = luv.cwd()
+  local paths = split(cwd,'/')
+  if table.getn(paths) > 1 then
+    table.remove(paths)
+  end
+  local new_path = table.concat(paths,'/')
+  if new_path == '' then new_path = '/' end
+  api.nvim_command("cd "..new_path)
+  draw_tree()
+end
+
+local function lower_stage()
+  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local item = M.explorer.tree_list[line]
+  if item == nil then return end
+  if item.fileType == 'directory' then
+    local new_path = luv.cwd()..'/'..item.fileName
+    api.nvim_command("cd "..new_path)
+    draw_tree()
   end
 end
 
@@ -323,6 +345,7 @@ local function close_explorer()
   end
   api.nvim_win_close(get_explorer_win(), true)
   M.explorer.buf = nil
+  require"float".close_action()
 end
 
 local function togger_explorer()
@@ -337,6 +360,8 @@ return {
   togger_explorer = togger_explorer,
   close_explorer = close_explorer,
   open_file = open_file,
+  upper_stage = upper_stage,
+  lower_stage = lower_stage,
   cursor_moved = cursor_moved,
   exit_vim = exit_vim,
   show_menu = show_menu

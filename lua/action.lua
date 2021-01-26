@@ -8,11 +8,10 @@ local function cursor_moved()
   api.nvim_win_set_cursor(win, {cursor[1], 0})
 end
 
-function float_augroup()
+function action_augroup()
   vim.api.nvim_command('augroup float')
   vim.api.nvim_command('autocmd!')
-  vim.api.nvim_command('autocmd CursorMoved <buffer> lua require"float".cursor_moved()')
-  vim.api.nvim_command('autocmd WinLeave <buffer> lua require"float".close_action()')
+  vim.api.nvim_command('autocmd CursorMoved <buffer> lua require"action".cursor_moved()')
   vim.api.nvim_command('augroup END')
 end
 
@@ -23,47 +22,56 @@ local function set_mappings()
     q = 'close_action()',
   }
   for k,v in pairs(mappings) do
-    api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"float".'..v..'<cr>', {
+    api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"action".'..v..'<cr>', {
       nowait = true, noremap = true, silent = true
     })
   end
 end
 
-local function show_action(position,menu,fun)
+local function show_action(title,fun)
+  local edge = 3;
   callback = fun
   buf = api.nvim_create_buf(false, true)
   api.nvim_buf_set_option(buf, 'bufhidden', 'wipe')
-  local win_width = position.width
-  local win_height = table.getn(menu)
-  local col = position.x
+  local width = api.nvim_get_option("columns")
+  local height = api.nvim_get_option("lines")
+  local win_width = string.len(title)+2*edge
+  local win_height = 5
+
   local opts = {
     style = "minimal",
-    relative = 'cursor',
+    relative = 'editor',
     width = win_width,
     height = win_height,
-    row = 1,
-    col = col
+    row = (height-win_height)/2,
+    col = (width-win_width)/2,
   }
   win = api.nvim_open_win(buf, true, opts)
   api.nvim_buf_set_option(buf, 'modifiable', true)
-  api.nvim_buf_set_lines(buf, 0, -1, false, menu)
+
+  local content = {}
+
+  local optio = 'YES    NO'
+  local shift = math.floor(win_width / 2) - math.floor(string.len(optio) / 2)
+
+  table.insert(content,'')
+  table.insert(content,string.rep(' ', edge)..title)
+  table.insert(content,'')
+  table.insert(content,string.rep(' ', shift)..optio)
+
+  api.nvim_buf_set_lines(buf, 0, -1, false, content)
   api.nvim_buf_set_option(buf, 'modifiable', false)
   api.nvim_win_set_option(win, 'wrap', false)
-  options = {
-    'cursorline'
-  }
+  options = {}
   for _, opt in pairs(options) do
     api.nvim_command('setlocal '..opt)
   end
   set_mappings()
-  float_augroup()
+  action_augroup()
 end
 
 local function close_action()
-  if win == nill then return end
   api.nvim_win_close(win, true)
-  buf = nil
-  win = nil
 end
 
 local function select_action()

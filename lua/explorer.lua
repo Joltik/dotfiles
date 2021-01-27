@@ -1,4 +1,5 @@
-require('tools')
+require'tools'
+require'nvim-web-devicons'.setup()
 
 local api = vim.api
 local luv = vim.loop
@@ -151,11 +152,15 @@ local function handler_show_tree(cwd)
   root_color["line"] = line
   root_color["col_start"] = 0
   root_color["col_end"] = -1
-  table.insert(M.explorer.color_list,root_color)
+  local root_colors = {}
+  table.insert(root_colors,root_color)
+  table.insert(M.explorer.color_list,root_colors)
   for k, v in pairs(M.explorer.tree_list) do
     line = line+1
     local show_icon = '  '
+    local line_colors = {}
     local line_color = {}
+    local icon_group
     line_color["group"] = "ExplorerFile"
     if v.fileType == 'directory' then
       local dir_icon = M.icon.folder_icons.default
@@ -176,16 +181,32 @@ local function handler_show_tree(cwd)
       end
       local web_devicons = require'nvim-web-devicons'
       local icon, hl_group = web_devicons.get_icon(v.fileName, extension)
+      icon_group = hl_group
       if icon == nil then icon = M.icon.default end
       show_icon = icon..' '
     elseif v.fileType == 'link' then
       show_icon = M.icon.symlink..' '
     end
-    table.insert(show_tree,string.rep(' ', v.level)..show_icon..v.fileName)
+    local space = ''
+    if v.level >= 1 then
+      space = ' '..string.rep('  ', v.level-1)
+    end
+    table.insert(show_tree,space..show_icon..v.fileName)
+    local start = 0
+    if icon_group then
+      start = string.len(space..show_icon)
+      local icon_color = {}
+      icon_color["group"] = icon_group
+      icon_color["line"] = line
+      icon_color["col_start"] = string.len(space)
+      icon_color["col_end"] = string.len(space..show_icon)
+      table.insert(line_colors,icon_color)
+    end
     line_color["line"] = line
-    line_color["col_start"] = 0
+    line_color["col_start"] = start
     line_color["col_end"] = -1
-    table.insert(M.explorer.color_list,line_color)
+    table.insert(line_colors,line_color)
+    table.insert(M.explorer.color_list,line_colors)
   end
   return show_tree
 end
@@ -200,7 +221,9 @@ local function reload_tree()
   api.nvim_buf_set_option(M.explorer.buf, 'modifiable', true)
   api.nvim_buf_set_lines(buf, 0, -1, false, show_tree)
   for _, v in pairs(M.explorer.color_list) do
-    api.nvim_buf_add_highlight(M.explorer.buf, -1, v.group, v.line, v.col_start, v.col_end)
+    for _, v2 in pairs(v) do
+      api.nvim_buf_add_highlight(M.explorer.buf, -1, v2.group, v2.line, v2.col_start, v2.col_end)
+    end
   end
   api.nvim_buf_set_option(M.explorer.buf, 'modifiable', false)
   api.nvim_win_set_option(win, 'wrap', false)
@@ -237,7 +260,7 @@ end
 local function select_menu(index)
   local menu = {" add"," delete"," rename"}
   if index == 2 then
-    require"action".show_action('Are you sure delete ?')
+    require"action".show_action('Are you sure delete ?',select_action)
   end
 end
 
@@ -346,6 +369,7 @@ local function close_explorer()
   api.nvim_win_close(get_explorer_win(), true)
   M.explorer.buf = nil
   require"float".close_action()
+  require"action".close_action()
 end
 
 local function togger_explorer()

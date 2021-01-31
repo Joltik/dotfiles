@@ -3,6 +3,7 @@ require'nvim-web-devicons'.setup()
 
 local api = vim.api
 local luv = vim.loop
+local open_mode = luv.constants.O_CREAT + luv.constants.O_WRONLY + luv.constants.O_TRUNC
 
 local M = {}
 
@@ -179,6 +180,9 @@ local function search_dir(cwd,level)
       item["path"] = path
       if t == 'directory' then
         table.insert(childTree, item)
+        if M.explorer.fold[path] == true then
+	  search_dir(path,level+1)
+	end
       elseif t == 'file' then
         table.insert(childTree, item)
       elseif t == 'link' then
@@ -327,6 +331,7 @@ local function reload_tree()
 end
 
 local function draw_tree()
+  M.explorer.tree = {}
   local cwd = luv.cwd()
   search_dir(cwd,0)
   root_git_status()
@@ -487,6 +492,23 @@ local function togger_explorer()
   end
 end
 
+local function clear_buffer(file_path)
+  for _, buf in pairs(api.nvim_list_bufs()) do
+    if api.nvim_buf_get_name(buf) == file_path then
+      api.nvim_command(':bd! '..buf)
+    end
+  end
+end
+
+local function create_res(res)
+  if res == true then
+    api.nvim_out_write('created success\n')
+    draw_tree()
+  else
+    api.nvim_err_writeln('create failure')
+  end
+end
+
 local function create()
   local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
   local prefix = luv.cwd()..'/'
@@ -503,31 +525,34 @@ local function create()
   local paths = new_file:gmatch('[^/]+/?')
   local new_path = prefix
   local res = true
+  local is_file = false
   for path in paths do
     new_path = new_path..path
-    if new_path:match('.*/$') then
-      local success = luv.fs_mkdir(new_path, 493)
-      if not success then
+    while true do
+      local stat = luv.fs_stat(new_path)
+      if stat ~= nil then 
 	res = false
-        return
+	break
       end
-    else
-      --luv.fs_open(new_file, 'w')
+      if new_path:match('.*/$') then
+        res = luv.fs_mkdir(new_path, 493)
+      else
+	is_file = true
+        luv.fs_open(new_path, "w", open_mode, vim.schedule_wrap(function(err, fd)
+	  if err then
+	    create_res(false)
+	  else
+	    luv.fs_chmod(new_path, 420)
+            luv.fs_close(fd)
+	    create_res(true)
+	  end
+	end))
+      end
+      break
     end
   end
-  if res == true then
-    api.nvim_out_write('created success\n')
-    draw_tree()
-  else
-    api.nvim_err_writeln('create failure')
-  end
-end
-
-local function clear_buffer(file_path)
-  for _, buf in pairs(api.nvim_list_bufs()) do
-    if api.nvim_buf_get_name(buf) == file_path then
-      api.nvim_command(':bd! '..buf)
-    end
+  if not is_file then
+    create_res(res)
   end
 end
 
@@ -542,12 +567,13 @@ local function delete_dir(cwd)
     if not name then break end
     local new_cwd = cwd..'/'..name
     if t == 'directory' then
-      local success = delete_dir(new_cwd)
-      if not success then return false end
+      delete_dir(new_cwd)
+      luv.fs_rmdir(new_cwd)
     else
       local success = luv.fs_unlink(new_cwd)
-      if not success then return false end
-      clear_buffer(new_cwd)
+      if success then 
+        clear_buffer(new_cwd)
+      end
     end
   end
   luv.fs_rmdir(cwd)
@@ -557,6 +583,9 @@ local function delete()
   local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
   if line == 0 then return end
   local item = M.explorer.tree_list[line]
+  local res = vim.fn.input("Remove " ..item.filePath.. " ? Y/n: ")
+  vim.api.nvim_command('normal :esc<CR>')
+  if res ~= 'Y' then return end
   if item.fileType == 'directory' then
     delete_dir(item.filePath)
   else

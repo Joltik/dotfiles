@@ -4,7 +4,7 @@ local api = vim.api
 local buf, win, callback
 local win_width
 local win_height = 5
-local shift 
+local shift
 local optio = 'YES    NO'
 local namespace_id = api.nvim_create_namespace('AlertHighlights')
 
@@ -13,8 +13,8 @@ local function cursor_moved()
   local row = shift+1
   local col_start = row-1
   local col_end = row+2
-  if cursor[2] > win_width/2 then 
-    row = shift+string.len(optio)-2 
+  if cursor[2] > win_width/2 then
+    row = shift+string.len(optio)-2
     col_start = row
     col_end = row+2
   end

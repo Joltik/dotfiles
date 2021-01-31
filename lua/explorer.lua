@@ -181,8 +181,8 @@ local function search_dir(cwd,level)
       if t == 'directory' then
         table.insert(childTree, item)
         if M.explorer.fold[path] == true then
-	  search_dir(path,level+1)
-	end
+          search_dir(path,level+1)
+        end
       elseif t == 'file' then
         table.insert(childTree, item)
       elseif t == 'link' then
@@ -250,10 +250,10 @@ local function handler_show_tree(cwd)
       local first_char = string.sub(v.fileName,1,1)
       if(first_char ~= '.') then
         local arr = split(v.fileName,'.')
-	local len = table.getn(arr)
-	if len > 1 then
-	  extension = arr[len]
-	end
+        local len = table.getn(arr)
+        if len > 1 then
+          extension = arr[len]
+        end
       end
       local web_devicons = require'nvim-web-devicons'
       local icon, hl_group = web_devicons.get_icon(v.fileName, extension)
@@ -281,12 +281,12 @@ local function handler_show_tree(cwd)
       local git_item = M.git[git_status]
       for _, v in pairs(git_item) do
         local git_item_icon = ' '
-	if v.icon ~= nil then git_item_icon = v.icon end
+        if v.icon ~= nil then git_item_icon = v.icon end
         show_git = show_git..git_item_icon
-	if v.hl ~= nil then
-	  local git_hl_start = max_line_len+string.len(show_git)
+        if v.hl ~= nil then
+          local git_hl_start = max_line_len+string.len(show_git)
           table.insert(line_colors,{group = v.hl, line = line, col_start = git_hl_start, col_end = git_hl_start+1})
-	end
+        end
       end
     end
     show_line = show_line..' '..show_git
@@ -354,8 +354,8 @@ local function set_mappings()
   }
   for k,v in pairs(mappings) do
     api.nvim_buf_set_keymap(M.explorer.buf, 'n', k, ':lua require"explorer".'..v..'<cr>', {
-        nowait = true, noremap = true, silent = true
-      })
+      nowait = true, noremap = true, silent = true
+    })
   end
 end
 
@@ -530,23 +530,23 @@ local function create()
     new_path = new_path..path
     while true do
       local stat = luv.fs_stat(new_path)
-      if stat ~= nil then 
-	res = false
-	break
+      if stat ~= nil then
+        res = false
+        break
       end
       if new_path:match('.*/$') then
         res = luv.fs_mkdir(new_path, 493)
       else
-	is_file = true
+        is_file = true
         luv.fs_open(new_path, "w", open_mode, vim.schedule_wrap(function(err, fd)
-	  if err then
-	    create_res(false)
-	  else
-	    luv.fs_chmod(new_path, 420)
+          if err then
+            create_res(false)
+          else
+            luv.fs_chmod(new_path, 420)
             luv.fs_close(fd)
-	    create_res(true)
-	  end
-	end))
+            create_res(true)
+          end
+        end))
       end
       break
     end
@@ -571,7 +571,7 @@ local function delete_dir(cwd)
       luv.fs_rmdir(new_cwd)
     else
       local success = luv.fs_unlink(new_cwd)
-      if success then 
+      if success then
         clear_buffer(new_cwd)
       end
     end
@@ -598,7 +598,7 @@ local function rename()
   local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
   if line == 0 then return end
   local item = M.explorer.tree_list[line]
-  local new_name = vim.fn.input("Rename " ..item.filePath.. " to ",item.filePath) 
+  local new_name = vim.fn.input("Rename " ..item.filePath.. " to ",item.filePath)
   vim.api.nvim_command('normal :esc<CR>')
   if not new_name or #new_name == 0 then return end
   local success = luv.fs_rename(item.filePath, new_name)

@@ -1,7 +1,7 @@
 if exists('g:loaded_explorer') | finish | endif
 
 let s:save_cpo = &cpo
-set cpo&vim 
+set cpo&vim
 
 hi def link ExplorerRoot Number
 hi def link ExplorerFolder Directory

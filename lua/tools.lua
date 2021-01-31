@@ -1,8 +1,8 @@
 local api = vim.api
 
 function _G.dump(...)
-    local objects = vim.tbl_map(vim.inspect, {...})
-    print(unpack(objects))
+  local objects = vim.tbl_map(vim.inspect, {...})
+  print(unpack(objects))
 end
 
 function disable_buf_default_keymaps(buf)
@@ -45,11 +45,10 @@ function split(str,delimiter)
   local locaStart,locaEnd = string.find(str,newDeli)
   local arr = {}
   local n = 1
-  while locaStart ~= nil
-    do
-      if locaStart>0 then
-        arr[n] = string.sub(str,1,locaStart-1)
-        n = n + 1
+  while locaStart ~= nil do
+    if locaStart>0 then
+      arr[n] = string.sub(str,1,locaStart-1)
+      n = n + 1
     end
     str = string.sub(str,locaEnd+1,string.len(str))
     locaStart,locaEnd = string.find(str,newDeli)
@@ -60,10 +59,24 @@ function split(str,delimiter)
   return arr
 end
 
+function file_extension(file_name)
+  local extension = ''
+  local first_char = string.sub(file_name,1,1)
+  if(first_char ~= '.') then
+    local arr = split(file_name,'.')
+    local len = table.getn(arr)
+    if len > 1 then
+      extension = arr[len]
+    end
+  end
+  return extension
+end
+
 return {
   disable_buf_default_keymaps = disable_buf_default_keymaps,
   utf8len = utf8len,
-  split = split
+  split = split,
+  file_extendsion = file_extendsion
 }
 
 

@@ -49,6 +49,7 @@ local function show_action(position,menu,fun)
   api.nvim_buf_set_lines(buf, 0, -1, false, menu)
   api.nvim_buf_set_option(buf, 'modifiable', false)
   api.nvim_win_set_option(win, 'wrap', false)
+  api.nvim_win_set_option(win, 'winhl', 'Normal:FloatWinBg')
   options = {
     'cursorline'
   }

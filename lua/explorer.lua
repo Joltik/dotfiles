@@ -6,25 +6,6 @@ local luv = vim.loop
 
 local M = {}
 
-M.icon = {
-  root = "",
-  default = "",
-  symlink = "",
-  git_icons = {
-    unstaged = "✗",
-    staged = "✓",
-    unmerged = "═",
-    renamed = "➜",
-    untracked = "★",
-    deleted = "✖"
-  },
-  folder_icons = {
-    default = "",
-    open = "",
-    symlink = "",
-  }
-}
-
 M.explorer = {
   buf_name = 'explorer',
   win_width = 30,
@@ -38,11 +19,94 @@ M.explorer = {
     'signcolumn=no',
     'cursorline'
   },
+  icon = {
+    root = "",
+    default = "",
+    symlink = "",
+    git = {
+      unstaged = "✗",
+      staged = "✓",
+      unmerged = "═",
+      renamed = "➜",
+      untracked = "★",
+      deleted = "✖"
+    },
+    folder_icons = {
+      default = "",
+      open = "",
+      symlink = "",
+    }
+  },
   tree = {},
   tree_list = {},
   color_list = {},
-  fold = {}
+  fold = {},
+  git_list = {},
+  showHidden = false
 }
+
+M.git = {
+  ["M "] = {
+    { icon = M.explorer.icon.git.staged, hl = "ExplorerGitStaged" },
+    {}
+  },
+  [" M"] = {
+    {},
+    { icon = M.explorer.icon.git.unstaged, hl = "ExplorerGitDirty" }
+  },
+  ["MM"] = {
+    { icon = M.explorer.icon.git.staged, hl = "ExplorerGitStaged" },
+    { icon = M.explorer.icon.git.unstaged, hl = "ExplorerGitDirty" }
+  },
+  ["A "] = {
+    { icon = M.explorer.icon.git.staged, hl = "ExplorerGitStaged" },
+    { icon = M.explorer.icon.git.untracked, hl = "ExplorerGitNew" }
+  },
+  [" A"] = {
+    {},
+    { icon = M.explorer.icon.git.untracked, hl = "ExplorerGitNew" }
+  },
+  ["AM"] = {
+    { icon = M.explorer.icon.git.staged, hl = "ExplorerGitStaged" },
+    { icon = M.explorer.icon.git.untracked, hl = "ExplorerGitNew" }
+  },
+  ["??"] = {
+    { icon = M.explorer.icon.git.untracked, hl = "ExplorerGitDirty" }
+  },
+  ["R "] = {
+    { icon = M.explorer.icon.git.renamed, hl = "ExplorerGitRenamed" },
+    {}
+  },
+  ["RM"] = {
+    { icon = M.explorer.icon.git.unstaged, hl = "ExplorerGitDirty" },
+    { icon = M.explorer.icon.git.renamed, hl = "ExplorerGitRenamed" }
+  },
+  ["UU"] = {
+    { icon = M.explorer.icon.git.unmerged, hl = "ExplorerGitMerge" }
+  },
+  [" D"] = {
+    {},
+    { icon = M.explorer.icon.git.deleted, hl = "ExplorerGitDeleted" }
+  },
+}
+
+
+local function root_git_status()
+  M.explorer.git_list = {}
+  local cwd = luv.cwd()
+  local status_list = vim.fn.systemlist('cd "'..cwd..'" && git status --porcelain=v1 -u')
+  for _, v in pairs(status_list) do
+    if string.find(v,'not a git repository') == nil then
+      local status = v:sub(0, 2)
+      local file_path = v:sub(4, -1)
+      if file_path:match('%->') ~= nil then
+        file_path = file_path:gsub('^.* %-> ', '')
+      end
+      local full_path = cwd..'/'..file_path
+      M.explorer.git_list[full_path] = status
+    end
+  end
+end
 
 local function create_buf()
   local options = {
@@ -89,6 +153,14 @@ local function sort_tree(item1,item2)
   end
 end
 
+local function show_hidden(name)
+  if M.explorer.show_hidden then
+    return true
+  else
+    return not name:match('^[.].*$')
+  end
+end
+
 local function search_dir(cwd,level)
   local handle = luv.fs_scandir(cwd)
   if type(handle) == 'string' then
@@ -99,7 +171,7 @@ local function search_dir(cwd,level)
   while true do
     local name, t = luv.fs_scandir_next(handle)
     if not name then break end
-    if not name:match('^.git$') then
+    if show_hidden(name) then
       local path = cwd..'/'..name
       local item = {}
       item["t"] = t
@@ -139,7 +211,7 @@ end
 
 local function handler_root_name(cwd)
   local arr = split(cwd, "/")
-  return M.icon.root..' '..'[ROOT]'..' '..arr[table.getn(arr)]
+  return M.explorer.icon.root..' '..'[ROOT]'..' '..arr[table.getn(arr)]
 end
 
 local function handler_show_tree(cwd)
@@ -163,9 +235,9 @@ local function handler_show_tree(cwd)
     local icon_group
     line_color["group"] = "ExplorerFile"
     if v.fileType == 'directory' then
-      local dir_icon = M.icon.folder_icons.default
+      local dir_icon = M.explorer.icon.folder_icons.default
       if M.explorer.fold[v.filePath] == true then
-        dir_icon = M.icon.folder_icons.open
+        dir_icon = M.explorer.icon.folder_icons.open
       end
       show_icon = dir_icon..' '
       line_color["group"] = "ExplorerFolder"
@@ -182,16 +254,39 @@ local function handler_show_tree(cwd)
       local web_devicons = require'nvim-web-devicons'
       local icon, hl_group = web_devicons.get_icon(v.fileName, extension)
       icon_group = hl_group
-      if icon == nil then icon = M.icon.default end
+      if icon == nil then icon = M.explorer.icon.default end
       show_icon = icon..' '
     elseif v.fileType == 'link' then
-      show_icon = M.icon.symlink..' '
+      show_icon = M.explorer.icon.symlink..' '
     end
     local space = ''
     if v.level >= 1 then
       space = ' '..string.rep('  ', v.level-1)
     end
-    table.insert(show_tree,space..show_icon..v.fileName)
+    local show_line = space..show_icon..v.fileName
+    local max_line_len = M.explorer.win_width-1
+    if string.len(show_line) > max_line_len then
+      local name_end_index = max_line_len-7;
+      show_line = string.sub(show_line,1,name_end_index)..'...'..string.sub(show_line,-4)
+    else
+      show_line = show_line..string.rep(' ',max_line_len-string.len(show_line))
+    end
+    local git_status = M.explorer.git_list[v.filePath]
+    local show_git = ''
+    if  git_status ~= nil then
+      local git_item = M.git[git_status]
+      for _, v in pairs(git_item) do
+        local git_item_icon = ' '
+	if v.icon ~= nil then git_item_icon = v.icon end
+        show_git = show_git..git_item_icon
+	if v.hl ~= nil then
+	  local git_hl_start = max_line_len+string.len(show_git)
+          table.insert(line_colors,{group = v.hl, line = line, col_start = git_hl_start, col_end = git_hl_start+1})
+	end
+      end
+    end
+    show_line = show_line..' '..show_git
+    table.insert(show_tree,show_line)
     local start = 0
     if icon_group then
       start = string.len(space..show_icon)
@@ -204,7 +299,7 @@ local function handler_show_tree(cwd)
     end
     line_color["line"] = line
     line_color["col_start"] = start
-    line_color["col_end"] = -1
+    line_color["col_end"] = max_line_len
     table.insert(line_colors,line_color)
     table.insert(M.explorer.color_list,line_colors)
   end
@@ -219,7 +314,7 @@ local function reload_tree()
   handle_tree_list(cwd,cwd)
   local show_tree = handler_show_tree(cwd)
   api.nvim_buf_set_option(M.explorer.buf, 'modifiable', true)
-  api.nvim_buf_set_lines(buf, 0, -1, false, show_tree)
+  api.nvim_buf_set_lines(M.explorer.buf, 0, -1, false, show_tree)
   for _, v in pairs(M.explorer.color_list) do
     for _, v2 in pairs(v) do
       api.nvim_buf_add_highlight(M.explorer.buf, -1, v2.group, v2.line, v2.col_start, v2.col_end)
@@ -234,6 +329,7 @@ end
 local function draw_tree()
   local cwd = luv.cwd()
   search_dir(cwd,0)
+  root_git_status()
   reload_tree()
 end
 
@@ -243,11 +339,16 @@ local function set_mappings()
     ['m'] = 'show_menu()',
     ['h'] = 'upper_stage()',
     ['l'] = 'lower_stage()',
+    ['.'] = 'togger_hidden()',
+    ['r'] = 'draw_tree()',
     ['<C-v>'] = 'open_file("vsplit")',
-    q = 'close_explorer()',
+    ['<C-r>'] = 'rename()',
+    ['<C-a>'] = 'create()',
+    ['<C-d>'] = 'delete()',
+    ['q'] = 'close_explorer()',
   }
   for k,v in pairs(mappings) do
-    api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"explorer".'..v..'<cr>', {
+    api.nvim_buf_set_keymap(M.explorer.buf, 'n', k, ':lua require"explorer".'..v..'<cr>', {
         nowait = true, noremap = true, silent = true
       })
   end
@@ -326,6 +427,11 @@ local function lower_stage()
   end
 end
 
+local function togger_hidden()
+  M.explorer.show_hidden = not M.explorer.show_hidden
+  draw_tree()
+end
+
 local function cursor_moved()
   local win = get_explorer_win()
   local cursor = api.nvim_win_get_cursor(win)
@@ -345,6 +451,7 @@ function explorer_augroup()
   vim.api.nvim_command('autocmd!')
   vim.api.nvim_command('autocmd CursorMoved <buffer> lua require"explorer".cursor_moved()')
   vim.api.nvim_command('autocmd BufEnter * lua require"explorer".exit_vim()')
+  vim.api.nvim_command('autocmd BufWritePost * lua require"explorer".draw_tree()')
   vim.api.nvim_command('augroup END')
 end
 
@@ -380,13 +487,110 @@ local function togger_explorer()
   end
 end
 
+local function create()
+  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local prefix = luv.cwd()..'/'
+  if line > 0 then
+    local item = M.explorer.tree_list[line]
+    prefix = item.filePath..'/'
+    if item.fileType ~= 'directory' then
+      prefix = string.gsub(item.filePath,item.fileName,'')
+    end
+  end
+  local new_file = vim.fn.input('Create file/directory '..prefix)
+  vim.api.nvim_command('normal :esc<CR>')
+  if not new_file or #new_file == 0 then return end
+  local paths = new_file:gmatch('[^/]+/?')
+  local new_path = prefix
+  local res = true
+  for path in paths do
+    new_path = new_path..path
+    if new_path:match('.*/$') then
+      local success = luv.fs_mkdir(new_path, 493)
+      if not success then
+	res = false
+        return
+      end
+    else
+      --luv.fs_open(new_file, 'w')
+    end
+  end
+  if res == true then
+    api.nvim_out_write('created success\n')
+    draw_tree()
+  else
+    api.nvim_err_writeln('create failure')
+  end
+end
+
+local function clear_buffer(file_path)
+  for _, buf in pairs(api.nvim_list_bufs()) do
+    if api.nvim_buf_get_name(buf) == file_path then
+      api.nvim_command(':bd! '..buf)
+    end
+  end
+end
+
+local function delete_dir(cwd)
+  local handle = luv.fs_scandir(cwd)
+  if type(handle) == 'string' then
+    return api.nvim_err_writeln(handle)
+  end
+
+  while true do
+    local name, t = luv.fs_scandir_next(handle)
+    if not name then break end
+    local new_cwd = cwd..'/'..name
+    if t == 'directory' then
+      local success = delete_dir(new_cwd)
+      if not success then return false end
+    else
+      local success = luv.fs_unlink(new_cwd)
+      if not success then return false end
+      clear_buffer(new_cwd)
+    end
+  end
+  luv.fs_rmdir(cwd)
+end
+
+local function delete()
+  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  if line == 0 then return end
+  local item = M.explorer.tree_list[line]
+  if item.fileType == 'directory' then
+    delete_dir(item.filePath)
+  else
+    luv.fs_unlink(item.filePath)
+  end
+  draw_tree()
+end
+
+local function rename()
+  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  if line == 0 then return end
+  local item = M.explorer.tree_list[line]
+  local new_name = vim.fn.input("Rename " ..item.filePath.. " to ",item.filePath) 
+  vim.api.nvim_command('normal :esc<CR>')
+  if not new_name or #new_name == 0 then return end
+  local success = luv.fs_rename(item.filePath, new_name)
+  if not success then
+    return api.nvim_err_writeln('Could not rename '..item.filePath..' to '..new_name)
+  end
+  draw_tree()
+end
+
 return {
   togger_explorer = togger_explorer,
   close_explorer = close_explorer,
   open_file = open_file,
   upper_stage = upper_stage,
   lower_stage = lower_stage,
+  togger_hidden = togger_hidden,
+  draw_tree = draw_tree,
   cursor_moved = cursor_moved,
   exit_vim = exit_vim,
-  show_menu = show_menu
+  show_menu = show_menu,
+  rename = rename,
+  create = create,
+  delete = delete
 }

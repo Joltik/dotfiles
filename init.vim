@@ -8,10 +8,13 @@ Plug 'chiel92/vim-autoformat'
 Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'easymotion/vim-easymotion'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 Plug 'airblade/vim-gitgutter'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'scrooloose/nerdcommenter'
+Plug 'tweekmonster/startuptime.vim'
 
 call plug#end()
 
@@ -180,6 +183,7 @@ nmap <silent> jd <Plug>(coc-definition)
 nmap <leader>rn <Plug>(coc-rename)
 
 nmap <Leader>ss <Plug>(easymotion-s2)
+nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
 
 map <silent> <Leader>sf :Files<CR>
 map <silent> <Leader>sb :Buffers<CR>

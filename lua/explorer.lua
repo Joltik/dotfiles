@@ -339,6 +339,7 @@ local function draw_tree()
 end
 
 local function set_mappings()
+  disable_buf_default_keymaps(M.explorer.buf)
   local mappings = {
     ['<cr>'] = 'open_file()',
     ['m'] = 'show_menu()',
@@ -347,6 +348,7 @@ local function set_mappings()
     ['.'] = 'togger_hidden()',
     ['r'] = 'draw_tree()',
     ['<C-v>'] = 'open_file("vsplit")',
+    ['<C-t>'] = 'open_file("tabe")',
     ['<C-r>'] = 'rename()',
     ['<C-a>'] = 'create()',
     ['<C-d>'] = 'delete()',

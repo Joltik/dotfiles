@@ -60,7 +60,7 @@ local function mode_name()
   return string.upper(name)
 end
 
-function load_pandaline()
+function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
   local wins = api.nvim_list_wins()
   local hl_name = 'NomalStatusline'
@@ -74,6 +74,7 @@ function load_pandaline()
   if not is_empty then
     if vim.fn.winwidth(0) > 40 then
       show_line = '%#PandaViMode#'..' '..[[%{luaeval('require("pandaline").mode_name()')}]]..' '..'%##'..'%#PandaFile# '..'%##'
+      if not is_hl then show_line = '' end
       local file_name = vim.fn.expand('%:t')
       local web_devicons = require'nvim-web-devicons'
       local extension = file_extension(file_name)
@@ -90,11 +91,16 @@ function load_pandaline()
 end
 
 function pandaline_augroup()
-  local events = { 'ColorScheme', 'FileType','BufWinEnter','BufReadPost','BufWritePost', 'BufEnter','WinEnter','FileChangedShellPost','VimResized','TermOpen'}
+  local hl_events = {'BufEnter','WinEnter','FileChangedShellPost','VimResized'}
+  local nohl_events = {'WinLeave'}
   api.nvim_command('augroup pandaline')
   api.nvim_command('autocmd!')
-  for _, v in ipairs(events) do
-    local command = string.format('autocmd %s * lua require("pandaline").load_pandaline()', v)
+  for _, v in ipairs(hl_events) do
+    local command = string.format('autocmd %s * lua require("pandaline").load_pandaline(true)', v)
+    vim.api.nvim_command(command)
+  end
+  for _, v in ipairs(nohl_events) do
+    local command = string.format('autocmd %s * lua require("pandaline").load_pandaline(false)', v)
     vim.api.nvim_command(command)
   end
   api.nvim_command('augroup END')

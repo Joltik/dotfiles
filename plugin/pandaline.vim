@@ -4,8 +4,12 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 hi statusline guibg=NONE ctermbg=NONE
+hi PandaViMode guifg=#282c34
 hi PandaFile guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
-hi PandaSpace guibg=#38393f ctermbg=NONE
+hi PandaGit guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
+hi PandaFill guibg=#38393f ctermbg=NONE
+hi PandaDim guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
+hi PandaLinePercent guibg=#61afef ctermbg=NONE guifg=#2c323d ctermfg=15
 
 lua require('pandaline').pandaline_augroup()
 

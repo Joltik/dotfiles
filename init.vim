@@ -26,6 +26,7 @@ set cursorline
 set signcolumn=number
 set splitright
 set fillchars=vert:¦
+set wrap
 
 set rtp+=/Users/xiaogao/.config/nvim/plugin/*.vim'
 

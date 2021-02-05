@@ -1,4 +1,5 @@
 local api = vim.api
+local luv = vim.loop
 local wo = vim.wo
 
 require'tools'
@@ -61,7 +62,8 @@ local function mode_name()
   local mode_info = M.mode[mode]
   if mode_info == nil then return mode end
   local name = mode_info.name
-  vim.api.nvim_command('hi PandaViMode guibg=' .. mode_info.color .. ' guifg=#eeeeee')
+  local mode_fg = vim.fn.synIDattr(vim.fn.hlID('PandaViMode'),'fg')
+  vim.api.nvim_command('hi PandaViMode guibg=' .. mode_info.color .. ' guifg='..mode_fg)
   return string.upper(name)
 end
 
@@ -70,8 +72,8 @@ function VIMode()
   return mode
 end
 
-function Space()
-  local space = '%#PandaSpace# '..'%##'
+function FileSpace()
+  local space = '%#PandaFile# '..'%##'
   return space
 end
 
@@ -79,24 +81,64 @@ function FileName()
   local file_name = vim.fn.expand('%:t')
   local extension = file_extension(file_name)
   local icon, hl_group = require'nerd_icons'.get_icon(file_name, extension)
-  local show_name = Space()..'%#PandaFile#'..file_name..'%##'..Space()
+  local show_name = FileSpace()..'%#PandaFile#'..file_name..'%m'..'%##'..FileSpace()
   if icon ~= nil then
     local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
-    local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaSpace'),'bg')
+    local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaFile'),'bg')
     local icon_hl_group = 'PandaFileIcon'..hl_group
     vim.api.nvim_command('hi '..icon_hl_group..' guibg='..icon_bg..' guifg='..icon_fg)
-    return Space()..'%#'..icon_hl_group..'#'..icon..'%##'..show_name
+    return FileSpace()..'%#'..icon_hl_group..'#'..icon..'%##'..show_name
   end
   return show_name
 end
 
 function FileType()
-  local file_type = Space()..'%#PandaFile#'..vim.bo.filetype..'%##'..Space()
+  local fileType = vim.bo.filetype:gsub("^%l", string.upper)
+  local file_type = FileSpace()..'%#PandaFile#'..fileType..'%##'..FileSpace()
   return file_type
+end
+
+function GitSpace()
+  local space = '%#PandaGit# '..'%##'
+  return space
+end
+
+function GitBranch()
+  local cwd = luv.cwd()
+  local git_branch = vim.fn.systemlist('cd "'..cwd..'" && git symbolic-ref --short -q HEAD')
+  local branch_name = git_branch[1]
+  if string.find(branch_name,'not a git repository') == nil then
+    local icon, hl_group = require'nerd_icons'.get_icon('git', '')
+    local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
+    local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaGit'),'bg')
+    local icon_hl_group = 'PandaFileIcon'..hl_group
+    vim.api.nvim_command('hi '..icon_hl_group..' guibg='..icon_bg..' guifg='..icon_fg)
+    local show_name = GitSpace()..'%#PandaGit#'..branch_name..'%##'..GitSpace()
+    return GitSpace()..'%#'..icon_hl_group..'#'..icon..'%##'..show_name
+  else
+    return ''
+  end
 end
 
 function Fill()
   return '%#PandaFill#'
+end
+
+function RightSplit()
+  return '%='
+end
+
+function LinePercent(is_hl)
+  local hl_group = 'PandaDim'
+  local sep_group = 'PandaLinePercentSeparatorDim'
+  if is_hl then 
+    hl_group = 'PandaLinePercent' 
+    sep_group = 'PandaLinePercentSeparator'
+  end
+  local sep_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'bg')
+  local sep_bg = vim.fn.synIDattr(vim.fn.hlID('PandaFill'),'bg')
+  vim.api.nvim_command('hi '..sep_group..' guibg='..sep_bg..' guifg='..sep_fg)
+  return '%#'..sep_group..'#'..''..'%##'..'%#'..hl_group..'#'..' %p%% '..'%##'
 end
 
 function load_pandaline(is_hl)
@@ -107,11 +149,14 @@ function load_pandaline(is_hl)
     return 
   end
   if vim.fn.winwidth(0) <= 40 then 
-    wo.statusline = FileType()..Fill()
+    wo.statusline = FileType()..Fill()..RightSplit()..LinePercent(is_hl)
     return
   end
-  --%=
-  wo.statusline = VIMode()..FileName()..Fill()
+  if not is_hl then
+    wo.statusline = FileName()..Fill()..RightSplit()..LinePercent(is_hl)
+    return
+  end
+  wo.statusline = VIMode()..FileName()..Fill()..RightSplit()..GitBranch()..LinePercent(is_hl)
 end
 
 function pandaline_augroup()

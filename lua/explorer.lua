@@ -254,7 +254,7 @@ local function handler_show_tree(cwd)
           extension = arr[len]
         end
       end
-      local icon, hl_group = require'nerd_icons'.get_icon(v.fileName, extension)
+      local icon, hl_group = require'icons'.get_icon(v.fileName, extension)
       icon_group = hl_group
       if icon == nil then icon = M.explorer.icon.default end
       show_icon = icon..' '

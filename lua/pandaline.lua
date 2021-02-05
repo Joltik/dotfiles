@@ -80,7 +80,7 @@ end
 function FileName()
   local file_name = vim.fn.expand('%:t')
   local extension = file_extension(file_name)
-  local icon, hl_group = require'nerd_icons'.get_icon(file_name, extension)
+  local icon, hl_group = require'icons'.get_icon(file_name, extension)
   local show_name = FileSpace()..'%#PandaFile#'..file_name..'%m'..'%##'..FileSpace()
   if icon ~= nil then
     local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
@@ -108,7 +108,7 @@ function GitBranch()
   local git_branch = vim.fn.systemlist('cd "'..cwd..'" && git symbolic-ref --short -q HEAD')
   local branch_name = git_branch[1]
   if string.find(branch_name,'not a git repository') == nil then
-    local icon, hl_group = require'nerd_icons'.get_icon('git', '')
+    local icon, hl_group = require'icons'.get_icon('git', '')
     local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
     local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaGit'),'bg')
     local icon_hl_group = 'PandaFileIcon'..hl_group

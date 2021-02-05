@@ -1,8 +1,6 @@
 local api = vim.api
 local wo = vim.wo
 
-require'nvim-web-devicons'.setup()
-
 require'tools'
 
 local M = {}
@@ -63,9 +61,9 @@ end
 function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
   local wins = api.nvim_list_wins()
-  local hl_name = 'NomalStatusline'
+  local hl_name = 'PandaNomalStatusline'
   if #wins == 1 and is_empty then
-    hl_name = 'EmptyStatusline'
+    hl_name = 'PandaEmptyStatusline'
   end
   local bg = vim.fn.synIDattr(vim.fn.hlID(hl_name),'bg')
   local fg = vim.fn.synIDattr(vim.fn.hlID(hl_name),'fg')
@@ -76,9 +74,8 @@ function load_pandaline(is_hl)
       show_line = '%#PandaViMode#'..' '..[[%{luaeval('require("pandaline").mode_name()')}]]..' '..'%##'..'%#PandaFile# '..'%##'
       if not is_hl then show_line = '' end
       local file_name = vim.fn.expand('%:t')
-      local web_devicons = require'nvim-web-devicons'
       local extension = file_extension(file_name)
-      local icon, hl_group = web_devicons.get_icon(file_name, extension)
+      local icon, hl_group = require'nerd_icons'.get_icon(file_name, extension)
       if icon ~= nil then
         show_line = show_line..'%#'..hl_group..'#'..icon..'%##'
       end

@@ -3,8 +3,8 @@ if exists('g:loaded_pandaline') | finish | endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-hi NomalStatusline guibg=NONE ctermbg=NONE guifg=#767676 ctermfg=243
-hi EmptyStatusline guibg=NONE ctermbg=NONE guifg=#ffffff ctermfg=15
+hi PandaNomalStatusline guibg=NONE ctermbg=NONE guifg=#767676 ctermfg=243
+hi PandaEmptyStatusline guibg=NONE ctermbg=NONE guifg=#ffffff ctermfg=15
 hi PandaFile guibg=NONE ctermbg=NONE guifg=#ffffff ctermfg=15
 hi PandaOther guibg=#ff0000 ctermbg=NONE guifg=#ffffff ctermfg=15
 

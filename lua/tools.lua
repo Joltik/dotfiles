@@ -1,5 +1,3 @@
-local api = vim.api
-
 function _G.dump(...)
   local objects = vim.tbl_map(vim.inspect, {...})
   print(unpack(objects))
@@ -10,30 +8,10 @@ function disable_buf_default_keymaps(buf)
     'a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', 'i', 'j', 'k', 'l', 'm', 'n', 'o', 'p', 'q', 'r', 's', 't', 'u', 'v', 'w', 'x', 'y', 'z', '1', '2', '3', '4', '5', '6', '7', '8', '9', '0', '-', '+', '_', '+', '[', ']', '$', '*', '<CR>'
   }
   for k,v in ipairs(chars) do
-    api.nvim_buf_set_keymap(buf, 'n', v, '', { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'n', v:upper(), '', { nowait = true, noremap = true, silent = true })
-    api.nvim_buf_set_keymap(buf, 'n',  '<c-'..v..'>', '', { nowait = true, noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(buf, 'n', v, '', { nowait = true, noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(buf, 'n', v:upper(), '', { nowait = true, noremap = true, silent = true })
+    vim.api.nvim_buf_set_keymap(buf, 'n',  '<c-'..v..'>', '', { nowait = true, noremap = true, silent = true })
   end
-end
-
-function utf8len(input)
-  local len  = string.len(input)
-  local left = len
-  local cnt  = 0
-  local arr  = {0, 0xc0, 0xe0, 0xf0, 0xf8, 0xfc}
-  while left ~= 0 do
-    local tmp = string.byte(input, -left)
-    local i   = #arr
-    while arr[i] do
-      if tmp >= arr[i] then
-        left = left - i
-        break
-      end
-      i = i - 1
-    end
-    cnt = cnt + 1
-  end
-  return cnt
 end
 
 function split(str,delimiter)

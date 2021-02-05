@@ -1,9 +1,0 @@
-{
-  "suggest.noselect": false,
-  "coc.preferences.extensionUpdateCheck": "daily",
-  "tsserver.implicitProjectConfig.experimentalDecorators": true,
-  "coc.preferences.formatOnSaveFiletypes": [
-    "dart"
-  ],
-  "flutter.provider.hot-reload":true
-}

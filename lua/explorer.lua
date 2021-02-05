@@ -1,5 +1,4 @@
 require'tools'
-require'nvim-web-devicons'.setup()
 
 local api = vim.api
 local luv = vim.loop
@@ -255,8 +254,7 @@ local function handler_show_tree(cwd)
           extension = arr[len]
         end
       end
-      local web_devicons = require'nvim-web-devicons'
-      local icon, hl_group = web_devicons.get_icon(v.fileName, extension)
+      local icon, hl_group = require'nerd_icons'.get_icon(v.fileName, extension)
       icon_group = hl_group
       if icon == nil then icon = M.explorer.icon.default end
       show_icon = icon..' '
@@ -342,7 +340,6 @@ local function set_mappings()
   disable_buf_default_keymaps(M.explorer.buf)
   local mappings = {
     ['<cr>'] = 'open_file()',
-    ['m'] = 'show_menu()',
     ['h'] = 'upper_stage()',
     ['l'] = 'lower_stage()',
     ['.'] = 'togger_hidden()',
@@ -359,27 +356,6 @@ local function set_mappings()
       nowait = true, noremap = true, silent = true
     })
   end
-end
-
-local function select_action(index)
-  dump(index)
-end
-
-local function select_menu(index)
-  local menu = {" add"," delete"," rename"}
-  if index == 2 then
-    require"action".show_action('Are you sure delete ?',select_action)
-  end
-end
-
-local function show_menu()
-  local win = get_explorer_win()
-  local width = api.nvim_win_get_width(win)
-  local position = {}
-  position["x"] = (width-15)/2
-  position["width"] = 15
-  local menu = {" add"," delete"," rename"}
-  require('float').show_action(position,menu,select_menu)
 end
 
 local function open_file(open_type)
@@ -482,8 +458,6 @@ local function close_explorer()
   end
   api.nvim_win_close(get_explorer_win(), true)
   M.explorer.buf = nil
-  require"float".close_action()
-  require"action".close_action()
 end
 
 local function togger_explorer()
@@ -620,7 +594,6 @@ return {
   draw_tree = draw_tree,
   cursor_moved = cursor_moved,
   exit_vim = exit_vim,
-  show_menu = show_menu,
   rename = rename,
   create = create,
   delete = delete

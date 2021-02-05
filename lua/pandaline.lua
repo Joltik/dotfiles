@@ -65,38 +65,53 @@ local function mode_name()
   return string.upper(name)
 end
 
+function VIMode()
+  local mode = '%#PandaViMode# '..[[%{luaeval('require("pandaline").mode_name()')}]]..' %##'
+  return mode
+end
+
+function Space()
+  local space = '%#PandaSpace# '..'%##'
+  return space
+end
+
+function FileName()
+  local file_name = vim.fn.expand('%:t')
+  local extension = file_extension(file_name)
+  local icon, hl_group = require'nerd_icons'.get_icon(file_name, extension)
+  local show_name = Space()..'%#PandaFile#'..file_name..'%##'..Space()
+  if icon ~= nil then
+    local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
+    local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaSpace'),'bg')
+    local icon_hl_group = 'PandaFileIcon'..hl_group
+    vim.api.nvim_command('hi '..icon_hl_group..' guibg='..icon_bg..' guifg='..icon_fg)
+    return Space()..'%#'..icon_hl_group..'#'..icon..'%##'..show_name
+  end
+  return show_name
+end
+
+function FileType()
+  local file_type = Space()..'%#PandaFile#'..vim.bo.filetype..'%##'..Space()
+  return file_type
+end
+
+function Fill()
+  return '%#PandaFill#'
+end
+
 function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
   local wins = api.nvim_list_wins()
-  local hl_name = 'PandaNomalStatusline'
-  if #wins == 1 and is_empty then
-    hl_name = 'PandaEmptyStatusline'
+  if is_empty then 
+    wo.statusline = ' '
+    return 
   end
-  local bg = vim.fn.synIDattr(vim.fn.hlID(hl_name),'bg')
-  local fg = vim.fn.synIDattr(vim.fn.hlID(hl_name),'fg')
-  vim.api.nvim_command('hi statusline guibg='..bg..' guifg='..fg)
-  local show_line = ' '
-  if not is_empty then
-    if vim.fn.winwidth(0) > 40 then
-      show_line = '%#PandaViMode# '..[[%{luaeval('require("pandaline").mode_name()')}]]..' '..'%##'..'%#PandaFile# '..'%##'
-      if not is_hl then show_line = '%#PandaFile# '..'%##' end
-      local file_name = vim.fn.expand('%:t')
-      local extension = file_extension(file_name)
-      local icon, hl_group = require'nerd_icons'.get_icon(file_name, extension)
-      if icon ~= nil then
-        local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
-        local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaFile'),'bg')
-        local icon_gl_group = 'PandaFileIcon'..hl_group
-        vim.api.nvim_command('hi '..icon_gl_group..' guibg='..icon_bg..' guifg='..icon_fg)
-        show_line = show_line..'%#'..icon_gl_group..'#'..icon..'%##'
-      end
-      show_line = show_line..'%#PandaFile# '..file_name..' '..'%##'..'%#PandaFile#'
-    else
-      show_line = '%#PandaFile#'..vim.bo.filetype..'%##'..'%#PandaFile#'
-    end
-    show_line = show_line..'%='..'%#PandaFile#'..' '..'%##'
+  if vim.fn.winwidth(0) <= 40 then 
+    wo.statusline = FileType()..Fill()
+    return
   end
-  wo.statusline = show_line
+  --%=
+  wo.statusline = VIMode()..FileName()..Fill()
 end
 
 function pandaline_augroup()

@@ -55,48 +55,8 @@ autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$") |
       \  exe "normal! g`\"" |
       \ endif
-autocmd BufEnter,FocusGained,InsertLeave * call IM_SelectDefault()
-
-" function
-let g:im_default = 'com.apple.keylayout.ABC'
-function! IM_SelectDefault()
-  let b:saved_im = system("im-select")
-  if v:shell_error
-    unlet b:saved_im
-  else
-    let l:a = system("im-select " . g:im_default)
-  endif
-endfunction
-
-function! VisualStarSearchSet(cmdtype,...)
-  let temp = @"
-  normal! gvy
-  if !a:0 || a:1 != 'raw'
-    let @" = escape(@", a:cmdtype.'\*')
-  endif
-  let @/ = substitute(@", '\n', '\\n', 'g')
-  let @/ = substitute(@/, '\[', '\\[', 'g')
-  let @/ = substitute(@/, '\~', '\\~', 'g')
-  let @/ = substitute(@/, '\.', '\\.', 'g')
-  let @" = temp
-endfunction
 
 " keymaps
-xnoremap * :<C-u>call VisualStarSearchSet('/')<CR>/<C-R>=@/<CR><CR>
-xnoremap # :<C-u>call VisualStarSearchSet('?')<CR>?<C-R>=@/<CR><CR>
-
-nnoremap <silent> <C-k>  :<c-u>execute 'move -1-'. v:count1<CR>
-nnoremap <silent> <C-j>  :<c-u>execute 'move +'. v:count1<CR>
-
-nnoremap -<space>  :<c-u>put! =repeat(nr2char(10), v:count1)<cr>'[
-nnoremap +<space>  :<c-u>put =repeat(nr2char(10), v:count1)<cr>
-
-nnoremap <expr> n  'Nn'[v:searchforward]
-nnoremap <expr> N  'nN'[v:searchforward]
-
-nmap <C-y> "*yw
-xmap <C-y> "*y
-
 let g:mapleader = "\<Space>"
 
 nmap <silent> <Leader>e :Explorer<CR>

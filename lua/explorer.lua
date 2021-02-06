@@ -90,7 +90,6 @@ M.git = {
   },
 }
 
-
 local function root_git_status()
   M.explorer.git_list = {}
   local cwd = luv.cwd()

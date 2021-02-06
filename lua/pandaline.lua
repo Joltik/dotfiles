@@ -107,7 +107,7 @@ function GitBranch()
   local cwd = luv.cwd()
   local git_branch = vim.fn.systemlist('cd "'..cwd..'" && git symbolic-ref --short -q HEAD')
   local branch_name = git_branch[1]
-  if string.find(branch_name,'not a git repository') == nil then
+  if string.find(branch_name,'.git') == nil then
     local icon, hl_group = require'icons'.get_icon('git', '')
     local icon_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'fg')
     local icon_bg = vim.fn.synIDattr(vim.fn.hlID('PandaGit'),'bg')

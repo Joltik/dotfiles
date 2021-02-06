@@ -10,6 +10,7 @@ hi PandaGit guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
 hi PandaFill guibg=#38393f ctermbg=NONE
 hi PandaDim guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
 hi PandaLinePercent guibg=#61afef ctermbg=NONE guifg=#2c323d ctermfg=15
+hi def link PandaTablineExplorer Number
 
 lua require('pandaline').pandaline_augroup()
 

@@ -7,6 +7,7 @@ local open_mode = luv.constants.O_CREAT + luv.constants.O_WRONLY + luv.constants
 local M = {}
 
 M.explorer = {
+  tab_root = false,
   buf_name = 'explorer',
   win_width = 30,
   buf = nil,
@@ -160,6 +161,12 @@ local function show_hidden(name)
   end
 end
 
+local function reload_tab_root()
+  local showtabline = vim.api.nvim_get_option('showtabline')
+  local tab_root = (showtabline == 2) or (showtabline == 1 and #vim.fn.gettabinfo() > 1)
+  M.explorer.tab_root = tab_root
+end
+
 local function search_dir(cwd,level)
   local handle = luv.fs_scandir(cwd)
   if type(handle) == 'string' then
@@ -211,24 +218,35 @@ local function handle_tree_list(root,cwd)
   end
 end
 
-local function handler_root_name(cwd)
+local function root_name()
+  local cwd = luv.cwd()
   local arr = split(cwd, "/")
-  return M.explorer.icon.root..' '..'[ROOT]'..' '..arr[table.getn(arr)]
+  local max_root_len = M.explorer.win_width+2
+  local root = M.explorer.icon.root..' '..'[ROOT]'..' '..arr[table.getn(arr)]
+  if #root > max_root_len then
+    root = string.sub(root,1,max_root_len)
+  else
+    root = root..string.rep(' ',max_root_len-#root)
+  end
+  return root
 end
 
 local function handler_show_tree(cwd)
-  local show_tree = {}
-  local line = 0
   M.explorer.color_list = {}
-  table.insert(show_tree,handler_root_name(cwd))
-  local root_color = {}
-  root_color["group"] = "ExplorerRoot"
-  root_color["line"] = line
-  root_color["col_start"] = 0
-  root_color["col_end"] = -1
+  local show_tree = {}
   local root_colors = {}
-  table.insert(root_colors,root_color)
-  table.insert(M.explorer.color_list,root_colors)
+  local line = -1
+  if not M.explorer.tab_root then
+    line = 0
+    table.insert(show_tree,root_name())
+    local root_color = {}
+    root_color["group"] = "ExplorerRoot"
+    root_color["line"] = line
+    root_color["col_start"] = 0
+    root_color["col_end"] = -1
+    table.insert(root_colors,root_color)
+    table.insert(M.explorer.color_list,root_colors)
+  end
   for k, v in pairs(M.explorer.tree_list) do
     line = line+1
     local show_icon = '  '
@@ -328,6 +346,7 @@ local function reload_tree()
 end
 
 local function draw_tree()
+  reload_tab_root()
   if M.explorer.buf == ni then return end
   M.explorer.tree = {}
   local cwd = luv.cwd()
@@ -358,8 +377,16 @@ local function set_mappings()
   end
 end
 
+local function get_cursor()
+  local line = api.nvim_win_get_cursor(get_explorer_win())[1]
+  if not M.explorer.tab_root then
+    line = line-1
+  end
+  return line
+end
+
 local function open_file(open_type)
-  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local line = get_cursor()
   local item = M.explorer.tree_list[line]
   if item == nil then return end
   if item.fileType == 'directory' then
@@ -400,7 +427,7 @@ local function upper_stage()
 end
 
 local function lower_stage()
-  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local line = get_cursor()
   local item = M.explorer.tree_list[line]
   if item == nil then return end
   if item.fileType == 'directory' then
@@ -460,6 +487,10 @@ local function close_explorer()
   M.explorer.buf = nil
 end
 
+local function is_explorer_open()
+  return M.explorer.buf ~= nil
+end
+
 local function togger_explorer()
   if get_explorer_win() ~= nil then
     close_explorer()
@@ -486,7 +517,7 @@ local function create_res(res)
 end
 
 local function create()
-  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local line = get_cursor()
   local prefix = luv.cwd()..'/'
   if line > 0 then
     local item = M.explorer.tree_list[line]
@@ -556,7 +587,7 @@ local function delete_dir(cwd)
 end
 
 local function delete()
-  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local line = get_cursor()
   if line == 0 then return end
   local item = M.explorer.tree_list[line]
   local res = vim.fn.input("Remove " ..item.filePath.. " ? Y/n: ")
@@ -571,7 +602,7 @@ local function delete()
 end
 
 local function rename()
-  local line = api.nvim_win_get_cursor(get_explorer_win())[1]-1
+  local line = get_cursor()
   if line == 0 then return end
   local item = M.explorer.tree_list[line]
   local new_name = vim.fn.input("Rename " ..item.filePath.. " to ",item.filePath)
@@ -591,7 +622,9 @@ return {
   upper_stage = upper_stage,
   lower_stage = lower_stage,
   togger_hidden = togger_hidden,
+  is_explorer_open = is_explorer_open,
   draw_tree = draw_tree,
+  root_name = root_name,
   cursor_moved = cursor_moved,
   exit_vim = exit_vim,
   rename = rename,

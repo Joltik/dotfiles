@@ -159,6 +159,15 @@ function load_pandaline(is_hl)
   wo.statusline = VIMode()..FileName()..Fill()..RightSplit()..GitBranch()..LinePercent(is_hl)
 end
 
+function load_tabline()
+  local tabs = vim.fn.gettabinfo()
+  local current_tab = vim.fn.tabpagenr()
+  for i, tab in ipairs(tabs) do
+    local is_active_tab = current_tab == tab.tabnr
+  end
+  --wo.tabline = '哈哈哈哈哈哈'
+end
+
 function pandaline_augroup()
   local hl_events = {'FileType','BufEnter','WinEnter','BufWinEnter','FileChangedShellPost','VimResized'}
   local nohl_events = {'WinLeave'}
@@ -173,6 +182,7 @@ function pandaline_augroup()
     vim.api.nvim_command(command)
   end
   api.nvim_command('augroup END')
+  load_tabline()
 end
 
 return {

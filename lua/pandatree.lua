@@ -2,7 +2,8 @@ require'tools'
 
 M = {
   pandatree = {
-    buf_name = 'explorer',
+    buf_name = 'pandatree',
+    wins = {}
   }
 }
 
@@ -26,11 +27,12 @@ local function get_pandatree_windows()
 end
 
 local function exist_pandatree()
+  local pandatree_wins = get_pandatree_windows()
+  return #pandatree_wins > 0
 end
 
 local function togger_tree()
   local pandatree_wins = get_pandatree_windows()
-  dump(pandatree_wins)
 end
 
 return {

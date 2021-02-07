@@ -347,7 +347,7 @@ end
 
 local function draw_tree()
   reload_tab_root()
-  if M.explorer.buf == ni then return end
+  if M.explorer.buf == nil then return end
   M.explorer.tree = {}
   local cwd = luv.cwd()
   search_dir(cwd,0)
@@ -401,14 +401,14 @@ local function open_file(open_type)
     reload_tree()
   else
     if open_type ~= nil then
-      api.nvim_command(open_type..item.filePath)
+      api.nvim_command(open_type..' '..item.filePath)
     else
       local nearest_win = get_nearest_win()
       if nearest_win ~= nil then
         api.nvim_command('wincmd l')
-        api.nvim_command('edit'..item.filePath)
+        api.nvim_command('edit '..item.filePath)
       else
-        api.nvim_command('vsplit'..item.filePath)
+        api.nvim_command('vsplit '..item.filePath)
       end
     end
   end

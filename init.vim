@@ -59,8 +59,8 @@ autocmd BufReadPost *
 " keymaps
 let g:mapleader = "\<Space>"
 
-nmap <silent> <Leader>e :Explorer<CR>
-nmap <silent> <Leader>t :Pandatree<CR>
+nmap <silent> <Leader>t :Explorer<CR>
+nmap <silent> <Leader>e :Pandatree<CR>
 nmap <Leader>w <Plug>(choosewin)
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>

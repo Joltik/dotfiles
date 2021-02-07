@@ -8,7 +8,6 @@ M = {
       bufhidden = 'wipe',
       buftype = 'nofile',
       modifiable = false,
-      filetype = 'pandatree',
     },
     win_width = 30,
     win_options = {
@@ -24,6 +23,7 @@ M = {
       'cursorline',
       'splitright'
     },
+    cursor_line = 1,
     show_hidden = false,
     tree = {},
     tree_list = {},
@@ -114,6 +114,16 @@ local function get_tab_windows()
   return tab_wins
 end
 
+local function get_nearest_win()
+  local tab_wins = get_tab_windows()
+  for _, v in ipairs(tab_wins) do
+    local win_buf = vim.api.nvim_win_get_buf(v)
+    if not is_pandatree_buffer(win_buf)  then
+      return v
+    end
+  end
+end
+
 local function is_exist_pandatree()
   local all_wins = get_pandatree_all_windows()
   return #all_wins > 0
@@ -160,8 +170,7 @@ end
 
 
 local function get_cursor()
-  local win = get_pandatree_tab_windows()[1]
-  local line = vim.api.nvim_win_get_cursor(win)[1]
+  local line = M.pandatree.cursor_line
   if not is_show_tabline() then
     line = line-1
   end
@@ -191,7 +200,7 @@ local function search_tree_list(cwd,level)
           search_tree_list(path,level+1)
         end
       end
-      table.sort(child_tree,sort_tree_list)
+      table.sort(child_tree, sort_tree_list)
       M.pandatree.tree[cwd] = child_tree
     end
   end
@@ -244,10 +253,10 @@ local function reload_show_tree()
     elseif v.t == 'file' then
       local extension = file_extension(v.name)
       local icon, hl_group = require'icons'.get_icon(v.name, extension)
-      if icon == nil then icon = M.explorer.icon.file.default end
+      if icon == nil then icon = M.pandatree.icon.file.default end
       show_icon = icon..' '
     elseif v.t == 'link' then
-      show_icon = M.explorer.icon.file.symlink..' '
+      show_icon = M.pandatree.icon.file.symlink..' '
     end
     local space = ''
     if v.level > 0 then
@@ -259,12 +268,20 @@ local function reload_show_tree()
   return show_tree,show_color
 end
 
+local function reload_cursor(show_tree)
+  local win = get_pandatree_tab_windows()[1]
+  local line = math.min(M.pandatree.cursor_line, #show_tree)
+  vim.api.nvim_win_set_cursor(win, {line, 0})
+end
+
 local function reload_tree()
   reload_tree_list(vim.loop.cwd(),true)
   local show_tree, show_color = reload_show_tree()
+  local buf = get_pandatree_buffer()
   vim.api.nvim_buf_set_option(buf, 'modifiable', true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, show_tree)
   vim.api.nvim_buf_set_option(buf, 'modifiable', false)
+  reload_cursor(show_tree)
 end
 
 local function draw_tree()
@@ -275,9 +292,20 @@ local function draw_tree()
   reload_tree()
 end
 
+local function cursor_moved()
+  local win = get_pandatree_tab_windows()[1]
+  local line = vim.api.nvim_win_get_cursor(win)[1]
+  vim.api.nvim_win_set_cursor(win, {line, 0})
+  M.pandatree.cursor_line = line
+end
+
 local function exit()
   if #get_pandatree_tab_windows() == 1 and #get_tab_windows() == 1 then
-    return vim.cmd ':q!'
+    local tabs = vim.fn.gettabinfo()
+    vim.api.nvim_command('q')
+    if #tabs > 1 then
+      draw_tree()
+    end
   end
 end
 
@@ -304,13 +332,12 @@ local function set_mappings()
   end
 end
 
-
 function pandatree_augroup()
   vim.api.nvim_command('augroup PandaTree')
   vim.api.nvim_command('autocmd!')
-  --vim.api.nvim_command('autocmd CursorMoved <buffer> lua require"explorer".cursor_moved()')
-  --vim.api.nvim_command('autocmd BufWritePost * lua require"explorer".draw_tree()')
-  vim.api.nvim_command('autocmd TabEnter,BufEnter * lua require"pandatree".sync_tab_tree()')
+  vim.api.nvim_command('autocmd CursorMoved <buffer> lua require"pandatree".cursor_moved()')
+  vim.api.nvim_command('autocmd BufWritePost * lua require"pandatree".draw_tree()')
+  vim.api.nvim_command('autocmd BufEnter * lua require"pandatree".sync_tab_tree()')
   vim.api.nvim_command('autocmd BufEnter * lua require"pandatree".exit()')
   vim.api.nvim_command('augroup END')
 end
@@ -328,10 +355,12 @@ local function open_tree()
   for k, v in pairs(M.pandatree.win_options) do
     vim.api.nvim_win_set_option(win, k, v)
   end
+  vim.api.nvim_buf_set_option(buf, 'filetype', M.pandatree.buf_name)
   draw_tree()
   set_mappings()
   pandatree_augroup()
   M.pandatree.is_opening = false
+  require'pandaline'.load_tabline()
 end
 
 local function close_tree()
@@ -339,6 +368,7 @@ local function close_tree()
   for _, win in pairs(wins) do
     vim.api.nvim_win_close(win, true)
   end
+  require'pandaline'.load_tabline()
 end
 
 local function togger_tree()
@@ -355,7 +385,6 @@ local function sync_tab_tree()
     vim.api.nvim_command("wincmd l")
   end
 end
-
 
 local function open_file(open_type)
   local line = get_cursor()
@@ -375,21 +404,24 @@ local function open_file(open_type)
     if open_type ~= nil then
       vim.api.nvim_command(open_type..' '..item.path)
     else
-     -- local nearest_win = get_nearest_win()
-     -- if nearest_win ~= nil then
-     --   api.nvim_command('wincmd l')
-     --   api.nvim_command('edit '..item.filePath)
-     -- else
-     --   api.nvim_command('vsplit '..item.filePath)
-     -- end
+     local nearest_win = get_nearest_win()
+     if nearest_win ~= nil then
+       vim.api.nvim_command('wincmd l')
+       vim.api.nvim_command('edit '..item.path)
+     else
+       vim.api.nvim_command('vsplit '..item.path)
+     end
     end
   end
 end
 
-
 return {
   togger_tree = togger_tree,
+  draw_tree = draw_tree,
   sync_tab_tree = sync_tab_tree,
+  cursor_moved = cursor_moved,
   exit = exit,
-  open_file = open_file
+  open_file = open_file,
+  tree_root_name = tree_root_name,
+  is_exist_tab_pandatree = is_exist_tab_pandatree
 }

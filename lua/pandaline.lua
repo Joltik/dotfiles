@@ -139,7 +139,6 @@ end
 
 function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
-  local wins = vim.api.nvim_list_wins()
   if is_empty then 
     vim.wo.statusline = ' '
     return 
@@ -163,10 +162,10 @@ function load_tabline()
     local is_active_tab = current_tab == tab.tabnr
     all_tabs[i] = {}
   end
-  local is_explorer_open = require'explorer'.is_explorer_open()
+  local is_exist_pandatree = require'pandatree'.is_exist_tab_pandatree()
   local tabline = '哈哈哈哈哈哈哈'
-  if is_explorer_open then
-    tabline = '%#PandaTabLineExplorer#'..require'explorer'.root_name()..'%##'..tabline
+  if is_exist_pandatree then
+    tabline = '%#PandaTabLineExplorer#'..require'pandatree'.tree_root_name()..'%##'..tabline
   end
   vim.o.tabline = tabline
 end
@@ -174,7 +173,7 @@ end
 function pandaline_augroup()
   local hl_events = {'FileType','BufEnter','WinEnter','BufWinEnter','FileChangedShellPost','VimResized'}
   local nohl_events = {'WinLeave'}
-  local tab_events = {'TabNew','TabClosed','BufEnter','BufLeave'}
+  local tab_events = {'BufWinEnter'}
   vim.api.nvim_command('augroup pandaline')
   vim.api.nvim_command('autocmd!')
   for _, v in ipairs(hl_events) do
@@ -187,7 +186,7 @@ function pandaline_augroup()
   end
   for _, v in ipairs(tab_events) do
     local command = string.format('autocmd %s * lua require("pandaline").load_tabline()', v)
-    --vim.api.nvim_command(command)
+    vim.api.nvim_command(command)
   end
   vim.api.nvim_command('augroup END')
 end

@@ -1,7 +1,3 @@
-local api = vim.api
-local luv = vim.loop
-local wo = vim.wo
-
 require'tools'
 
 local M = {
@@ -15,7 +11,7 @@ local M = {
       color = '#61afef'
     },
     c = {
-      name = 'Command',
+      name = 'COMMAND',
       color = '#98c379'
     },
     v = {
@@ -23,15 +19,11 @@ local M = {
       color = '#c678dd'
     },
     V = {
-      name = 'V·Line',
-      color = '#c678dd'
-    },
-    [''] = {
-      name = 'VISUAL',
+      name = 'V-LINE',
       color = '#c678dd'
     },
     ['\22'] = {
-      name = 'V·Colum',
+      name = 'V-BLOCK',
       color = '#c678dd'
     },
     R = {
@@ -47,7 +39,11 @@ local M = {
       color = '#e5c07b'
     },
     S = {
-      name = 'S·LINE',
+      name = 'S-LINE',
+      color = '#e5c07b'
+    },
+    [''] = {
+      name = 'S-BLOCK',
       color = '#e5c07b'
     }
   }
@@ -64,7 +60,7 @@ local function mode_name()
   local name = mode_info.name
   local mode_fg = vim.fn.synIDattr(vim.fn.hlID('PandaViMode'),'fg')
   vim.api.nvim_command('hi PandaViMode guibg=' .. mode_info.color .. ' guifg='..mode_fg)
-  return string.upper(name)
+  return name
 end
 
 function VIMode()
@@ -104,7 +100,7 @@ function GitSpace()
 end
 
 function GitBranch()
-  local cwd = luv.cwd()
+  local cwd = vim.loop.cwd()
   local git_branch = vim.fn.systemlist('cd "'..cwd..'" && git symbolic-ref --short -q HEAD')
   local branch_name = git_branch[1]
   if string.find(branch_name,'.git') == nil then
@@ -143,20 +139,20 @@ end
 
 function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
-  local wins = api.nvim_list_wins()
+  local wins = vim.api.nvim_list_wins()
   if is_empty then 
-    wo.statusline = ' '
+    vim.wo.statusline = ' '
     return 
   end
   if vim.fn.winwidth(0) <= 40 then 
-    wo.statusline = FileType()..Fill()..RightSplit()..LinePercent(is_hl)
+    vim.wo.statusline = FileType()..Fill()..RightSplit()..LinePercent(is_hl)
     return
   end
   if not is_hl then
-    wo.statusline = FileName()..Fill()..RightSplit()..LinePercent(is_hl)
+    vim.wo.statusline = FileName()..Fill()..RightSplit()..LinePercent(is_hl)
     return
   end
-  wo.statusline = VIMode()..FileName()..Fill()..RightSplit()..GitBranch()..LinePercent(is_hl)
+  vim.wo.statusline = VIMode()..FileName()..Fill()..RightSplit()..GitBranch()..LinePercent(is_hl)
 end
 
 function load_tabline()
@@ -179,8 +175,8 @@ function pandaline_augroup()
   local hl_events = {'FileType','BufEnter','WinEnter','BufWinEnter','FileChangedShellPost','VimResized'}
   local nohl_events = {'WinLeave'}
   local tab_events = {'TabNew','TabClosed','BufEnter','BufLeave'}
-  api.nvim_command('augroup pandaline')
-  api.nvim_command('autocmd!')
+  vim.api.nvim_command('augroup pandaline')
+  vim.api.nvim_command('autocmd!')
   for _, v in ipairs(hl_events) do
     local command = string.format('autocmd %s * lua require("pandaline").load_pandaline(true)', v)
     vim.api.nvim_command(command)
@@ -193,7 +189,7 @@ function pandaline_augroup()
     local command = string.format('autocmd %s * lua require("pandaline").load_tabline()', v)
     --vim.api.nvim_command(command)
   end
-  api.nvim_command('augroup END')
+  vim.api.nvim_command('augroup END')
 end
 
 return {

@@ -8,6 +8,7 @@ M = {
       bufhidden = 'wipe',
       buftype = 'nofile',
       modifiable = false,
+      filetype = 'pandatree'
     },
     win_width = 30,
     win_options = {
@@ -23,7 +24,7 @@ M = {
       'cursorline',
       'splitright'
     },
-    cursor_line = 1,
+    cursor_line_item = nil,
     show_hidden = false,
     tree = {},
     tree_list = {},
@@ -50,12 +51,6 @@ end
 
 local function is_pandatree_buffer(buf)
   return vim.api.nvim_buf_get_name(buf):match('.*/'..M.pandatree.buf_name..'$')
-end
-
-local function exist_tabline()
-  local showtabline = vim.api.nvim_get_option('showtabline')
-  local is_exist_tab = (showtabline == 2) or (showtabline == 1 and #vim.fn.gettabinfo() > 1)
-  return is_exist_tab
 end
 
 local function get_pandatree_all_windows()
@@ -169,10 +164,12 @@ local function sort_tree_list(item1,item2)
 end
 
 
-local function get_cursor()
-  local line = M.pandatree.cursor_line
-  if not is_show_tabline() then
-    line = line-1
+local function get_cursor_line()
+  local line = 1
+  for k, v in pairs(M.pandatree.tree_list) do
+    if M.pandatree.cursor_line_item == v then
+      line = k
+    end
   end
   return line
 end
@@ -207,7 +204,12 @@ local function search_tree_list(cwd,level)
 end
 
 local function reload_tree_list(cwd,is_first)
-  if is_first then M.pandatree.tree_list = {} end
+  if is_first then 
+    M.pandatree.tree_list = {} 
+    if not is_show_tabline() then
+      table.insert(M.pandatree.tree_list,{level = 0})
+    end
+  end
   if M.pandatree.tree[cwd] == nil then return end
   for _,v in pairs(M.pandatree.tree[cwd]) do
     table.insert(M.pandatree.tree_list,v)
@@ -236,52 +238,64 @@ end
 local function reload_show_tree()
   local show_tree = {}
   local show_color = {}
-  local line = -1
-  if not is_show_tabline() then
-    line = 0
-    table.insert(show_tree,tree_root_name())
-  end
+  local line = 0
   for _, v in pairs(M.pandatree.tree_list) do
-    line = line+1
-    local show_icon = '  '
-    if v.t == 'directory' then
-      local dir_icon = M.pandatree.icon.folder_icons.default
-      if M.pandatree.fold[v.path] == true then
-        dir_icon = M.pandatree.icon.folder_icons.open
-      end
-      show_icon = dir_icon..' '
-    elseif v.t == 'file' then
-      local extension = file_extension(v.name)
-      local icon, hl_group = require'icons'.get_icon(v.name, extension)
-      if icon == nil then icon = M.pandatree.icon.file.default end
-      show_icon = icon..' '
-    elseif v.t == 'link' then
-      show_icon = M.pandatree.icon.file.symlink..' '
-    end
-    local space = ''
     if v.level > 0 then
-      space = ' '..string.rep('  ', v.level-1)
+      local show_icon = '  '
+      if v.t == 'directory' then
+        local dir_icon = M.pandatree.icon.folder_icons.default
+        if M.pandatree.fold[v.path] == true then
+          dir_icon = M.pandatree.icon.folder_icons.open
+        end
+        show_icon = dir_icon..' '
+      elseif v.t == 'file' then
+        local extension = file_extension(v.name)
+        local icon, hl_group = require'icons'.get_icon(v.name, extension)
+        if icon == nil then icon = M.pandatree.icon.file.default end
+        show_icon = icon..' '
+      elseif v.t == 'link' then
+        show_icon = M.pandatree.icon.file.symlink..' '
+      end
+      local space = ''
+      if v.level > 0 then
+        space = ' '..string.rep('  ', v.level-1)
+      end
+      local show_line = space..show_icon..v.name
+      table.insert(show_tree,show_line)
+    else
+      table.insert(show_color, {{
+        group = "ExplorerRoot",
+        line = line,
+        col_start = 0,
+        col_end = -1
+      }})
+      table.insert(show_tree,tree_root_name())
     end
-    local show_line = space..show_icon..v.name
-    table.insert(show_tree,show_line)
+    line = line+1
   end
   return show_tree,show_color
 end
 
-local function reload_cursor(show_tree)
+local function reload_cursor()
   local win = get_pandatree_tab_windows()[1]
-  local line = math.min(M.pandatree.cursor_line, #show_tree)
+  local line = math.min(get_cursor_line(), #M.pandatree.tree_list)
   vim.api.nvim_win_set_cursor(win, {line, 0})
 end
 
 local function reload_tree()
-  reload_tree_list(vim.loop.cwd(),true)
+  reload_tree_list(vim.loop.cwd(), true)
   local show_tree, show_color = reload_show_tree()
   local buf = get_pandatree_buffer()
   vim.api.nvim_buf_set_option(buf, 'modifiable', true)
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, show_tree)
+  for _, v in pairs(show_color) do
+    for _, v2 in pairs(v) do
+      dump(v2.line)
+      vim.api.nvim_buf_add_highlight(buf, -1, v2.group, v2.line, v2.col_start, v2.col_end)
+    end
+  end
   vim.api.nvim_buf_set_option(buf, 'modifiable', false)
-  reload_cursor(show_tree)
+  reload_cursor()
 end
 
 local function draw_tree()
@@ -296,7 +310,7 @@ local function cursor_moved()
   local win = get_pandatree_tab_windows()[1]
   local line = vim.api.nvim_win_get_cursor(win)[1]
   vim.api.nvim_win_set_cursor(win, {line, 0})
-  M.pandatree.cursor_line = line
+  M.pandatree.cursor_line_item = M.pandatree.tree_list[line]
 end
 
 local function exit()
@@ -355,17 +369,20 @@ local function open_tree()
   for k, v in pairs(M.pandatree.win_options) do
     vim.api.nvim_win_set_option(win, k, v)
   end
-  vim.api.nvim_buf_set_option(buf, 'filetype', M.pandatree.buf_name)
   draw_tree()
   set_mappings()
   pandatree_augroup()
   M.pandatree.is_opening = false
+  require'pandaline'.load_pandaline(true)
   require'pandaline'.load_tabline()
 end
 
 local function close_tree()
   local wins = get_pandatree_all_windows()
   for _, win in pairs(wins) do
+    if vim.api.nvim_get_current_win() == win then
+      vim.api.nvim_command("wincmd l")
+    end
     vim.api.nvim_win_close(win, true)
   end
   require'pandaline'.load_tabline()
@@ -387,9 +404,9 @@ local function sync_tab_tree()
 end
 
 local function open_file(open_type)
-  local line = get_cursor()
+  local line = get_cursor_line()
   local item = M.pandatree.tree_list[line]
-  if item == nil then return end
+  if item.path == nil then return end
   if item.t == 'directory' then
     if open_type ~= nil then return end
     local is_fold = M.pandatree.fold[item.path] ~= nil

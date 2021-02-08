@@ -27,6 +27,7 @@ set signcolumn=number
 set splitright
 set fillchars=vert:¦
 set wrap
+set showtabline=1
 
 set rtp+=/Users/xiaogao/.config/nvim/plugin/*.vim'
 

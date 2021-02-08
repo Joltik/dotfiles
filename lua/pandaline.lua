@@ -155,25 +155,27 @@ function load_pandaline(is_hl)
 end
 
 function load_tabline()
-  local all_tabs = {}
+  local tabline = ''
   local tabs = vim.fn.gettabinfo()
   local current_tab = vim.fn.tabpagenr()
   for i, tab in ipairs(tabs) do
     local is_active_tab = current_tab == tab.tabnr
-    all_tabs[i] = {}
+    local win_nr = vim.fn.tabpagewinnr(tab.tabnr)
+    local buf = vim.api.nvim_win_get_buf(tab.windows[win_nr])
+    local name = vim.fn.bufname(buf)
+    local paths = split(name, '/')
+    tabline = tabline..'['..paths[#paths]..']  '
   end
-  local is_exist_pandatree = require'pandatree'.is_exist_tab_pandatree()
-  local tabline = '哈哈哈哈哈哈哈'
-  if is_exist_pandatree then
+  if require'pandatree'.is_exist_tab_pandatree() then
     tabline = '%#PandaTabLineExplorer#'..require'pandatree'.tree_root_name()..'%##'..tabline
   end
   vim.o.tabline = tabline
 end
 
 function pandaline_augroup()
-  local hl_events = {'FileType','BufEnter','WinEnter','BufWinEnter','FileChangedShellPost','VimResized'}
-  local nohl_events = {'WinLeave'}
-  local tab_events = {'BufWinEnter'}
+  local hl_events = {'BufEnter','WinEnter','BufDelete','FileChangedShellPost','VimResized'}
+  local nohl_events = {'WinLeave','BufWinLeave'}
+  local tab_events = {'WinEnter','BufEnter','BufDelete','TabEnter','BufWinLeave','TabLeave'}
   vim.api.nvim_command('augroup pandaline')
   vim.api.nvim_command('autocmd!')
   for _, v in ipairs(hl_events) do

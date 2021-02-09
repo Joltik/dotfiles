@@ -11,6 +11,9 @@ hi PandaFill guibg=#38393f ctermbg=NONE
 hi PandaDim guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
 hi PandaLinePercent guibg=#61afef ctermbg=NONE guifg=#2c323d ctermfg=15
 hi def link PandaTablineExplorer Number
+hi PandaTablineNomal guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
+hi PandaTablineSelected guibg=#61afef ctermbg=NONE guifg=#2c323d ctermfg=15
+hi PandaTablineFill guibg=NONE ctermbg=NONE
 
 lua require('pandaline').pandaline_augroup()
 

@@ -29,6 +29,7 @@ M = {
     tree = {},
     tree_list = {},
     fold = {},
+    git_list = {},
     icon = {
       root = "",
       file_icons = {
@@ -39,10 +40,87 @@ M = {
         default = "",
         open = "",
         symlink = "",
-      }
+      },
+      git = {
+        unstaged = "✹",
+        staged = "✓",
+        unmerged = "═",
+        renamed = "➜",
+        untracked = "★",
+        deleted = "✗"
+      },
+    },
+    git = {
+      ["M "] = {
+        { icon = 'staged', hl = "PandaTreeGitStaged" },
+        {}
+      },
+      [" M"] = {
+        {},
+        { icon = 'unstaged', hl = "PandaTreeGitDirty" }
+      },
+      ["MM"] = {
+        { icon = 'staged', hl = "PandaTreeGitStaged" },
+        { icon = 'unstaged', hl = "PandaTreeGitDirty" }
+      },
+      ["A "] = {
+        { icon = 'staged', hl = "PandaTreeGitStaged" },
+        { icon = 'untracked', hl = "PandaTreeGitNew" }
+      },
+      [" A"] = {
+        {},
+        { icon = 'untracked', hl = "PandaTreeGitNew" }
+      },
+      ["AM"] = {
+        { icon = 'staged', hl = "PandaTreeGitStaged" },
+        { icon = 'untracked', hl = "PandaTreeGitNew" }
+      },
+      ["??"] = {
+        { icon = 'untracked', hl = "PandaTreeGitDirty" },
+        {}
+      },
+      ["R "] = {
+        { icon = 'renamed', hl = "PandaTreeGitRenamed" },
+        {}
+      },
+      ["RM"] = {
+        { icon = 'unstaged', hl = "PandaTreeGitDirty" },
+        { icon = 'renamed', hl = "PandaTreeGitRenamed" }
+      },
+      ["UU"] = {
+        { icon = 'unmerged', hl = "PandaTreeGitMerge" },
+        {}
+      },
+      [" D"] = {
+        {},
+        { icon = 'deleted', hl = "PandaTreeGitDeleted" }
+      },
     }
   }
 }
+
+local function reload_git_status()
+  M.pandatree.git_list = {}
+  local cwd = vim.loop.cwd()
+  local status_list = vim.fn.systemlist('cd "'..cwd..'" && git status --porcelain=v1 -u')
+  for _, v in pairs(status_list) do
+    if string.find(v,'.git') == nil then
+      local status = v:sub(0, 2)
+      local file_path = v:sub(4, -1)
+      if file_path:match('%->') ~= nil then
+        file_path = file_path:gsub('^.* %-> ', '')
+      end
+      local full_path = cwd..'/'..file_path
+      M.pandatree.git_list[full_path] = status
+      local paths = split(file_path,'/')
+      local dir_path = cwd
+      for _, path in ipairs(paths) do
+        M.pandatree.git_list[dir_path] = ' M'
+        dir_path = dir_path..'/'..path
+      end
+    end
+  end
+end
 
 local function is_show_tabline()
   local showtabline = vim.api.nvim_get_option('showtabline')
@@ -175,6 +253,7 @@ local function get_cursor_line()
 end
 
 local function search_tree_list(cwd,level)
+  if level == 1 then M.pandatree.tree = {} end
   local handle = vim.loop.fs_scandir(cwd)
   if type(handle) == 'string' then
     vim.api.nvim_err_writeln(handle)
@@ -241,27 +320,79 @@ local function reload_show_tree()
   local line = 0
   for _, v in pairs(M.pandatree.tree_list) do
     if v.level > 0 then
-      local show_icon = '  '
-      if v.t == 'directory' then
-        local dir_icon = M.pandatree.icon.folder_icons.default
-        if M.pandatree.fold[v.path] == true then
-          dir_icon = M.pandatree.icon.folder_icons.open
-        end
-        show_icon = dir_icon..' '
-      elseif v.t == 'file' then
-        local extension = file_extension(v.name)
-        local icon, hl_group = require'icons'.get_icon(v.name, extension)
-        if icon == nil then icon = M.pandatree.icon.file.default end
-        show_icon = icon..' '
-      elseif v.t == 'link' then
-        show_icon = M.pandatree.icon.file.symlink..' '
-      end
+      local line_colors = {}
+      local show_icon
+      local group = 'PandaTreeFile'
+      local col_start = 0
       local space = ''
       if v.level > 0 then
         space = ' '..string.rep('  ', v.level-1)
       end
+      if v.t == 'directory' then
+        show_icon = M.pandatree.icon.folder_icons.default
+        if M.pandatree.fold[v.path] == true then
+          show_icon = M.pandatree.icon.folder_icons.open
+        end
+        group = 'PandaTreeFolder'
+      elseif v.t == 'link' then
+        show_icon = M.pandatree.icon.file_icons.symlink
+      else
+        local extension = file_extension(v.name)
+        local icon, hl_group = require'icons'.get_icon(v.name, extension)
+        if icon == nil then
+          show_icon = M.pandatree.icon.file_icons.default
+        else
+          show_icon = icon
+        end
+        if hl_group ~= nil then
+          col_start = #space+#show_icon
+          table.insert(line_colors, {
+            group = hl_group,
+            line = line,
+            col_start = 0,
+            col_end = col_start
+          })
+        end
+      end
+      show_icon = show_icon..' '
       local show_line = space..show_icon..v.name
-      table.insert(show_tree,show_line)
+      local max_line_len = M.pandatree.win_width-1
+      if #show_line > max_line_len then
+        local name_end_index = max_line_len-7
+        show_line = string.sub(show_line,name_end_index)..'...'..string.sub(show_line,-4)
+      else
+        show_line = show_line..string.rep(' ',max_line_len-#show_line)
+      end
+      table.insert(line_colors, {
+        group = group,
+        line = line,
+        col_start = col_start,
+        col_end = #show_line
+      })
+      local git_status = M.pandatree.git_list[v.path]
+      local show_git = ''
+      if  git_status ~= nil then
+        local git_item = M.pandatree.git[git_status]
+        for _, v in pairs(git_item) do
+          local git_item_icon = ' '
+          if v.icon ~= nil then
+            git_item_icon = M.pandatree.icon.git[v.icon]
+          end
+          show_git = show_git..git_item_icon
+          if v.hl ~= nil then
+            local git_hl_start = max_line_len+#show_git
+            table.insert(line_colors, {
+              group = v.hl,
+              line = line,
+              col_start = git_hl_start,
+              col_end = git_hl_start+1
+            })
+          end
+        end
+      end
+      show_line = show_line..' '..show_git
+      table.insert(show_tree, show_line)
+      table.insert(show_color, line_colors)
     else
       table.insert(show_color, {{
         group = "ExplorerRoot",
@@ -290,7 +421,6 @@ local function reload_tree()
   vim.api.nvim_buf_set_lines(buf, 0, -1, false, show_tree)
   for _, v in pairs(show_color) do
     for _, v2 in pairs(v) do
-      dump(v2.line)
       vim.api.nvim_buf_add_highlight(buf, -1, v2.group, v2.line, v2.col_start, v2.col_end)
     end
   end
@@ -301,8 +431,8 @@ end
 local function draw_tree()
   local buf = get_pandatree_buffer()
   if buf == nil then return end
-  M.pandatree.tree = {}
   search_tree_list(vim.loop.cwd(),1)
+  reload_git_status()
   reload_tree()
 end
 
@@ -337,7 +467,7 @@ local function set_mappings()
     ['<C-r>'] = 'rename()',
     ['<C-a>'] = 'create()',
     ['<C-d>'] = 'delete()',
-    ['q'] = 'close_explorer()',
+    ['q'] = 'close_tree()',
   }
   for k,v in pairs(mappings) do
     vim.api.nvim_buf_set_keymap(buf, 'n', k, ':lua require"pandatree".'..v..'<cr>', {
@@ -419,6 +549,9 @@ local function open_file(open_type)
     reload_tree()
   else
     if open_type ~= nil then
+      if open_type == 'tabe' then
+        vim.api.nvim_command('wincmd l')
+      end
       vim.api.nvim_command(open_type..' '..item.path)
     else
      local nearest_win = get_nearest_win()

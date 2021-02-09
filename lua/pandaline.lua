@@ -154,22 +154,28 @@ function load_pandaline(is_hl)
   vim.wo.statusline = VIMode()..FileName()..Fill()..RightSplit()..GitBranch()..LinePercent(is_hl)
 end
 
+function load_one_tabline(tab,is_hl)
+  local win_nr = vim.fn.tabpagewinnr(tab.tabnr)
+  local buf = vim.api.nvim_win_get_buf(tab.windows[win_nr])
+  local paths = split(vim.fn.bufname(buf), '/')
+  local file_name = paths[#paths]
+  local group = 'PandaTabLineNomal'
+  if is_hl then group = 'PandaTabLineSelected' end
+  return '%#'..group..'#  '..file_name..'  %##'
+end
+
 function load_tabline()
   local tabline = ''
   local tabs = vim.fn.gettabinfo()
   local current_tab = vim.fn.tabpagenr()
   for i, tab in ipairs(tabs) do
-    local is_active_tab = current_tab == tab.tabnr
-    local win_nr = vim.fn.tabpagewinnr(tab.tabnr)
-    local buf = vim.api.nvim_win_get_buf(tab.windows[win_nr])
-    local name = vim.fn.bufname(buf)
-    local paths = split(name, '/')
-    tabline = tabline..'['..paths[#paths]..']  '
+    local name = load_one_tabline(tab, current_tab == tab.tabnr)
+    tabline = tabline..name
   end
   if require'pandatree'.is_exist_tab_pandatree() then
     tabline = '%#PandaTabLineExplorer#'..require'pandatree'.tree_root_name()..'%##'..tabline
   end
-  vim.o.tabline = tabline
+  vim.o.tabline = tabline..'%#PandaTabLineFill#'
 end
 
 function pandaline_augroup()

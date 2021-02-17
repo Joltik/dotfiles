@@ -4,6 +4,7 @@ Plug 'yianwillis/vimcdoc'
 Plug 't9md/vim-choosewin'
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
 Plug 'norcalli/nvim-colorizer.lua'
+Plug 'airblade/vim-gitgutter'
 
 call plug#end()
 
@@ -23,7 +24,7 @@ set noshowmode
 set laststatus=2
 set number
 set cursorline
-set signcolumn=number
+set signcolumn=auto
 set splitright
 set fillchars=vert:¦
 set wrap
@@ -56,6 +57,13 @@ autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$") |
       \  exe "normal! g`\"" |
       \ endif
+" gitgutter
+let g:gitgutter_sign_added = '▌'
+let g:gitgutter_sign_modified = '▌'
+let g:gitgutter_sign_removed = '▌'
+let g:gitgutter_sign_removed_first_line = '▌'
+let g:gitgutter_sign_removed_above_and_below = '▌'
+let g:gitgutter_sign_modified_removed = '▌'
 
 " keymaps
 let g:mapleader = "\<Space>"

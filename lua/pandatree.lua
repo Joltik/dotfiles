@@ -565,6 +565,65 @@ local function open_file(open_type)
   end
 end
 
+local function clear_buffer(file_path)
+  for _, buf in pairs(api.nvim_list_bufs()) do
+    if api.nvim_buf_get_name(buf) == file_path then
+      api.nvim_command(':bd! '..buf)
+    end
+  end
+end
+
+local function rename()
+  local line = get_cursor_line()
+  local item = M.pandatree.tree_list[line]
+  if item.path == nil then return end
+  local new_name = vim.fn.input("Rename " ..item.path.. " to ",item.path)
+  vim.api.nvim_command('normal :esc<CR>')
+  if not new_name or #new_name == 0 then return end
+  local success = vim.loop.fs_rename(item.path, new_name)
+  if not success then
+    return api.nvim_err_writeln('Could not rename '..item.path..' to '..new_name)
+  end
+  draw_tree()
+end
+
+local function delete_dir(cwd)
+  local handle = vim.loop.fs_scandir(cwd)
+  if type(handle) == 'string' then
+    return api.nvim_err_writeln(handle)
+  end
+  while true do
+    local name, t = vim.loop.fs_scandir_next(handle)
+    if not name then break end
+    local new_cwd = cwd..'/'..name
+    if t == 'directory' then
+      delete_dir(new_cwd)
+      vim.loop.fs_rmdir(new_cwd)
+    else
+      local success = vim.loop.fs_unlink(new_cwd)
+      if success then
+        clear_buffer(new_cwd)
+      end
+    end
+  end
+  vim.loop.fs_rmdir(cwd)
+end
+
+local function delete()
+  local line = get_cursor_line()
+  local item = M.pandatree.tree_list[line]
+  if item.path == nil then return end
+  local res = vim.fn.input("Remove " ..item.path.. " ? Y/n: ")
+  vim.api.nvim_command('normal :esc<CR>')
+  if res ~= 'Y' then return end
+  if item.t == 'directory' then
+    delete_dir(item.path)
+  else
+    vim.loop.fs_unlink(item.path)
+  end
+  draw_tree()
+end
+
 return {
   togger_tree = togger_tree,
   draw_tree = draw_tree,
@@ -573,5 +632,7 @@ return {
   exit = exit,
   open_file = open_file,
   tree_root_name = tree_root_name,
-  is_exist_tab_pandatree = is_exist_tab_pandatree
+  is_exist_tab_pandatree = is_exist_tab_pandatree,
+  rename = rename,
+  delete = delete
 }

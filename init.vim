@@ -1,12 +1,4 @@
-call plug#begin('~/.vim/plugged')
-
-Plug 'yianwillis/vimcdoc'
-Plug 't9md/vim-choosewin'
-Plug 'christianchiarulli/nvcode-color-schemes.vim'
-Plug 'norcalli/nvim-colorizer.lua'
-Plug 'airblade/vim-gitgutter'
-
-call plug#end()
+lua require('plugins')
 
 set hlsearch
 set incsearch
@@ -46,7 +38,7 @@ hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
 hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
 
-lua require('plug')
+lua require('plugin_setting')
 
 " plug setting
 let g:plug_window = 'vertical rightbelow new'

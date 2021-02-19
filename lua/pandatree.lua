@@ -369,7 +369,7 @@ local function reload_show_tree()
       local max_line_len = M.pandatree.win_width-1
       if #show_line > max_line_len then
         local name_end_index = max_line_len-7
-        show_line = string.sub(show_line,name_end_index)..'...'..string.sub(show_line,-4)
+        show_line = string.sub(show_line,1,name_end_index)..'...'..string.sub(show_line,-4)
       else
         show_line = show_line..string.rep(' ',max_line_len-#show_line)
       end
@@ -595,8 +595,7 @@ local function lower_stage()
   local item = M.pandatree.tree_list[line]
   if item.path == nil then return end
   if item.t == 'directory' then
-    local new_path = vim.loop.cwd()..'/'..item.name
-    vim.api.nvim_command("cd "..new_path)
+    vim.api.nvim_command("cd "..item.path)
     draw_tree()
   end
 end

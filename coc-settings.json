@@ -1,0 +1,7 @@
+{
+	"suggest.noselect": false,
+	"tsserver.implicitProjectConfig.experimentalDecorators": true,
+  "coc.preferences.formatOnSaveFiletypes": [
+    "dart"
+  ]
+}

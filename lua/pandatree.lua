@@ -421,7 +421,9 @@ local function reload_cursor()
   local win = get_pandatree_tab_windows()[1]
   local line = get_cursor_line()
   local new_line = math.min(line, #M.pandatree.tree_list)
-  vim.api.nvim_win_set_cursor(win, {new_line, 0})
+  if is_exist_tab_pandatree() then
+    vim.api.nvim_win_set_cursor(win, {new_line, 0})
+  end
 end
 
 local function reload_tree()

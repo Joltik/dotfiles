@@ -10,6 +10,8 @@ end
 
 vim.cmd [[packadd packer.nvim]]
 
+vim.api.nvim_command('autocmd BufWritePost plugins.lua PackerCompile')
+
 return require('packer').startup({function()
   use 'yianwillis/vimcdoc'
   use 't9md/vim-choosewin'
@@ -17,4 +19,6 @@ return require('packer').startup({function()
   use 'norcalli/nvim-colorizer.lua'
   use 'airblade/vim-gitgutter'
   use { 'nvim-treesitter/nvim-treesitter', run = ':TSUpdate' }
+  use 'neovim/nvim-lspconfig'
+  use { 'neoclide/coc.nvim', branch = 'release' }
 end, config = { auto_clean = false }})

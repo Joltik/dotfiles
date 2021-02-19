@@ -1,4 +1,16 @@
-lua require('plugins')
+" lua require('plugins')
+call plug#begin('~/.vim/plugged')
+
+Plug 'yianwillis/vimcdoc'
+Plug 't9md/vim-choosewin'
+Plug 'christianchiarulli/nvcode-color-schemes.vim'
+Plug 'norcalli/nvim-colorizer.lua'
+Plug 'airblade/vim-gitgutter'
+Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
+Plug 'neovim/nvim-lspconfig'
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
+
+call plug#end()
 
 set hlsearch
 set incsearch
@@ -7,6 +19,7 @@ set updatetime=300
 set shortmess+=c
 set nobackup
 set nowritebackup
+set hidden
 " tabsize
 set expandtab
 set shiftwidth=2
@@ -56,6 +69,12 @@ let g:gitgutter_sign_removed = '▌'
 let g:gitgutter_sign_removed_first_line = '▌'
 let g:gitgutter_sign_removed_above_and_below = '▌'
 let g:gitgutter_sign_modified_removed = '▌'
+" coc
+let g:coc_config_home = '$HOME/.config/nvim'
+let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-flutter']
+
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " keymaps
 let g:mapleader = "\<Space>"
@@ -64,3 +83,6 @@ nmap <silent> <Leader>e :Pandatree<CR>
 nmap <Leader>w <Plug>(choosewin)
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
+
+nmap <silent> gd <Plug>(coc-definition)
+nmap <leader>rn <Plug>(coc-rename)

@@ -15,3 +15,5 @@ require'nvim-treesitter.configs'.setup {
     enable = true
   }
 }
+
+-- require'lsp'

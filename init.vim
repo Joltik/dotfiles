@@ -68,7 +68,6 @@ let g:gitgutter_sign_modified_removed = '▌'
 " keymaps
 let g:mapleader = "\<Space>"
 
-nmap <silent> <Leader>t :Explorer<CR>
 nmap <silent> <Leader>e :Pandatree<CR>
 nmap <Leader>w <Plug>(choosewin)
 

@@ -1,5 +1,7 @@
 require'tools'
 
+local open_mode = vim.loop.constants.O_CREAT + vim.loop.constants.O_WRONLY + vim.loop.constants.O_TRUNC
+
 M = {
   pandatree = {
     is_opening = false,
@@ -24,6 +26,7 @@ M = {
       'cursorline',
       'splitright'
     },
+    cursor_last_line = 1,
     cursor_line_item = nil,
     show_hidden = false,
     tree = {},
@@ -244,12 +247,19 @@ end
 
 local function get_cursor_line()
   local line = 1
-  for k, v in pairs(M.pandatree.tree_list) do
-    if M.pandatree.cursor_line_item == v then
-      line = k
+  local is_exist = false
+  if M.pandatree.cursor_line_item ~= nil then
+    for k, v in pairs(M.pandatree.tree_list) do
+      if M.pandatree.cursor_line_item.path == v.path then
+        line = k
+        is_exist = true
+      end
+    end
+    if not is_exist then
+      line = M.pandatree.cursor_last_line
     end
   end
-  return line
+  return line,is_exist
 end
 
 local function search_tree_list(cwd,level)
@@ -395,7 +405,7 @@ local function reload_show_tree()
       table.insert(show_color, line_colors)
     else
       table.insert(show_color, {{
-        group = "ExplorerRoot",
+        group = "PandaTreeRoot",
         line = line,
         col_start = 0,
         col_end = -1
@@ -409,8 +419,9 @@ end
 
 local function reload_cursor()
   local win = get_pandatree_tab_windows()[1]
-  local line = math.min(get_cursor_line(), #M.pandatree.tree_list)
-  vim.api.nvim_win_set_cursor(win, {line, 0})
+  local line = get_cursor_line()
+  local new_line = math.min(line, #M.pandatree.tree_list)
+  vim.api.nvim_win_set_cursor(win, {new_line, 0})
 end
 
 local function reload_tree()
@@ -441,6 +452,7 @@ local function cursor_moved()
   local line = vim.api.nvim_win_get_cursor(win)[1]
   vim.api.nvim_win_set_cursor(win, {line, 0})
   M.pandatree.cursor_line_item = M.pandatree.tree_list[line]
+  M.pandatree.cursor_last_line = line
 end
 
 local function exit()
@@ -531,6 +543,7 @@ local function sync_tab_tree()
     open_tree()
     vim.api.nvim_command("wincmd l")
   end
+  reload_cursor()
 end
 
 local function open_file(open_type)
@@ -565,11 +578,95 @@ local function open_file(open_type)
   end
 end
 
+local function upper_stage()
+  local cwd = vim.loop.cwd()
+  local paths = split(cwd,'/')
+  if table.getn(paths) > 1 then
+    table.remove(paths)
+  end
+  local new_path = table.concat(paths,'/')
+  if new_path == '' then new_path = '/' end
+  vim.api.nvim_command("cd "..new_path)
+  draw_tree()
+end
+
+local function lower_stage()
+  local line = get_cursor_line()
+  local item = M.pandatree.tree_list[line]
+  if item.path == nil then return end
+  if item.t == 'directory' then
+    local new_path = vim.loop.cwd()..'/'..item.name
+    vim.api.nvim_command("cd "..new_path)
+    draw_tree()
+  end
+end
+
+local function togger_hidden()
+  M.pandatree.show_hidden = not M.pandatree.show_hidden
+  draw_tree()
+end
+
 local function clear_buffer(file_path)
-  for _, buf in pairs(api.nvim_list_bufs()) do
-    if api.nvim_buf_get_name(buf) == file_path then
-      api.nvim_command(':bd! '..buf)
+  for _, buf in pairs(vim.api.nvim_list_bufs()) do
+    if vim.api.nvim_buf_get_name(buf) == file_path then
+      vim.api.nvim_command(':bd! '..buf)
     end
+  end
+end
+
+local function create_res(res)
+  if res == true then
+    vim.api.nvim_out_write('created success\n')
+    draw_tree()
+  else
+    vim.api.nvim_err_writeln('create failure')
+  end
+end
+
+local function create()
+  local prefix = vim.loop.cwd()..'/'
+  local line = get_cursor_line()
+  local item = M.pandatree.tree_list[line]
+  if item.path ~= nil then 
+    prefix = item.path..'/'
+    if item.t ~= 'directory' then
+      prefix = string.gsub(item.path,item.name,'')
+    end
+  end
+  local new_file = vim.fn.input('Create file/directory '..prefix)
+  vim.api.nvim_command('normal :esc<CR>')
+  if not new_file or #new_file == 0 then return end
+  local paths = new_file:gmatch('[^/]+/?')
+  local new_path = prefix
+  local res = true
+  local is_file = false
+  for path in paths do
+    new_path = new_path..path
+    while true do
+      local stat = vim.loop.fs_stat(new_path)
+      if stat ~= nil then
+        res = false
+        break
+      end
+      if new_path:match('.*/$') then
+        res = vim.loop.fs_mkdir(new_path, 493)
+      else
+        is_file = true
+        vim.loop.fs_open(new_path, "w", open_mode, vim.schedule_wrap(function(err, fd)
+          if err then
+            create_res(false)
+          else
+            vim.loop.fs_chmod(new_path, 420)
+            vim.loop.fs_close(fd)
+            create_res(true)
+          end
+        end))
+      end
+      break
+    end
+  end
+  if not is_file then
+    create_res(res)
   end
 end
 
@@ -582,7 +679,7 @@ local function rename()
   if not new_name or #new_name == 0 then return end
   local success = vim.loop.fs_rename(item.path, new_name)
   if not success then
-    return api.nvim_err_writeln('Could not rename '..item.path..' to '..new_name)
+    return vim.api.nvim_err_writeln('Could not rename '..item.path..' to '..new_name)
   end
   draw_tree()
 end
@@ -590,7 +687,7 @@ end
 local function delete_dir(cwd)
   local handle = vim.loop.fs_scandir(cwd)
   if type(handle) == 'string' then
-    return api.nvim_err_writeln(handle)
+    return vim.api.nvim_err_writeln(handle)
   end
   while true do
     local name, t = vim.loop.fs_scandir_next(handle)
@@ -631,8 +728,12 @@ return {
   cursor_moved = cursor_moved,
   exit = exit,
   open_file = open_file,
+  upper_stage = upper_stage,
+  lower_stage = lower_stage,
+  togger_hidden = togger_hidden,
   tree_root_name = tree_root_name,
-  is_exist_tab_pandatree = is_exist_tab_pandatree,
+  create = create,
   rename = rename,
-  delete = delete
+  delete = delete,
+  is_exist_tab_pandatree = is_exist_tab_pandatree,
 }

@@ -52,7 +52,6 @@ end
 
 return {
   disable_buf_default_keymaps = disable_buf_default_keymaps,
-  utf8len = utf8len,
   split = split,
   file_extendsion = file_extendsion
 }

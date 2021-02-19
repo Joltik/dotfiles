@@ -173,7 +173,7 @@ function load_tabline()
     tabline = tabline..name
   end
   if require'pandatree'.is_exist_tab_pandatree() then
-    tabline = '%#PandaTabLineExplorer#'..require'pandatree'.tree_root_name()..'%##'..tabline
+    tabline = '%#PandaTabLineExplorer#'..require'pandatree'.tree_root_name()..' '..'%##'..tabline
   end
   vim.o.tabline = tabline..'%#PandaTabLineFill#'
 end

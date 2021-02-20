@@ -3,7 +3,7 @@ if exists('g:loaded_pandaline') | finish | endif
 let s:save_cpo = &cpo
 set cpo&vim
 
-hi statusline guibg=NONE ctermbg=NONE
+hi Statusline guibg=NONE ctermbg=NONE
 hi PandaViMode guifg=#282c34
 hi PandaFile guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
 hi PandaGit guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15

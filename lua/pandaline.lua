@@ -127,8 +127,8 @@ end
 function LinePercent(is_hl)
   local hl_group = 'PandaDim'
   local sep_group = 'PandaLinePercentSeparatorDim'
-  if is_hl then 
-    hl_group = 'PandaLinePercent' 
+  if is_hl then
+    hl_group = 'PandaLinePercent'
     sep_group = 'PandaLinePercentSeparator'
   end
   local sep_fg = vim.fn.synIDattr(vim.fn.hlID(hl_group),'bg')
@@ -139,11 +139,11 @@ end
 
 function load_pandaline(is_hl)
   local is_empty = buffer_is_empty()
-  if is_empty then 
+  if is_empty then
     vim.wo.statusline = ' '
-    return 
+    return
   end
-  if vim.fn.winwidth(0) <= 40 then 
+  if vim.fn.winwidth(0) <= 40 then
     vim.wo.statusline = FileType()..Fill()..RightSplit()..LinePercent(is_hl)
     return
   end

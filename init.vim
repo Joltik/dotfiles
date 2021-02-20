@@ -9,6 +9,13 @@ Plug 'airblade/vim-gitgutter'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'neovim/nvim-lspconfig'
 Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'easymotion/vim-easymotion'
+Plug 'tweekmonster/startuptime.vim'
+Plug 'chiel92/vim-autoformat'
+Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
+Plug 'scrooloose/nerdcommenter'
+Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
+Plug 'junegunn/fzf.vim'
 
 call plug#end()
 
@@ -35,10 +42,6 @@ set fillchars=vert:¦
 set wrap
 set showtabline=1
 
-set rtp+=/Users/xiaogao/.config/nvim/plugin/*.vim'
-
-let g:nvcode_termcolors=256
-
 syntax on
 colorscheme onedark
 
@@ -46,15 +49,10 @@ if (has("termguicolors"))
   set termguicolors
 endif
 
-hi Normal guibg=NONE ctermbg=NONE
-hi SignColumn guibg=NONE ctermbg=NONE
-hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
-hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
+set rtp+=/Users/xiaogao/.config/nvim/plugin/*.vim
 
 lua require('plugin_setting')
 
-" plug setting
-let g:plug_window = 'vertical rightbelow new'
 " autocmd
 autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif
 autocmd FileType * setlocal formatoptions-=c formatoptions-=r formatoptions-=o
@@ -62,6 +60,12 @@ autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$") |
       \  exe "normal! g`\"" |
       \ endif
+autocmd FileType * let b:coc_pairs_disabled = ['<']
+" plug setting
+let g:plug_window = 'vertical rightbelow new'
+" vim-easymotion
+let g:EasyMotion_do_mapping = 0
+let g:EasyMotion_smartcase = 1
 " gitgutter
 let g:gitgutter_sign_added = '▌'
 let g:gitgutter_sign_modified = '▌'
@@ -69,12 +73,24 @@ let g:gitgutter_sign_removed = '▌'
 let g:gitgutter_sign_removed_first_line = '▌'
 let g:gitgutter_sign_removed_above_and_below = '▌'
 let g:gitgutter_sign_modified_removed = '▌'
+" nerdcommenter
+let g:NERDCreateDefaultMappings = 0
+let g:NERDSpaceDelims = 1
+let g:NERDTrimTrailingWhitespace = 1
+let g:NERDCustomDelimiters = {
+      \ 'javascript': { 'left': '//', 'right': '', 'leftAlt': '{/*', 'rightAlt': '*/}' },
+      \}
+" vim-prettier
+let g:prettier#quickfix_enabled = 0
+" fzf
+let $FZF_DEFAULT_OPTS = '--layout=reverse'
+let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.6} }
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-flutter']
 
 inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-			\: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " keymaps
 let g:mapleader = "\<Space>"
@@ -84,5 +100,26 @@ nmap <Leader>w <Plug>(choosewin)
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 
-nmap <silent> gd <Plug>(coc-definition)
+nmap <Leader>gn <Plug>(GitGutterNextHunk)
+nmap <Leader>gp <Plug>(GitGutterPrevHunk)
+nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
+nmap <Leader>gu <Plug>(GitGutterUndoHunk)
+
+nmap <silent><Leader>jd <Plug>(coc-definition)
 nmap <leader>rn <Plug>(coc-rename)
+
+nmap <Leader>ss <Plug>(easymotion-s2)
+nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>
+
+map <Leader>cc <plug>NERDCommenterToggle
+map <Leader>cm <plug>NERDCommenterMinimal
+nmap <Leader>cf <Plug>(Prettier)
+autocmd FileType vim,lua nmap <buffer> <Leader>cf :Autoformat<CR>
+
+map <silent> <Leader>sf :Files<CR>
+map <silent> <Leader>sb :Buffers<CR>
+map <silent> <Leader>sh :History<CR>
+map <silent> <Leader>sc :History:<CR>
+map <silent> <Leader>sg :GFiles?<CR>
+nnoremap <silent> <Leader>sw :Rg<CR>
+xnoremap <silent> <Leader>sw y:Rg <C-R>"<CR>

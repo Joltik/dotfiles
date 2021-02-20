@@ -293,8 +293,8 @@ local function search_tree_list(cwd,level)
 end
 
 local function reload_tree_list(cwd,is_first)
-  if is_first then 
-    M.pandatree.tree_list = {} 
+  if is_first then
+    M.pandatree.tree_list = {}
     if not is_show_tabline() then
       table.insert(M.pandatree.tree_list,{level = 0})
     end
@@ -569,13 +569,13 @@ local function open_file(open_type)
       end
       vim.api.nvim_command(open_type..' '..item.path)
     else
-     local nearest_win = get_nearest_win()
-     if nearest_win ~= nil then
-       vim.api.nvim_command('wincmd l')
-       vim.api.nvim_command('edit '..item.path)
-     else
-       vim.api.nvim_command('vsplit '..item.path)
-     end
+      local nearest_win = get_nearest_win()
+      if nearest_win ~= nil then
+        vim.api.nvim_command('wincmd l')
+        vim.api.nvim_command('edit '..item.path)
+      else
+        vim.api.nvim_command('vsplit '..item.path)
+      end
     end
   end
 end
@@ -628,7 +628,7 @@ local function create()
   local prefix = vim.loop.cwd()..'/'
   local line = get_cursor_line()
   local item = M.pandatree.tree_list[line]
-  if item.path ~= nil then 
+  if item.path ~= nil then
     prefix = item.path..'/'
     if item.t ~= 'directory' then
       prefix = string.gsub(item.path,item.name,'')

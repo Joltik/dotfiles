@@ -2,7 +2,6 @@
 call plug#begin('~/.vim/plugged')
 
 Plug 'yianwillis/vimcdoc'
-Plug 't9md/vim-choosewin'
 Plug 'christianchiarulli/nvcode-color-schemes.vim'
 Plug 'norcalli/nvim-colorizer.lua'
 Plug 'airblade/vim-gitgutter'
@@ -106,7 +105,7 @@ inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
 let g:mapleader = "\<Space>"
 
 nmap <silent> <Leader>e :Pandatree<CR>
-nmap <Leader>w <Plug>(choosewin)
+nmap <silent> <Leader>w :Pandawin<CR>
 
 nnoremap <silent> <leader>fd :vsplit $MYVIMRC<CR>
 

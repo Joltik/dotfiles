@@ -2,7 +2,7 @@ require'tools'
 
 local open_mode = vim.loop.constants.O_CREAT + vim.loop.constants.O_WRONLY + vim.loop.constants.O_TRUNC
 
-M = {
+local M = {
   pandatree = {
     is_opening = false,
     buf_name = 'pandatree',
@@ -243,7 +243,6 @@ local function sort_tree_list(item1,item2)
     return item1.t<item2.t
   end
 end
-
 
 local function get_cursor_line()
   local line = 1

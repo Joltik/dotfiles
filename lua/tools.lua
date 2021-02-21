@@ -50,10 +50,19 @@ function file_extension(file_name)
   return extension
 end
 
+function index_of(values,item)
+  local index = {}
+  for k, v in pairs(values) do
+    index[v] = k
+  end
+  return index[item]
+end
+
 return {
   disable_buf_default_keymaps = disable_buf_default_keymaps,
   split = split,
-  file_extendsion = file_extendsion
+  file_extendsion = file_extendsion,
+  index_of = index_of
 }
 
 

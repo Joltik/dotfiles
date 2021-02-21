@@ -4,11 +4,11 @@ let s:save_cpo = &cpo
 set cpo&vim
 
 hi Statusline guibg=NONE ctermbg=NONE
-hi PandaViMode guifg=#282c34
-hi PandaFile guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
-hi PandaGit guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
-hi PandaFill guibg=#38393f ctermbg=NONE
-hi PandaDim guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
+hi PandaLineViMode guifg=#282c34
+hi PandaLineFile guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
+hi PandaLineGit guibg=#38393f ctermbg=NONE guifg=#eeeeee ctermfg=15
+hi PandaLineFill guibg=#38393f ctermbg=NONE
+hi PandaLineDim guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15
 hi PandaLinePercent guibg=#61afef ctermbg=NONE guifg=#2c323d ctermfg=15
 hi def link PandaTabLineExplorer Number
 hi PandaTabLineNomal guibg=#5c6370 ctermbg=NONE guifg=#2c323d ctermfg=15

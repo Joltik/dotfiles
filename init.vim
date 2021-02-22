@@ -15,6 +15,7 @@ Plug 'prettier/vim-prettier', { 'do': 'yarn install' }
 Plug 'scrooloose/nerdcommenter'
 Plug 'junegunn/fzf', { 'do': { -> fzf#install() } }
 Plug 'junegunn/fzf.vim'
+Plug 'nvim-lua/completion-nvim'
 
 call plug#end()
 
@@ -40,6 +41,7 @@ set splitright
 set fillchars=vert:¦
 set wrap
 set showtabline=1
+set completeopt=menuone,noinsert
 
 syntax on
 colorscheme onedark
@@ -71,6 +73,7 @@ autocmd BufReadPost *
       \ endif
 autocmd FileType * let b:coc_pairs_disabled = ['<']
 " plug setting
+let g:completion_timer_cycle = 10
 let g:plug_window = 'vertical rightbelow new'
 " vim-easymotion
 let g:EasyMotion_do_mapping = 0

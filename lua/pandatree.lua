@@ -184,7 +184,12 @@ local function get_tab_windows()
   for _, tab in ipairs(tabs) do
     local is_active_tab = current_tab == tab.tabnr
     if is_active_tab then
-      tab_wins = tab.windows
+      local windows = tab.windows
+      for _, window in ipairs(windows) do
+        if not is_float_window(window) then
+          table.insert(tab_wins,window)
+        end
+      end
     end
   end
   return tab_wins

@@ -37,7 +37,10 @@ local function show()
   M.pandawin.statusline_map = {}
   local wins = get_tab_windows()
   for k, win in ipairs(wins) do
-    local statusline = vim.api.nvim_win_get_option(win,'statusline')
+    local statusline = ''
+    if not is_float_window(win) then
+      statusline = vim.api.nvim_win_get_option(win,'statusline')
+    end
     local bank_key = M.pandawin.prefix..win
     local show_item = M.pandawin.show_list[k]
     local map_key = M.pandawin.prefix..show_item
@@ -58,6 +61,7 @@ local function show()
     local cur_win = vim.fn.winnr()
     local choose_index = index_of(M.pandawin.show_list,c)
     if choose_index and choose_index ~= cur_win then
+      -- vim.api.nvim_set_current_win(wins[choose_index])
       vim.api.nvim_command("exe "..choose_index.." . 'wincmd w'")
     end
   end

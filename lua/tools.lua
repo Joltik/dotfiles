@@ -58,11 +58,19 @@ function index_of(values,item)
   return index[item]
 end
 
+function is_float_window(win)
+  local win_config = vim.api.nvim_win_get_config(win)
+  local relative = win_config['relative']
+  local external = win_config['external']
+  return not (relative ~= nil and #relative == 0 and not external)
+end
+
 return {
   disable_buf_default_keymaps = disable_buf_default_keymaps,
   split = split,
   file_extendsion = file_extendsion,
-  index_of = index_of
+  index_of = index_of,
+  is_float_window = is_float_window
 }
 
 

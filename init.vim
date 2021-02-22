@@ -93,7 +93,7 @@ let g:NERDCustomDelimiters = {
 let g:prettier#quickfix_enabled = 0
 " fzf
 let $FZF_DEFAULT_OPTS = '--layout=reverse'
-let g:fzf_layout = { 'window': { 'width': 0.6, 'height': 0.6} }
+let g:fzf_layout = { 'window': { 'width': 0.75, 'height': 0.6} }
 " coc
 let g:coc_config_home = '$HOME/.config/nvim'
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-flutter']

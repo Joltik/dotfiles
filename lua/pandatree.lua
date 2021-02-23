@@ -721,7 +721,10 @@ local function delete()
   if item.t == 'directory' then
     delete_dir(item.path)
   else
-    vim.loop.fs_unlink(item.path)
+    local success = vim.loop.fs_unlink(item.path)
+    if success then
+      clear_buffer(item.path)
+    end
   end
   draw_tree()
 end

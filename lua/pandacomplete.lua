@@ -22,7 +22,6 @@ function feed_popup()
 end
 
 function complete_done()
-  dump('complete_done')
 end
 
 function pandacomplete_enable()
@@ -59,7 +58,8 @@ function pandacomplete_augroup()
 end
 
 function pandacomplete_func(findstart, base)
-  dump(base)
+  local value = vim.lsp.omnifunc(findstart, base)
+  dump(value)
 end
 
 return {

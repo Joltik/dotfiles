@@ -6,7 +6,7 @@ Plug 'norcalli/nvim-colorizer.lua'
 Plug 'airblade/vim-gitgutter'
 Plug 'nvim-treesitter/nvim-treesitter', {'do': ':TSUpdate'}
 Plug 'neovim/nvim-lspconfig'
-" Plug 'neoclide/coc.nvim', {'branch': 'release'}
+Plug 'neoclide/coc.nvim', {'branch': 'release'}
 Plug 'easymotion/vim-easymotion'
 Plug 'tweekmonster/startuptime.vim'
 Plug 'chiel92/vim-autoformat'
@@ -100,8 +100,8 @@ let g:fzf_layout = { 'window': { 'width': 0.75, 'height': 0.6} }
 let g:coc_config_home = '$HOME/.config/nvim'
 let g:coc_global_extensions = ['coc-tsserver', 'coc-json', 'coc-vimlsp', 'coc-pairs', 'coc-flutter']
 
-" inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
-      " \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
+inoremap <silent><expr> <cr> pumvisible() ? coc#_select_confirm()
+      \: "\<C-g>u\<CR>\<c-r>=coc#on_enter()\<CR>"
 
 " keymaps
 let g:mapleader = "\<Space>"
@@ -116,8 +116,8 @@ nmap <Leader>gp <Plug>(GitGutterPrevHunk)
 nmap <Leader>gi <Plug>(GitGutterPreviewHunk)
 nmap <Leader>gu <Plug>(GitGutterUndoHunk)
 
-" nmap <silent><Leader>jd <Plug>(coc-definition)
-" nmap <leader>rn <Plug>(coc-rename)
+nmap <silent><Leader>jd <Plug>(coc-definition)
+nmap <leader>rn <Plug>(coc-rename)
 
 nmap <Leader>ss <Plug>(easymotion-s2)
 nnoremap <silent> <leader>st :vne<CR>:StartupTime<CR>

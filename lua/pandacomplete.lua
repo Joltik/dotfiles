@@ -58,8 +58,7 @@ function pandacomplete_augroup()
 end
 
 function pandacomplete_func(findstart, base)
-  local value = vim.lsp.omnifunc(findstart, base)
-  dump(value)
+  return {"aa","bb","cc"}
 end
 
 return {

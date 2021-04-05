@@ -1,7 +1,0 @@
-let g:netrw_dirhistmax  =10
-let g:netrw_dirhistcnt =5
-let g:netrw_dirhist_5='/Users/xiaogao/.config/nvim'
-let g:netrw_dirhist_4='/Users/xiaogao/.config/nvim/lua'
-let g:netrw_dirhist_3='/Users/xiaogao/.config/nvim'
-let g:netrw_dirhist_2='/Users/xiaogao/.config/nvim/test'
-let g:netrw_dirhist_1='/Users/xiaogao/.config/nvim'

@@ -1,0 +1,1 @@
+vim.api.nvim_command("autocmd BufEnter * if &ft ==# 'help' | wincmd L | endif")

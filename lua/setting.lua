@@ -1,3 +1,5 @@
+vim.api.nvim_exec(
+[[
 set hlsearch
 set incsearch
 set scrolloff=5
@@ -30,3 +32,6 @@ hi Normal guibg=NONE ctermbg=NONE
 hi SignColumn guibg=NONE ctermbg=NONE
 hi VertSplit guibg=NONE ctermbg=NONE guifg=#455a64 ctermfg=239
 hi EndOfBuffer guibg=NONE ctermbg=NONE guifg=#282c34 ctermfg=249
+]],
+false)
+

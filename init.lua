@@ -14,4 +14,7 @@ require('plugins')
 
 vim.cmd [[set rtp+=/Users/xiaogao/.config/nvim/plugin/*.vim]]
 
+require('setting')
+require('autocmd')
+require('keymappings')
 require('config')
